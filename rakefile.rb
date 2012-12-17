@@ -11,7 +11,7 @@ RELEASE_FILE = "~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip"
 
 ignore_files = ['pcb_gcode_is_setup', '*.old', 'storage.nv',
   'make/*', 'make', '*.b#*', '*.s#*', '*.l#*',
-  '*.DS_Store']
+  '*.DS_Store', 'optomize_me.txt']
 
 desc "Build the docs/readme.html file."
 file 'docs/readme.html' => 'docs/readme.textile' do |t|

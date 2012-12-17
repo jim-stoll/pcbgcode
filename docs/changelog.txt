@@ -10,4 +10,4 @@ Added name of drill rack file to drill not found message in drill.h.
 
 Added a Single pass option. Maximum and Step size labels are changed to "not used" when Single pass is on.
 
-The path to pcb-gcode is no longer required to be entered in Eagle's Control Panel | Options | Directories. Should save a lot of new users some trouble.
+The path to pcb-gcode is no longer required to be the first entry in Eagle's Control Panel | Options | Directories. Should save some new users some trouble.
