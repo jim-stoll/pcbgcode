@@ -3,7 +3,7 @@
 // Drill routines.
 //
 
-#include "source/nonvolatile.h"
+#include "nonvolatile.h"
 
 string TOOL_FLD   = "tool";
 string DRILL_FLD  = "drill_size";
@@ -20,6 +20,7 @@ real g_maxs[];
 int m_shut_up;
 int m_last_match;
 int m_have_rack = false;
+string m_rack_file_name = "?";
 
 if (get_nv_param("drill_shut_up", "NO", NO) == "YES") {
 	m_shut_up = YES;
@@ -32,6 +33,8 @@ void message(string msg)
 {
     if(m_shut_up)
       return;
+
+    msg = "Rack file: " + elided_path(m_rack_file_name, 30) + ":\n" + msg;
     
     switch(dlgMessageBox(msg, "Ok", "Shut up already", "Never ask again")) {
     case 1:
@@ -78,6 +81,7 @@ void read_rack_file(string drill_file)
 	}
 	
 	m_have_rack = true;
+	m_rack_file_name = drill_file;
 }
 
 void load_rack()

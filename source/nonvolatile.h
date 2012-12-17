@@ -4,16 +4,16 @@
  * See readme.html for copyright information.
  */
 
-string STORAGE_NAME = path_ulp[0] + "/storage.nv";
+string STORAGE_NAME = g_path + "/storage.nv";
 int NAME_FIELD = 0;
 int VALUE_FIELD = 1;
-char SEPERATOR = '=';
+char SEPARATOR = '=';
 string m_params[];
 string empty[];
 
-if (filetime(STORAGE_NAME) == 0 || filetime(STORAGE_NAME) == 0) {
+if (filetime(STORAGE_NAME) == 0) {
   output(STORAGE_NAME, "wt") {
-    printf("created%c%s\s", SEPERATOR, t2string(time()));
+    printf("created%c%s\s", SEPARATOR, t2string(time()));
   }
 }
 
@@ -52,7 +52,7 @@ string get_nv_param(string name, string def, int can_abort)
 
   read_nv_file(can_abort);
   
-  value = lookup(m_params, name, VALUE_FIELD, SEPERATOR);
+  value = lookup(m_params, name, VALUE_FIELD, SEPARATOR);
   if (value == "") {
     return def;
   }
@@ -66,16 +66,16 @@ void set_nv_param(string name, string value)
   string record[];
 
   num_params = read_nv_file(0);
-  if (lookup(m_params, name, VALUE_FIELD, SEPERATOR) == "") {
-   m_params[num_params] = name + SEPERATOR + value;
+  if (lookup(m_params, name, VALUE_FIELD, SEPARATOR) == "") {
+   m_params[num_params] = name + SEPARATOR + value;
    num_params++;
   }
   else {
    for (i=0; i < num_params; i++) {
-     strsplit(record, m_params[i], SEPERATOR);
+     strsplit(record, m_params[i], SEPARATOR);
      if (record[NAME_FIELD] == name) {
        record[VALUE_FIELD] = value;
-       m_params[i] = record[NAME_FIELD] + SEPERATOR + record[VALUE_FIELD];
+       m_params[i] = record[NAME_FIELD] + SEPARATOR + record[VALUE_FIELD];
        break;
      }
    }

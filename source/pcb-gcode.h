@@ -210,6 +210,14 @@ void get_path()
 
 get_path();
 
+if (g_path == "") {
+  dlgMessageBox("There is a problem with your installation of pcb-gcode.\n" +
+  "Please see docs/readme.html");
+}
+else {
+//  dlgMessageBox("g_path = " + g_path);
+}
+
 // This reads the current profile into CURRENT_PROFILE, if available.
 get_current_profile();
  

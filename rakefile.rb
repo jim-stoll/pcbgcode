@@ -5,7 +5,7 @@
 require 'pp'
 
 # this will be improved later
-PCB_GCODE_VERSION = "3.5.2.11"
+PCB_GCODE_VERSION = "3.6.0.1"
 
 RELEASE_FILE = "~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip"
 
