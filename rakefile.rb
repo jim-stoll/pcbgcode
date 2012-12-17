@@ -26,7 +26,7 @@ task :release_file do
   system(zip_cmd)
 end
 
-desc "Copy current sittings/* files to the safe_options folder."
+desc "Copy current settings/* files to the safe_options folder."
 task :safe_options do
   SAFE_OPTIONS = ['pcb-defaults', 'pcb-machine', 'pcb-gcode-options', 'user-gcode']
   SAFE_OPTIONS.each do |name|
