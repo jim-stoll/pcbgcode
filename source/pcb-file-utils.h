@@ -200,7 +200,7 @@ void output_file_heading()
 {
 	if (NC_FILE_COMMENT_FROM_BOARD) {
 		comm(elided_path(argv[PROGRAM_NAME_ARG], 30));
-		comm("Copyright 2005 - 2009 by John Johnson");
+		comm("Copyright 2005 - 2012 by John Johnson");
 		comm("See readme.txt for licensing terms.");
 
 		board(B) {
