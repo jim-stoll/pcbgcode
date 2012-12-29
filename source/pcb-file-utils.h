@@ -200,7 +200,7 @@ void output_file_heading()
 {
 	if (NC_FILE_COMMENT_FROM_BOARD) {
 		comm(elided_path(argv[PROGRAM_NAME_ARG], 30));
-		comm("Copyright 2005 - 2009 by John Johnson");
+		comm("Copyright 2005 - 2012 by John Johnson");
 		comm("See readme.txt for licensing terms.");
 
 		board(B) {
@@ -239,7 +239,7 @@ void output_file_heading()
 
 	if (NC_FILE_COMMENT_PCB_DEFAULTS_SETTINGS) {
 		comm("Settings from pcb-defaults.h");
-		comm(fr("Default isolate = %6.4f", DEFAULT_ISOLATE));
+		comm(fr("isolate min = %6.4f", ISO_MIN));
 		comm(fr("isolate max = %6.4f", ISO_MAX));
 		comm(fr("isolate step = %6.4f", ISO_STEP));
 		string tt;

@@ -17,6 +17,9 @@ public class viewer extends PApplet {
 /**
  * viewer
  * 
+ * Copyright 2013 by John Johnson Software, LLC
+ * All Rights Reserved
+ *
  * Load line coordinates from a file and draw them.
  *
  */
@@ -89,7 +92,7 @@ String comment = "";
 float tool_size = 0.001f;
 
 int m_pass;
-boolean m_monochrome = true;
+boolean m_monochrome = false;
 
 /*
  * Parse Strings and produce Lines.

@@ -1,7 +1,7 @@
 //
 // Generate g-code for milling PC boards.
 //
-// Copyright 2004-2009 by John Johnson Software, LLC.
+// Copyright 2004-2013 by John Johnson Software, LLC.
 // See readme.html for copyright information.
 //
 // See pcb-defaults.h, gcode-defaults.h and pcb-machine.h for options.
@@ -21,8 +21,8 @@
 #include "source/filename_subs.h"
 
 #usage "<center><b>pcb-gcode&trade; Gcode Generation Utility</b><br>"
-			 " Version 3.5.2.11<p>"
-			 "Copyright&copy; 2004 - 2009 by John Johnson Software, LLC<br>"
+			 " Version 3.6.0.1<p>"
+			 "Copyright&copy; 2004 - 2013 by John Johnson Software, LLC<br>"
 			 "All Rights Reserved</center>"
        "<p>"
        "Join the Yahoo! pcb-gcode group "
@@ -127,13 +127,13 @@ void next_phase(void)
 	}
 
 	if (g_phase == PH_TOP_OUT_WRITE || g_phase == PH_BOTTOM_OUT_WRITE) {
-		if (m_isolate < ISO_MAX) {
+		if (m_isolate < ISO_MAX && !SINGLE_PASS) {
 			m_isolate += ISO_STEP;
 			m_pass_num++;
 			g_phase--;
 		}
 		else {
-			m_isolate = DEFAULT_ISOLATE;
+			m_isolate = ISO_MIN;
 			m_pass_num = 0;
 			g_phase++;
 
@@ -852,7 +852,7 @@ void write_outlines(int which_side, string suffix, int task)
 						} 
 						// switch(task)
 
-						if (m_isolate >= ISO_MAX || task == TASK_FILL) {
+						if (m_isolate >= ISO_MAX || SINGLE_PASS || task == TASK_FILL) {
 							output_file_postamble();
 							rz(DEFAULT_Z_UP);
 							spot_drill(B);
@@ -989,7 +989,7 @@ if (argv[ISO_ARG]) {
 	m_isolate = strtod(argv[ISO_ARG]);
 }
 else {
-	m_isolate = DEFAULT_ISOLATE;
+	m_isolate = ISO_MIN;
 }
 
 // Get the pass number, or default to first pass (0).

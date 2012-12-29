@@ -5,13 +5,13 @@
 require 'pp'
 
 # this will be improved later
-PCB_GCODE_VERSION = "3.5.2.11"
+PCB_GCODE_VERSION = "3.6.0.1"
 
 RELEASE_FILE = "~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip"
 
 ignore_files = ['pcb_gcode_is_setup', '*.old', 'storage.nv',
   'make/*', 'make', '*.b#*', '*.s#*', '*.l#*',
-  '*.DS_Store']
+  '*.DS_Store', 'optomize_me.txt']
 
 desc "Build the docs/readme.html file."
 file 'docs/readme.html' => 'docs/readme.textile' do |t|
@@ -26,7 +26,7 @@ task :release_file do
   system(zip_cmd)
 end
 
-desc "Copy current sittings/* files to the safe_options folder."
+desc "Copy current settings/* files to the safe_options folder."
 task :safe_options do
   SAFE_OPTIONS = ['pcb-defaults', 'pcb-machine', 'pcb-gcode-options', 'user-gcode']
   SAFE_OPTIONS.each do |name|

@@ -3,16 +3,30 @@
  *
  * Math utilities.
  *
- * Copyright 2007 - 2009 by John Johnson Software, LLC.
+ * Copyright 2007 - 2013 by John Johnson Software, LLC.
  * All Rights Reserved.
  *
  */
 
-#include "source/drill_sizes.h"
+//#include "source/drill_sizes.h"
+#include "drill_sizes.h"
 
 real MM_PER_INCH    = 25.4;
 int MICRONS_PER_MM  = 1000;
 int MILS_PER_INCH   = 1000;
+
+//
+// Thanks EAGLE! No one expects an internal units change. :-)
+//
+int INTERNAL_SCALAR = 10000;
+if (EAGLE_VERSION >= 6) {
+  INTERNAL_SCALAR = 320000;
+}
+
+int INTERNALS_PER_MICRON = (INTERNAL_SCALAR / 1000);
+int INTERNALS_PER_MM = INTERNAL_SCALAR;
+int INTERNALS_PER_MIL = MM_PER_INCH * (INTERNAL_SCALAR / 1000);
+int INTERNALS_PER_INCH = MM_PER_INCH * INTERNAL_SCALAR;
 
 /*
  * Return the suffix unit of measure from a string.
@@ -32,59 +46,55 @@ string get_units(string s)
 
 //enum { U_INVALID, U_MICRONS, U_MILLIMETERS, U_MILS, U_INCHES };
 
-//
-// 
-//
-
 real convert(real value, int old_units, int new_units)
 {
   real temp;
   real result;
-  
+
   // Convert current value to 10ths of microns.
   switch(old_units) {
     case U_MICRONS:
-        temp = value * 10;
-        break;
+    temp = value * INTERNALS_PER_MICRON;
+    break;
     case U_MILLIMETERS:
-        temp = value * 10000;
-        break;
+    temp = value * INTERNALS_PER_MM;
+    break;
     case U_MILS:
-        temp = value / 1000 * MM_PER_INCH * 10000;
-        break;
+    temp = value * INTERNALS_PER_MIL;
+    break;
     case U_INCHES:
-        temp = value * MM_PER_INCH * 10000;
-        break;
-	case U_INTERNALS:
-		temp = value;
-		break;
+    temp = value * INTERNALS_PER_INCH;
+    break;
+    case U_INTERNALS:
+    temp = value;
+    break;
     default:
-      dlgMessageBox(":Invalid value for old_units in convert()");
-      exit(0);
+    dlgMessageBox(":Invalid value for old_units in convert()");
+    exit(0);
   }
-  
+
   // Convert temp value to the new unit of measure.
   switch(new_units) {
     case U_MICRONS:
-        result = temp / 10;
-        break;
+    result = temp / INTERNALS_PER_MICRON;
+    break;
     case U_MILLIMETERS:
-        result = temp / 10000;
-        break;
+    result = temp / INTERNALS_PER_MM;
+    break;
     case U_MILS:
-        result = temp / 10000 / MM_PER_INCH * 1000;
-        break;
+    result = temp / INTERNALS_PER_MIL;
+    break;
     case U_INCHES:
-        result = temp / 10000 / MM_PER_INCH;
-        break;
-	case U_INTERNALS:
-		result = temp;
-		break;
+    result = temp / INTERNALS_PER_INCH;
+    break;
+    case U_INTERNALS:
+    result = temp;
+    break;
     default:
-      dlgMessageBox(":Invalid value for new_units (" + int_to_string(new_units) + ") in convert()");
-      exit(0);
+    dlgMessageBox(":Invalid value for new_units (" + int_to_string(new_units) + ") in convert()");
+    exit(0);
   }
-  
+
   return result;
 }
 
@@ -93,7 +103,7 @@ real convert(real value, int old_units, int new_units)
  * Convert a string with a number and a unit-of-measure suffix into 
  * Eagle internal units (microns).
  *
- *    0.032in   0.32 inches
+ *    0.032in   0.032 inches
  *    62ml      62 mils, 0.062 inches
  *    0.43mm    0.43 millimeters
  *    1500mc    1500 microns, 1.500 millimeters

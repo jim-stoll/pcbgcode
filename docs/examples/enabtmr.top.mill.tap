@@ -18,7 +18,7 @@
 (feed rate xy = F20.00 )
 (feed rate z  = F10.00 )
 (Settings from pcb-defaults.h)
-(Default isolate = 0.0010)
+(Isolate min = 0.0010)
 (isolate max = 0.0200)
 (isolate step = 0.0050)
 (Generated top outlines, top drill, bottom outlines, bottom drill, )

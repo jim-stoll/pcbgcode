@@ -1,10 +1,11 @@
 h1. PCB-GCODE GCode Generation Utility
 
-Copyright (c) 2004-2009 by John Johnson Software, LLC
+Copyright (c) 2004-2013 by John Johnson Software, LLC
 All Rights Reserved
 
 Please visit the "Phorum":http://pcbgcode.org or the 
 "Yahoo! group":http://groups.yahoo.com/group/pcb-gcode
+or the "Facebook group":http://www.facebook.com/groups/pcbgcode/
 or email "pcbgcode@pcbgcode.org":mailto:pcbgcode@pcbgcode.org.
 
 bq. "OSI":http://opensource.org Certified Open Source Software.
@@ -35,7 +36,7 @@ From Eagle's Board Editor (that's where you lay out your board), in the command 
 
 @run pcb-gcode-setup@
 
-The first time you run pcb-gcode-setup, you select the "flavor" of g-code to suit the controller for your machine, such as TurboCNC, EMC, Mach3, etc. You may also select Metric or Imperial units, the size of tools you use, and more. If you want to run setup again later, just use the same command:
+The first time you run pcb-gcode-setup, you select the style of g-code to suit the controller for your machine, such as TurboCNC, EMC, Mach3, etc. You may also select Metric or Imperial units, the size of tools you use, and more. If you want to run setup again later, just use the same command:
 
 @run pcb-gcode-setup@
 
@@ -114,7 +115,7 @@ Select the unit of measure your controller uses. Please note that a mil is 0.001
 
 h4. Tool Change
 
-|^.Positon X, Y & Z|Where to move the tool when it is time to change bits.|
+|^.Position X, Y & Z|Where to move the tool when it is time to change bits.|
 
 h4. Spindle
 
@@ -219,7 +220,7 @@ h4. Track Width
 
 First, you should establish the safe minimum track width your router can produce. Experimentation is your best bet here. You'll also want to determine what size cutter to use. I've heard the bits from "Think & Tinker":http://www.thinktink.com/ are quite good. Until I order the Think & Tinker bits, I'm using a 60 degree half round carbide bit. Most cutters are tapered, so depth control is essential. If the PCB is higher, the cut path will be wider, hence the tracks will be narrower, if there is anything left. On my router, I use a piece of wood with a cavity milled out that is the side of my PCB stock. I secure the PCB using fiberglass double-sided carpet tape. The adhesive is very agressive, and works well.
 
-After experimentation, I determined that I could mill 16mil tracks. This allows me to squeeze a track between IC pads, which was one of my original goals. I laid out the board using a 16mil track width (See 04151_lcdi2c.brd). To figure out the right tool size, I began at 0.001, and worked my way up. Look at this picture "0_005.jpg":images/0_005.jpg . In the center, you can see three IC pads. There is a track between the bottom two pads. You can see (hopefully!) that the track and the IC pads have a small amount of space between. To maximize the track and pad size, we want to minimize this space. The next picture is "0_007.jpg":images/0_007.jpg . This is when I tried 0.007 as the tool size. You can see that the track and pads are wider, and that the lines of each are still seperate and distinct. Now look at "0_009.jpg":images/0_009.jpg. See anything wrong? The third IC pad down, and on the left had merged into the track next to it. Not a good thing. So we need to back off on the tool size. As I was writing this, I noticed that at 0.007, the IC looks fine, but some of the tracks and pads at the 14 pin connector had merged. So, 0.005 is the ideal tool size.
+After experimentation, I determined that I could mill 16mil tracks. This allows me to squeeze a track between IC pads, which was one of my original goals. I laid out the board using a 16mil track width (See 04151_lcdi2c.brd). To figure out the right tool size, I began at 0.001, and worked my way up. Look at this picture "0_005.jpg":images/0_005.jpg . In the center, you can see three IC pads. There is a track between the bottom two pads. You can see (hopefully!) that the track and the IC pads have a small amount of space between. To maximize the track and pad size, we want to minimize this space. The next picture is "0_007.jpg":images/0_007.jpg . This is when I tried 0.007 as the tool size. You can see that the track and pads are wider, and that the lines of each are still separate and distinct. Now look at "0_009.jpg":images/0_009.jpg. See anything wrong? The third IC pad down, and on the left had merged into the track next to it. Not a good thing. So we need to back off on the tool size. As I was writing this, I noticed that at 0.007, the IC looks fine, but some of the tracks and pads at the 14 pin connector had merged. So, 0.005 is the ideal tool size.
 
 At this point, you probably want to mill a board, and see how everything looks. If it's okay, you can set up the DRC to make sure all your boards have the necessary clearance for milling.
 
@@ -229,7 +230,7 @@ We can use Eagle's DRC (Design Rule Check) tool to help design boards that will 
 
 h4. Final Results
 
-The final product can be seen in the "pcb.jpg":images/pcb.jpg picture. No, this isn't the 04151 board that I provided the board and schematic for. It's already loaded and in service. We can see a few things from this board though. Look at the circled area labeled A. There are small slivers there that could easily peel up and short the adjacent tracks. This can be corrected by making DEFAULT_ISOLATE smaller, in case a path never was made through this area since they are so small. You might try making ISO_STEP smaller, so that more passes will be made through the area. You can also try making ISO_MAX larger, in case the over all area milled away needs to be larger. Although not the case for the A area, you can see in the D area that more passes would have cleaned out the rest of the slivers from around the "A" character. Beginning in area B is a larger sliver. This one should be okay, since it is wider, and not at risk of peeling so easily. Now take a look at area C. Those are thermals around the IC pads, and they look great. Thermals are probably the smallest area to be milled away, except for the inside spaces of letters like A B, etc. Keep an eye on the thermals when changing parameters.
+The final product can be seen in the "pcb.jpg":images/pcb.jpg picture. No, this isn't the 04151 board that I provided the board and schematic for. It's already loaded and in service. We can see a few things from this board though. Look at the circled area labeled A. There are small slivers there that could easily peel up and short the adjacent tracks. This can be corrected by making ISO_MIN smaller, in case a path never was made through this area since they are so small. You might try making ISO_STEP smaller, so that more passes will be made through the area. You can also try making ISO_MAX larger, in case the over all area milled away needs to be larger. Although not the case for the A area, you can see in the D area that more passes would have cleaned out the rest of the slivers from around the "A" character. Beginning in area B is a larger sliver. This one should be okay, since it is wider, and not at risk of peeling so easily. Now take a look at area C. Those are thermals around the IC pads, and they look great. Thermals are probably the smallest area to be milled away, except for the inside spaces of letters like A B, etc. Keep an eye on the thermals when changing parameters.
 
        Have fun!
 

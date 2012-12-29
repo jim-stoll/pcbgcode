@@ -2,9 +2,10 @@
 // Options for pcb-gcode.ulp.
 // Often used options are at the top of the file.
 // Copied to gcode-defaults.h by the setup program.
+
 //
 // author=John Johnson
-// description=EMC
+// description=Mach3 - EMC for Windows
 //
 
 int FILENAMES_8_CHARACTERS = NO;
@@ -12,17 +13,18 @@ int FILENAMES_8_CHARACTERS = NO;
 //
 // Comments.
 //
-string COMMENT_BEGIN  = "(";
-string COMMENT_END    = ")";
+string COMMENT_BEGIN = "(";
+string COMMENT_END   = ")";
 
 // 
 // Format strings for coordinates, etc.
 //
-string FORMAT     = "%-6.4f ";      /* coordinate format */
-string FR_FORMAT  = "F%-5.2f "; 	/* feedrate format */
+string EOL        = "\n";	 	            /* standard line ending */
+string PARAM      = "P";				        /* some use P, some # for parameters */
+string FORMAT     = "%-7.4f ";        /* coordinate format */
+string FR_FORMAT  = "F%-5.0f "; 	  /* feedrate format */
 string IJ_FORMAT  = "I" + FORMAT + "J" + FORMAT;
-string EOL        = "\n";				  		/* standard line ending */
-string PARAM      = "P";							/* some use P, some # for parameters */
+
 //
 // Modes
 //
@@ -37,17 +39,17 @@ string ABSOLUTE_MODE        = COMMENT_BEGIN + "Absolute Coordinates" + COMMENT_E
 //
 // G codes
 //
-string RAPID    = "G00 ";
-string FEED     = "G01 ";
-string ARC_CW   = "G02 ";
-string ARC_CCW  = "G03 ";
-string DWELL    = "G04 " + PARAM + "%f" + EOL;
+string RAPID   = "G00 ";
+string FEED    = "G01 ";
+string ARC_CW  = "G02 ";
+string ARC_CCW = "G03 ";
+string DWELL   = "G04 " + PARAM + "%f" + EOL;
 
 //
 // M codes
 //
-string SPINDLE_ON     = "M03" + EOL + DWELL;
-string SPINDLE_OFF    = "M05" + EOL;
+string SPINDLE_ON  = "M03" + EOL + DWELL;
+string SPINDLE_OFF = "M05" + EOL;
 string END_PROGRAM    = "M02" + EOL;
 string OPERATOR_PAUSE = "M06 ";
 
@@ -86,19 +88,19 @@ string FEED_MOVE_XYZ          = FEED + MOVE_XYZ;
 //
 // G82 Xx.xxx Yy.yyy Z.zzz Fff.f Rr.rrr #dwell
 //
-string DRILL_CODE = "G82 ";
-string RELEASE_PLANE = "R" + FORMAT;
-string DWELL_TIME = PARAM + "%f";
+string DRILL_CODE       = "G82 ";
+string RELEASE_PLANE    = "R" + FORMAT;
+string DWELL_TIME       = PARAM + "%f";
 string DRILL_FIRST_HOLE = DRILL_CODE + MOVE_XYZ + FR_FORMAT + RELEASE_PLANE + DWELL_TIME + EOL;
-string DRILL_HOLE = DRILL_CODE + MOVE_XY + EOL;
+string DRILL_HOLE       = DRILL_CODE + MOVE_XY + EOL;
 
 //
 // Tool change
 //
-string TOOL_CODE = "T%02d ";
-string TOOL_MM_FORMAT = "%1.3fmm";
+string TOOL_CODE        = "T%02d ";
+string TOOL_MM_FORMAT   = "%1.3fmm";
 string TOOL_INCH_FORMAT = "%1.4fin";
-string TOOL_CHANGE = OPERATOR_PAUSE + TOOL_CODE + COMMENT_BEGIN + FORMAT + COMMENT_END + EOL;
+string TOOL_CHANGE      = OPERATOR_PAUSE + TOOL_CODE + " ; " + FORMAT + EOL;
 
 string TOOL_CHANGE_TABLE_HEADER = COMMENT_BEGIN + 
   " Tool|       Size       |  Min Sub |  Max Sub |   Count " + COMMENT_END + EOL;
@@ -106,7 +108,7 @@ string TOOL_CHANGE_TABLE_HEADER = COMMENT_BEGIN +
 string TOOL_CHANGE_TABLE_FORMAT(int tool_number, real size_mm, real size_inch, real min_drill, real max_drill, int count)
 {
   string formatted;
-
+  
   sprintf(formatted, COMMENT_BEGIN + " " + 
     TOOL_CODE + "| " + TOOL_MM_FORMAT + " " +
     TOOL_INCH_FORMAT + " | " + TOOL_INCH_FORMAT + " | " +
@@ -120,6 +122,5 @@ string TOOL_CHANGE_TABLE_FORMAT(int tool_number, real size_mm, real size_inch, r
 //
 // Circles / Arcs
 //
-string CIRCLE_TOP = ARC_CW + MOVE_XY + IJ_FORMAT + EOL;
-string CIRCLE_BOTTOM = ARC_CCW + MOVE_XY + IJ_FORMAT + EOL;
-
+string CIRCLE_TOP     = ARC_CW + MOVE_XY + IJ_FORMAT + EOL;
+string CIRCLE_BOTTOM  = ARC_CCW + MOVE_XY + IJ_FORMAT + EOL;

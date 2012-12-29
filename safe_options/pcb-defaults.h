@@ -7,7 +7,7 @@
 // Changes you make in this file will be overwritten if you use pcb-gcode-setup.
 //
 
-real DEFAULT_ISOLATE = 0.001000;
+real ISO_MIN = 0.001000;
 real ISO_MAX = 0.020000;
 real ISO_STEP = 0.005000;
 

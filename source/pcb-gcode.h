@@ -210,6 +210,17 @@ void get_path()
 
 get_path();
 
+if (g_path == "") {
+  dlgMessageBox("There is a problem with your installation of pcb-gcode.\n" +
+  "You probably need to add the path to pcb-gcode's folder in " +
+  "EAGLE's Control Panel | Options | Directories | User Language Programs.\n"
+  "Please see docs/readme.html");
+  exit(-1);
+}
+else {
+//  dlgMessageBox("g_path = " + g_path);
+}
+
 // This reads the current profile into CURRENT_PROFILE, if available.
 get_current_profile();
  
