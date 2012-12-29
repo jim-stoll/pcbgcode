@@ -11,7 +11,7 @@ PCB_GCODE_VERSION = "3.6.0.2"
 RELEASE_FILE = "~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip"
 
 ignore_files = ['pcb_gcode_is_setup', '*.old', 'storage.nv',
-  'make/*', 'make', 'make/'
+  'make/*', 'make', 'make/',
   '*.b#*', '*.s#*', '*.l#*',
   '*.DS_Store', 'optomize_me.txt',
   '*.svn*',
