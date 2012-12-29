@@ -68,5 +68,5 @@ CLOBBER.include('docs/pcbgcode.aux', 'docs/pcbgcode.glo', 'docs/pcbgcode.gls', '
     'docs/pcbgcode.lot', 'docs/pcbgcode.out', 'docs/pcbgcode.toc'
 )
 
-task :default => [:check_svn, 'docs/pcbgcode.pdf', :fix_viewers, :safe_options, :release_file] do
+task :default => [:check_svn, 'docs/pcbgcode.pdf', :fix_viewers, :safe_options, :write_convert_units, :release_file] do
 end
