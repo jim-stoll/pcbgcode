@@ -6,10 +6,10 @@
 \usepackage{graphicx}
 \usepackage{geometry}
 
-%\usepackage[sc]{mathpazo} 	% Use the Palatino font
-%\usepackage[T1]{fontenc} 		% Use 8-bit encoding that has 256 glyphs
+\usepackage[sc]{mathpazo} 	% Use the Palatino font
+\usepackage[T1]{fontenc} 		% Use 8-bit encoding that has 256 glyphs
 %\linespread{1.05} 			% Line spacing - Palatino needs more space between lines
-%\usepackage{microtype} 		% Slightly tweak font spacing for aesthetics
+\usepackage{microtype} 		% Slightly tweak font spacing for aesthetics
 
 %\usepackage[hmarginratio=1:1,top=32mm,columnsep=20pt]{geometry} % Document margins
 
@@ -55,19 +55,22 @@
 %----------------------------------------------------------------------------------------
 
 \title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{The PCB-GCODE User's Manual}\\[1em]
-\fontsize{18pt}{10pt}\textsc{Version 3.6.0.1}\\[1em]
+\fontsize{18pt}{10pt}\textsc{Version 3.6.0.2}\\[1em]
 }
 
 \author{
 \large
-Copyright \copyright\ 2012\\[1em]
+Copyright \copyright\ 2013\\[1em]
 \textsc{John T. Johnson}\\[2mm] %\thanks{A thank you or further information}\\[2mm] % Your name
 \normalsize \href{mailto:pcbgcode@pcbgcode.org}{\texttt{pcbgcode@pcbgcode.org}} % Your email address
 \vspace{-5mm}
 }
 %\date{} % empty date, since it is shown in the header
 
-\makeglossary
+%\makeglossary
+
+% Adobe bug workoround
+\pdfminorversion=4
 
 %======================================================================
 %======================================================================
@@ -129,6 +132,10 @@ Copyright \copyright\ 2012\\[1em]
 \frontmatter
 
 \maketitle
+
+\section*{About this book}
+
+This book is typeset with \LaTeX{} using the Palatino font.
 
 \tableofcontents
 
@@ -523,6 +530,59 @@ The preview is enabled by turning on the \code{Show preview} option under the \c
 \end{table}
 
 The previewer does not read and interpret the NC files directly, but uses an internal representation of the tool movements. This gives an accurate representation of the tool's movements and size, without the overhead of interpreting several different styles of g-code.
+
+\begin{figure}
+	\center{
+	\includegraphics[width=14cm]{figs/Previewer-Screen-Shot.png}
+	}
+	\caption{The previewer showing a multi-pass file for the bottom side of an example PCB included with pcb-gcode.}
+	\label{fig:PreviewerScreenShot}
+\end{figure}
+
+As can be seen in \figurename~\vref{fig:PreviewerScreenShot}, additional information is provided by the preview. In the upper-left corner is the name of the board file that was processed to produce this preview. At the upper-right, the viewer version number can be found. Just to the left of that is the etching tool size set in pcb-gcode-setup. Just below the version number is the number of passes generated. Back on the left-hand side near the top is an overview of the keys available.
+
+The four extents of the board are marked with red corners. At the upper right corner, the X and Y coordinates are given. The X and Y coordinates are also given at the lower-left corner. Note that in the figure, the X coordinate is negative because this is the bottom of the board. In the lower right corner, a circle and crosshairs mark the origin point for the board.
+
+If the milling and text options are turned on, the previewer will show any files generated for the top and bottom milling and text. Since the Milling (46) layer is not a top or bottom layer (it can be thought of as going through the board), NC files are generated to mill any lines drawn on it from either the top or bottom side. So in other words, if \code{Generate milling} is selected, both top and bottom milling files will be generated. The same for text placed on the Milling layer. If \code{Generate text} is selected, both top and bottom text engraving files will be generated. There is one caveat: if the text is mirrored, it will be output in the bottom milling file. If the text is not mirrored, it will be output in the top milling file. This is similar to the way text placed on the \code{Top} and \code{Bottom} layers looks. The following example will help clarify this.
+
+The example board \code{docs/examples/04151\_lcdi2c.brd} shown in \figurename~\vref{fig:014151Board} includes wires (shown in blue) drawn on the Milling layer, as well as mirrored vector text (also shown in blue) placed on the Milling layer. A prewiew of the bottom milling file is shown in \figurename~\vref{fig:BottomMilling}. A preview of the bottom text engraving file is shown in \figurename~\vref{fig:BottomText}. You can see that the text is oriented properly for engraving on the bottom side of the board. The object info for the text is shown in \figurename~\vref{fig:MirroredTextInfo}.
+
+The top milling file preview looks just like the bottom preview, and is not shown. The top text engraving file was empty since there is no non-mirrored text on the Milling layer, so its preview has also been omitted.
+
+\begin{figure}
+	\center{
+	\includegraphics[width=10cm]{figs/04151_lcdi2c.png}
+	}
+	\caption{The sample board \code{docs/examples/04151\_lcdi2c.brd} with wires and mirrored text on the Milling layer.}
+	\label{fig:014151Board}
+\end{figure}
+
+\begin{figure}
+	\center{
+	\includegraphics[width=10cm]{figs/Bottom-Milling.png}
+	}
+	\caption{Milling generated for milling from the bottom side of \code{docs/examples/04151\_lcdi2c.brd}.}
+	\label{fig:BottomMilling}
+\end{figure}
+
+\begin{figure}
+	\center{
+	\includegraphics[width=10cm]{figs/Bottom-Text.png}
+	}
+	\caption{Text engraving generated for cutting on the bottom side of \code{docs/examples/04151\_lcdi2c.brd}.}
+	\label{fig:BottomText}
+\end{figure}
+
+\clearpage
+
+\begin{figure}
+	\center{
+	\includegraphics[width=8cm]{figs/Mirrored-Text-Info.png}
+	}
+	\caption{The object info for the mirrored text on the Milling layer. Note that the Mirror checkbox is on. This indicates to pcb-gcode that the text should be engraved on the bottom side of the board.}
+	\label{fig:MirroredTextInfo}
+\end{figure}
+
 
 \howitworks{}
 For the curious reader, the previewer is written using a language called \href{http://processing.org}{Processing}, which is somewhat Java-like. Three versions of the previewer are included in pcb-gcode, one for each operating system supported: Mac OS X, Linux, and Windows. When the previewer is enabled, pcb-gcode detects which operating system it is running on, and runs the appropriate viewer.
