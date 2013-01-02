@@ -17,7 +17,8 @@ ignore_files = ['pcb_gcode_is_setup', '*.old', 'storage.nv',
   '*.svn*',
   'docs/pcbgcode.aux', 'docs/pcbgcode.glo', 'docs/pcbgcode.gls', 'docs/pcbgcode.idx',
   'docs/pcbgcode.ilg', 'docs/pcbgcode.ind', 'docs/pcbgcode.lof', 'docs/pcbgcode.log', 
-  'docs/pcbgcode.lot', 'docs/pcbgcode.out', 'docs/pcbgcode.toc'
+  'docs/pcbgcode.lot', 'docs/pcbgcode.out', 'docs/pcbgcode.toc',
+  'docs/figs/*'
 ]
 
 desc "Build the docs/pcbgcode.pdf file."
