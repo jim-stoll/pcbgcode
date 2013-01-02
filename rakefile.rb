@@ -31,9 +31,17 @@ end
 
 desc "Create the .zip file to be released."
 task :release_file do
-  zip_cmd = "cd .. && zip -r ~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip pcb-gcode-#{PCB_GCODE_VERSION}/*"
+  zip_cmd = "rm ../pcb-gcode-#{PCB_GCODE_VERSION}.zip"
+  system(zip_cmd)
+  zip_cmd = "zip -r ../pcb-gcode-#{PCB_GCODE_VERSION}.zip *"
   zip_cmd += ' -x '
   zip_cmd += ignore_files.join(' -x ')
+  system(zip_cmd)
+  zip_cmd = "unzip ../pcb-gcode-#{PCB_GCODE_VERSION} -d pcb-gcode-#{PCB_GCODE_VERSION}"
+  system(zip_cmd)
+  zip_cmd = "rm ~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip"
+  system(zip_cmd)
+  zip_cmd = "zip -r ~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip pcb-gcode-#{PCB_GCODE_VERSION}"
   system(zip_cmd)
 end
 
