@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>README</string>
+	<string>pcb-gcode-setup.ulp</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -26,13 +26,15 @@
 			<key>filename</key>
 			<string>pcb-gcode-setup.ulp</string>
 			<key>lastUsed</key>
-			<date>2012-12-29T02:42:45Z</date>
+			<date>2013-01-08T12:21:04Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>pcb-gcode.ulp</string>
 			<key>lastUsed</key>
-			<date>2012-12-28T20:44:50Z</date>
+			<date>2013-01-08T12:21:04Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -116,15 +118,13 @@
 			<key>filename</key>
 			<string>rakefile.rb</string>
 			<key>lastUsed</key>
-			<date>2012-12-29T03:23:28Z</date>
+			<date>2013-01-02T23:38:17Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>README</string>
 			<key>lastUsed</key>
-			<date>2013-01-02T22:32:34Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2013-01-02T22:44:23Z</date>
 		</dict>
 	</array>
 	<key>fileHierarchyDrawerWidth</key>
@@ -137,6 +137,20 @@
 			<dict>
 				<key>column</key>
 				<integer>28</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
+		<key>docs/changelog.txt</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>19</integer>
 				<key>line</key>
 				<integer>0</integer>
 			</dict>
@@ -166,45 +180,109 @@
 				<key>column</key>
 				<integer>0</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>868</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>71</integer>
+			<integer>834</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>867</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>868</integer>
+			</dict>
+		</dict>
+		<key>pcb-gcode.ulp</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>45</integer>
+				<key>line</key>
+				<integer>1088</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>1035</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>42</integer>
+				<key>line</key>
+				<integer>1088</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>45</integer>
+				<key>line</key>
+				<integer>1088</integer>
+			</dict>
 		</dict>
 		<key>rakefile.rb</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>16</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>34</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>0</integer>
+			<integer>7</integer>
 		</dict>
 		<key>source/pcb-gcode.h</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>74</integer>
+				<integer>0</integer>
 				<key>line</key>
-				<integer>204</integer>
+				<integer>190</integer>
 			</dict>
+			<key>columnSelection</key>
+			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
 			<integer>181</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>28</integer>
+				<key>line</key>
+				<integer>190</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>190</integer>
+			</dict>
 		</dict>
 	</dict>
 	<key>openDocuments</key>
 	<array>
 		<string>pcb-gcode-setup.ulp</string>
+		<string>pcb-gcode.ulp</string>
+		<string>docs/changelog.txt</string>
 		<string>rakefile.rb</string>
 		<string>source/pcb-gcode.h</string>
 		<string>README</string>

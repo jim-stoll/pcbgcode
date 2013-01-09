@@ -186,9 +186,7 @@ void get_path()
   int index = 0;
   string last_g_path;
 
-  // argv[0] is the full path to the ULP that is currently running.
-  // Thanks to MC Cason of the Eagle3D project for pointing this out.
-  g_path = filedir(argv[0]);
+  board(B) g_path = filedir(B.name);
 
   last_g_path = g_path;
   while (g_path > "") {
@@ -202,7 +200,6 @@ void get_path()
     last_g_path = g_path;
   }
 
-  // With the argv[0] change above, the code below should never be reached.
   while (path_ulp[index] != "" && index < 10) {
     if(filetime(path_ulp[index] + "/source/pcb-gcode.h")) {
       g_path = path_ulp[index];
