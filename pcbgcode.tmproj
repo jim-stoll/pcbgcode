@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>pcb-gcode-setup.ulp</string>
+	<string>rakefile.rb</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -26,15 +26,13 @@
 			<key>filename</key>
 			<string>pcb-gcode-setup.ulp</string>
 			<key>lastUsed</key>
-			<date>2013-01-08T12:21:04Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2013-01-17T03:04:58Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>pcb-gcode.ulp</string>
 			<key>lastUsed</key>
-			<date>2013-01-08T12:21:04Z</date>
+			<date>2013-01-17T03:05:09Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -118,7 +116,9 @@
 			<key>filename</key>
 			<string>rakefile.rb</string>
 			<key>lastUsed</key>
-			<date>2013-01-02T23:38:17Z</date>
+			<date>2013-01-17T03:13:04Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -150,9 +150,9 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>19</integer>
+				<integer>65</integer>
 				<key>line</key>
-				<integer>0</integer>
+				<integer>3</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
@@ -178,74 +178,42 @@
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>0</integer>
+				<integer>31</integer>
 				<key>line</key>
-				<integer>868</integer>
+				<integer>204</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>834</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>867</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>0</integer>
-				<key>line</key>
-				<integer>868</integer>
-			</dict>
+			<integer>183</integer>
 		</dict>
 		<key>pcb-gcode.ulp</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>45</integer>
+				<integer>21</integer>
 				<key>line</key>
-				<integer>1088</integer>
+				<integer>23</integer>
 			</dict>
-			<key>columnSelection</key>
-			<false/>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>1035</integer>
-			<key>selectFrom</key>
-			<dict>
-				<key>column</key>
-				<integer>42</integer>
-				<key>line</key>
-				<integer>1088</integer>
-			</dict>
-			<key>selectTo</key>
-			<dict>
-				<key>column</key>
-				<integer>45</integer>
-				<key>line</key>
-				<integer>1088</integer>
-			</dict>
+			<integer>2</integer>
 		</dict>
 		<key>rakefile.rb</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>16</integer>
+				<integer>76</integer>
 				<key>line</key>
-				<integer>34</integer>
+				<integer>43</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>7</integer>
+			<integer>41</integer>
 		</dict>
 		<key>source/pcb-gcode.h</key>
 		<dict>
@@ -265,7 +233,7 @@
 			<key>selectFrom</key>
 			<dict>
 				<key>column</key>
-				<integer>28</integer>
+				<integer>23</integer>
 				<key>line</key>
 				<integer>190</integer>
 			</dict>

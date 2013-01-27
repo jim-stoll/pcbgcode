@@ -21,7 +21,7 @@
 #include "source/filename_subs.h"
 
 #usage "<center><b>pcb-gcode&trade; Gcode Generation Utility</b><br>"
-			 " Version 3.6.0.2<p>"
+			 " Version 3.6.0.4<p>"
 			 "Copyright&copy; 2004 - 2013 by John Johnson Software, LLC<br>"
 			 "All Rights Reserved</center>"
        "<p>"

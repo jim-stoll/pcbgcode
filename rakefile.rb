@@ -6,7 +6,7 @@ require 'pp'
 require 'rake/clean'
 
 # this will be improved later
-PCB_GCODE_VERSION = "3.6.0.3"
+PCB_GCODE_VERSION = "3.6.0.4"
 
 RELEASE_FILE = "~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip"
 
@@ -37,11 +37,11 @@ task :release_file do
   zip_cmd += ' -x '
   zip_cmd += ignore_files.join(' -x ')
   system(zip_cmd)
-  zip_cmd = "unzip ../pcb-gcode-#{PCB_GCODE_VERSION} -d pcb-gcode-#{PCB_GCODE_VERSION}"
+  zip_cmd = "unzip ../pcb-gcode-#{PCB_GCODE_VERSION} -d ../pcb-gcode-#{PCB_GCODE_VERSION}"
   system(zip_cmd)
   zip_cmd = "rm ~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip"
   system(zip_cmd)
-  zip_cmd = "zip -r ~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip pcb-gcode-#{PCB_GCODE_VERSION}"
+  zip_cmd = "cd .. && zip -r ~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip pcb-gcode-#{PCB_GCODE_VERSION}"
   system(zip_cmd)
 end
 

@@ -1,3 +1,11 @@
+3.6.0.4	16-Jan-2013 John
+Forgot to bump version numbers in ULPs.
+Forgot to update changelog.txt.
+I think the rakefile is finally creating the .zip file correctly.
+
+3.6.0.3	John
+Went back to the old way of determining the path after the new way crashed and burned on Windows if there were spaces in the path (which is nearly always).
+
 3.6.0.2	02-Jan-2013 John
 Moved pcbgcode.pdf and pcbgcode.tex into the docs folder.
 Removed old documentation.

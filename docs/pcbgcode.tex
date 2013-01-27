@@ -18,6 +18,9 @@
 	pdftitle={The PCB-GCODE User's Manual},%
 	pdfsubject={pcb-gcode mechanically etching printed circuit boards},%
 	pdfkeywords={pcb-gcode}{g-code}{pcb}{cnc}{etching},%
+	colorlinks=true,%
+	linkcolor=gray,%
+	urlcolor=gray%
 ]{hyperref} 		% For hyperlinks in the PDF
 
 \usepackage[hang, small,labelfont=bf,up,textfont=it,up]{caption} % Custom captions under/above floats in tables or figures
@@ -44,7 +47,7 @@
 
 \usepackage[section]{placeins}
 
-\usepackage{draftwatermark}
+%\usepackage{draftwatermark}
 
 \usepackage{makeidx}
 \makeindex
@@ -55,7 +58,7 @@
 %----------------------------------------------------------------------------------------
 
 \title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{The PCB-GCODE User's Manual}\\[1em]
-\fontsize{18pt}{10pt}\textsc{Version 3.6.0.3}\\[1em]
+\fontsize{18pt}{10pt}\textsc{Version 3.6.0.4}\\[1em]
 }
 
 \author{
@@ -133,9 +136,30 @@ Copyright \copyright\ 2013\\[1em]
 
 \maketitle
 
+%
+%---------------------------------------------------------------------
+%
 \section*{About this book}
 
-This book is typeset with \LaTeX{} using the Palatino font.
+This book is typeset with \href{http://en.wikipedia.org/wiki/LaTeX}{\LaTeX{}} using the Computer Modern and Palatino fonts.
+\vspace{1ex}
+
+\noindent The \LaTeX{} distribution used is \href{http://tug.org/mactex/}{MacTeX}. The editor is \href{http://texpadapp.com}{Texpad} for \href{http://www.apple.com/osx/}{Mac OS X} and \href{http://www.apple.com/ios/}{iOS}. When doing academic writing, I use \href{http://bibdesk.sourceforge.net}{BibDesk} on Mac OS X and \href{https://itunes.apple.com/us/app/pocketbib-for-bibtex-bibdesk/id524521749?mt=8}{PocketBib} on iOS.
+\vspace{1ex}
+
+\noindent Some words, such as MacTeX in the previous paragraph, are links to websites. In this manual, all links are colored gray. The reader will note that other words are links to figures, tables, or sections in this manual. These are also colored gray. The reader may click these links to jump to the linked item.
+\vspace{1ex}
+
+\noindent Throughout this book there are icons in the margins that will help the reader navigate the book and find material at an appropriate skill level. These icons are shown below.
+\vspace{5ex}
+
+\howitworks{} \noindent Sections marked with this icon provide background on the operation of pcb-gcode. This information is for curious users and can safely be skipped.
+\vspace{10ex}
+
+%\information{} \noindent Information.
+%\vspace{10ex}
+
+\warning{} \noindent Some parts of the manual are for intermediate or advanced users. This icon alerts the reader to this fact.
 
 \tableofcontents
 
@@ -810,30 +834,92 @@ T06	0.085in		0.070in	0.125in	1.5in
 \warning{Advanced}
 The pcb−gcode ULP allows you to customize the g−code created for your boards to a great degree. If you don't see an option in the profile that suits your needs, you can add your code to the \code{user-gcode.h} file. To enable user g-code, run \code{pcb-gcode-setup}, click the \code{GCode Options} tab, then turn the \code{Use user gcode...} option on. Generate a set of NC files for a board. Let's say, for example, that after you change the tool when you're drilling from the bottom of the board, you want the tool to move to X5 Y5 Z5, turn the spindle off, then turn it back on. Since this has to do with drilling the bottom of the board, we should look at the ...bot.drill.tap (bottom drill) file. An excerpt from a file is shown in Listing \vref{lst:BottomDrillBeforeGCode}.
 
-\begin{lstlisting}[caption={Bottom drill file before adding user g-code.},label={lst:BottomDrillBeforeGCode}]G90(Tool Change Begin)(Bottom Tool Change Begin)M05G00 X0.0000 Y0.0000 Z2.0000M06 T01  ; 0.0236(Bottom Tool changed)(Tool changed)G00 Z0.0200M03G04 P3.000000(Bottom Tool Change End)(Tool Change End)G82 X−1.6200 Y1.2900 Z−0.1000 F9.80  R0.0200 P0.250000G82 X−1.8800 Y0.5900G82 X−1.9500 Y1.4900G82 X−1.9500 Y1.8100
+\begin{lstlisting}[caption={Bottom drill file before adding user g-code.},label={lst:BottomDrillBeforeGCode}]
+G90
+(Tool Change Begin)
+(Bottom Tool Change Begin)
+M05
+G00 X0.0000 Y0.0000 Z2.0000
+M06 T01  ; 0.0236
+(Bottom Tool changed)
+(Tool changed)
+G00 Z0.0200
+M03
+G04 P3.000000
+(Bottom Tool Change End)
+(Tool Change End)
+G82 X−1.6200 Y1.2900 Z−0.1000 F9.80  R0.0200 P0.250000
+G82 X−1.8800 Y0.5900
+G82 X−1.9500 Y1.4900
+G82 X−1.9500 Y1.8100
 \end{lstlisting}
-We want to add our commands after the tool is changed when drilling the bottom of the board. Looking at the sample above, you will find this line:
-\begin{lstlisting}[firstnumber=12](Bottom Tool Change End)
-\end{lstlisting}
-That's where we want our code to go. Now you can open user-gcode.h in your favorite editor, and use the Search or Find feature to find the line with Bottom Tool Change End. Here's an excerpt from the user−gcode.h file:
 
-\begin{lstlisting}TOOL_ZERO_BEGIN[BOTTOM]	= "(Bottom Tool zero begin)\n";
-TOOL_ZERO_END[BOTTOM]	= "(Bottom Tool zero end)\n";TOOL_CHANGE_END[BOTTOM]	= "(Bottom Tool Change End)\n";TOOL_CHANGE_BEGIN[TOP]	= "(Top Tool Change Begin)\n";\end{lstlisting}The 3$^{rd}$ line is the one we're interested in:
-\begin{lstlisting}[firstnumber=3]TOOL_CHANGE_END[BOTTOM]   = "(Bottom Tool Change End)\n";
+We want to add our commands after the tool is changed when drilling the bottom of the board. Looking at the sample above, you will find this line:
+\begin{lstlisting}[firstnumber=12]
+(Bottom Tool Change End)
+\end{lstlisting}
+
+That's where we want our code to go. Now you can open user-gcode.h in your favorite editor, and use the Search or Find feature to find the line with Bottom Tool Change End. Here's an excerpt from the user−gcode.h file:
+
+\begin{lstlisting}
+TOOL_ZERO_BEGIN[BOTTOM]	= "(Bottom Tool zero begin)\n";
+TOOL_ZERO_END[BOTTOM]	= "(Bottom Tool zero end)\n";
+TOOL_CHANGE_END[BOTTOM]	= "(Bottom Tool Change End)\n";
+TOOL_CHANGE_BEGIN[TOP]	= "(Top Tool Change Begin)\n";
+\end{lstlisting}
+The 3$^{rd}$ line is the one we're interested in:
+\begin{lstlisting}[firstnumber=3]
+TOOL_CHANGE_END[BOTTOM]   = "(Bottom Tool Change End)\n";
 \end{lstlisting}
 Change the line so that it looks like this:
-\begin{lstlisting}[firstnumber=3]TOOL_CHANGE_END[BOTTOM] = "(Bottom Tool Change End)\n"                          "G00 X5 Y5 Z5\n"                          "M05 (spindle off)\n"                          "G04 P3.000000 (wait 3 seconds)\n"                          "M03 (spindle on)\n";                          "G04 P3.000000 (wait 3 more seconds\n";
+\begin{lstlisting}[firstnumber=3]
+TOOL_CHANGE_END[BOTTOM] = "(Bottom Tool Change End)\n"
+                          "G00 X5 Y5 Z5\n"
+                          "M05 (spindle off)\n"
+                          "G04 P3.000000 (wait 3 seconds)\n"
+                          "M03 (spindle on)\n";
+                          "G04 P3.000000 (wait 3 more seconds\n";
 \end{lstlisting}
-Notice that all the lines have a \lstinline!\n! before the last \lstinline!"! and that the last line is the only one that ends with a semi−colon \lstinline!;!.Generate the files again. Open the bottom drill file in the editor and have a look. Here's how the sample looks now:
+
+Notice that all the lines have a \lstinline!\n! before the last \lstinline!"! and that the last line is the only one that ends with a semi−colon \lstinline!;!.
+Generate the files again. Open the bottom drill file in the editor and have a look. Here's how the sample looks now:
 \begin{lstlisting}
-G90(Tool Change Begin)(Bottom Tool Change Begin)M05G00 X0.0000 Y0.0000 Z2.0000M06 T01  ; 0.0236(Bottom Tool changed)(Tool changed)G00 Z0.0200M03G04 P3.000000(Bottom Tool Change End)G00 X5 Y5 Z5M05 (spindle off)G04 P3.000000 (wait 3 seconds)M03 (spindle on)
-G04 P3.000000 (wait 3 more seconds)(Tool Change End)G82 X−1.6200 Y1.2900 Z−0.1000 F9.80  R0.0200 P0.250000G82 X−1.8800 Y0.5900G82 X−1.9500 Y1.4900G82 X−1.9500 Y1.8100
-\end{lstlisting}Note that the lines added to the user-gcode.h file are now in the generated g-code from lines 13-17.
-Since we put our code in the \lstinline!TOOL_CHANGE_END[BOTTOM]! definition, it will only be put in files for the bottom side of the board. So the code will be in the bot.drill file. If we only wanted our code in files for the top side, we would have put the code in \lstinline!TOOL_CHANGE_END[TOP]!. You can probably guess that if we wanted the code in both the top and bottom files, we would have put the code in \lstinline!TOOL_CHANGE_END[TOOL_CHANGE_END[ALL]!.To conclude, the steps to follow are:
+G90
+(Tool Change Begin)
+(Bottom Tool Change Begin)
+M05
+G00 X0.0000 Y0.0000 Z2.0000
+M06 T01  ; 0.0236
+(Bottom Tool changed)
+(Tool changed)
+G00 Z0.0200
+M03
+G04 P3.000000
+(Bottom Tool Change End)
+G00 X5 Y5 Z5
+M05 (spindle off)
+G04 P3.000000 (wait 3 seconds)
+M03 (spindle on)
+G04 P3.000000 (wait 3 more seconds)
+(Tool Change End)
+G82 X−1.6200 Y1.2900 Z−0.1000 F9.80  R0.0200 P0.250000
+G82 X−1.8800 Y0.5900
+G82 X−1.9500 Y1.4900
+G82 X−1.9500 Y1.8100
+\end{lstlisting}
+Note that the lines added to the user-gcode.h file are now in the generated g-code from lines 13-17.
+
+Since we put our code in the \lstinline!TOOL_CHANGE_END[BOTTOM]! definition, it will only be put in files for the bottom side of the board. So the code will be in the bot.drill file. If we only wanted our code in files for the top side, we would have put the code in \lstinline!TOOL_CHANGE_END[TOP]!. You can probably guess that if we wanted the code in both the top and bottom files, we would have put the code in \lstinline!TOOL_CHANGE_END[TOOL_CHANGE_END[ALL]!.
+To conclude, the steps to follow are:
 \begin{enumerate}
 
-\item Generate a set of files.\item Find the file that you want the code to be put in (bot, top, etc.).
-\item Find the location in the file that you want the code.\item Find the comment near that location.\item Find the comment in the user−gcode.h file.\item Insert your code after the comment.\item Generate the files again and check to be sure it is correct.
+\item Generate a set of files.
+\item Find the file that you want the code to be put in (bot, top, etc.).
+\item Find the location in the file that you want the code.
+\item Find the comment near that location.
+\item Find the comment in the user−gcode.h file.
+\item Insert your code after the comment.
+\item Generate the files again and check to be sure it is correct.
 \end{enumerate}
 
 %
