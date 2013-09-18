@@ -58,7 +58,7 @@
 %----------------------------------------------------------------------------------------
 
 \title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{The PCB-GCODE User's Manual}\\[1em]
-\fontsize{18pt}{10pt}\textsc{Version 3.6.0.4}\\[1em]
+\fontsize{18pt}{10pt}\textsc{Version 3.6.0.5}\\[1em]
 }
 
 \author{
@@ -116,7 +116,7 @@ Copyright \copyright\ 2013\\[1em]
 
   
 \setlength{\marginparwidth}{1.0in}
-\setlength{\marginparsep}{2em}
+\setlength{\marginparsep}{1em}
 
 
 \newcommand{\code}[1]{\texttt{#1}}
@@ -147,19 +147,40 @@ This book is typeset with \href{http://en.wikipedia.org/wiki/LaTeX}{\LaTeX{}} us
 \noindent The \LaTeX{} distribution used is \href{http://tug.org/mactex/}{MacTeX}. The editor is \href{http://texpadapp.com}{Texpad} for \href{http://www.apple.com/osx/}{Mac OS X} and \href{http://www.apple.com/ios/}{iOS}. When doing academic writing, I use \href{http://bibdesk.sourceforge.net}{BibDesk} on Mac OS X and \href{https://itunes.apple.com/us/app/pocketbib-for-bibtex-bibdesk/id524521749?mt=8}{PocketBib} on iOS.
 \vspace{1ex}
 
-\noindent Some words, such as MacTeX in the previous paragraph, are links to websites. In this manual, all links are colored gray. The reader will note that other words are links to figures, tables, or sections in this manual. These are also colored gray. The reader may click these links to jump to the linked item.
+\noindent Some words, such as MacTeX in the previous paragraph, are links to websites. In this manual, all links are colored gray. The reader will note that other words are links to figures, tables, or sections in this manual. These are also colored gray.
 \vspace{1ex}
 
 \noindent Throughout this book there are icons in the margins that will help the reader navigate the book and find material at an appropriate skill level. These icons are shown below.
-\vspace{5ex}
+\vspace{1ex}
 
 \howitworks{} \noindent Sections marked with this icon provide background on the operation of pcb-gcode. This information is for curious users and can safely be skipped.
-\vspace{10ex}
+\vspace{7ex}
 
 %\information{} \noindent Information.
 %\vspace{10ex}
 
 \warning{} \noindent Some parts of the manual are for intermediate or advanced users. This icon alerts the reader to this fact.
+
+\vspace{2ex}
+
+\section*{Supporters}
+
+\noindent There is a great community that has built up around pcb-gcode where users freely offer advice and help solve problems for other users. Despite the fact that pcb-gcode has always been free and always will be, a few outstanding individuals have donated time or money (which goes towards paying for web hosting for \url{pcbgcode.org}). Your generosity warms my heart, and I thank you all!
+
+\begin{itemize}
+	\item Art Eckstein is the tireless moderator of the Yahoo! group.
+	\item Translations
+	\begin{itemize}
+		\item Maur\'icio Dias --- Portugu\^ese
+		\item Wolfgang Schmidt --- German
+	\end{itemize}
+	\item{Monetary Donations (If I missed you, \emph{please} let me know.) }
+	\begin{itemize}
+	    \small
+		\item Anonymous (2007), Greg Brill, Paul Kiedrowski, Steven Manzer, Barry Ward, Ward Elder, Art Eckstein, World of ElectroMechanica, Austin Valley Software Corporation, webstudio.co.uk
+	\end{itemize}
+\end{itemize}
+
 
 \tableofcontents
 
@@ -260,14 +281,13 @@ Compared to the isolation passes and files, drill file creation is relatively st
 \section{EAGLE compatibility}\label{sec:EAGLECompatibility}\index{eagle!compatibility}
 
 Pcb-gcode is compatible with EAGLE versions 5 and 6\footnote{CadSoft changed the way numbers were represented internally with their release of version 6. This effectively broke parts of pcb-gcode. Version 3.6 incorporates changes for compatibility with version 5 or 6.}. For versions of EAGLE before version 5, pcb-gcode version 3.3.3 is still available \href{http://groups.yahoo.com/group/pcb-gcode/files/\%21\%20Software/pcb-gcode-3.3.3.zip}{in the Yahoo! group}. This manual does not apply to version 3.3.3. Please see the documentation included with version 3.3.3.
-
 %
 %---------------------------------------------------------------------
 %
 \section{Installation}\label{sec:Installation}\index{installation}
 
 \subsection{Downloading and unarchiving}
-Pcb-gcode can be downloaded from the Yahoo! group's \href{http://groups.yahoo.com/group/pcb-gcode/files/\%21\%20Software}{software folder}. \index{download site} Unzip the archive into a place where the operating system will allow files to be saved. For Windows, this should be somewhere inside your Documents folder. For Mac OS X, it could be, for instance, \code{\textasciitilde/Documents/Eagle/pcbgcode}, and for Linux, somewhere off your home folder. Be sure to preserve the directory structure in the archive. See \figurename \vref{fig:folderstructure}.
+Pcb-gcode can be downloaded from the Yahoo! group's \href{http://groups.yahoo.com/group/pcb-gcode/files/\%21\%20Software}{software folder}. \index{download site} Unzip the archive into a place where the operating system will allow files to be saved. For Windows, this should be somewhere inside your Documents\footnote{For Windows XP: "C:\textbackslash{}Documents and Settings", for Windows 7: "C:\textbackslash{}Users\textbackslash{}[yourname]\textbackslash{}My Documents" } folder. For Mac OS X, it could be, for instance, \code{\textasciitilde/Documents/Eagle/pcbgcode}, and for Linux, somewhere off your home folder. Be sure to preserve the directory structure in the archive. See \figurename \vref{fig:folderstructure}.
 
 \begin{figure}
 	\center{
@@ -276,6 +296,9 @@ Pcb-gcode can be downloaded from the Yahoo! group's \href{http://groups.yahoo.co
 	\caption{The proper directory structure after uncompressing the archive.}
 	\label{fig:folderstructure}
 \end{figure}
+
+\subsubsection{Windows Note}
+Note that if you are using Windows, odd things might happen if you install pcb-gcode outside the Documents folder. This is due to \href{http://en.wikipedia.org/wiki/Windows_File_Protection}{Windows File Protection} or \href{http://en.wikipedia.org/wiki/Windows_Resource_Protection}{Windows Resource Protection}, which try to keep files outside the Documents folder from being changed. This could result in, for instance, the previewer always showing the same preview. If you install outside the Documents folder and have trouble, try installing under your folder inside Documents. \index{Windows File Protection}
 
 \subsection{Configuring EAGLE}
 Now that pcb-gcode is uncompressed, Eagle must know where it is located. In Eagle's \code{Control Panel}, click \code{Options $|$ Directories}, then put the path to pcb-gcode in the \code{User Language Programs} field. See \figurename \vref{fig:EagleOptionsDirectories}.
@@ -310,6 +333,14 @@ You will receive the warning shown in \figurename \vref{fig:GcodeDefaultsWarning
 \end{figure}
 
 After clicking Yes, \code{pcb-gcode-setup} will be run again, and you will see the screen shown in \figurename \vref{fig:SetupGenerationOptions}.
+
+\subsection{Previewer Setup}
+
+The previewer (See section \vref{sec:Previewer}) is written in \href{http://www.processing.org}{Processing} and requires javaw.exe to run. You can download a Java runtime environment (JRE) at \href{http://www.java.com}{java.com}. You will find installation instructions there. \index{javaw.exe}\index{Java}
+
+If you choose not to use the previewer, simply turn it off. See \figurename \vref{fig:SetupGenerationOptions}.
+
+
 
 %
 %---------------------------------------------------------------------

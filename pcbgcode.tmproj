@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>currentDocument</key>
-	<string>rakefile.rb</string>
+	<string>pcb-gcode.ulp</string>
 	<key>documents</key>
 	<array>
 		<dict>
@@ -26,13 +26,15 @@
 			<key>filename</key>
 			<string>pcb-gcode-setup.ulp</string>
 			<key>lastUsed</key>
-			<date>2013-01-17T03:04:58Z</date>
+			<date>2013-06-07T23:00:31Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
 			<string>pcb-gcode.ulp</string>
 			<key>lastUsed</key>
-			<date>2013-01-17T03:05:09Z</date>
+			<date>2013-06-07T23:00:31Z</date>
+			<key>selected</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -55,6 +57,8 @@
 			<string>plugins</string>
 		</dict>
 		<dict>
+			<key>expanded</key>
+			<true/>
 			<key>name</key>
 			<string>profiles</string>
 			<key>regexFolderFilter</key>
@@ -71,6 +75,8 @@
 			<string>safe_options</string>
 		</dict>
 		<dict>
+			<key>expanded</key>
+			<true/>
 			<key>name</key>
 			<string>settings</string>
 			<key>regexFolderFilter</key>
@@ -116,9 +122,7 @@
 			<key>filename</key>
 			<string>rakefile.rb</string>
 			<key>lastUsed</key>
-			<date>2013-01-17T03:13:04Z</date>
-			<key>selected</key>
-			<true/>
+			<date>2013-06-07T23:00:10Z</date>
 		</dict>
 		<dict>
 			<key>filename</key>
@@ -159,6 +163,50 @@
 			<key>firstVisibleLine</key>
 			<integer>0</integer>
 		</dict>
+		<key>docs/examples/04151_lcdi2c.bot.drill.tap</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>35</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>20</integer>
+				<key>line</key>
+				<integer>35</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>35</integer>
+			</dict>
+		</dict>
+		<key>docs/examples/04151_lcdi2c.bot.etch.tap</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
+		</dict>
 		<key>make/write_convert_units.rb</key>
 		<dict>
 			<key>caret</key>
@@ -185,7 +233,7 @@
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>183</integer>
+			<integer>178</integer>
 		</dict>
 		<key>pcb-gcode.ulp</key>
 		<dict>
@@ -201,19 +249,77 @@
 			<key>firstVisibleLine</key>
 			<integer>2</integer>
 		</dict>
+		<key>profiles/mach.pp</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>32</integer>
+			</dict>
+			<key>columnSelection</key>
+			<false/>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>16</integer>
+			<key>selectFrom</key>
+			<dict>
+				<key>column</key>
+				<integer>42</integer>
+				<key>line</key>
+				<integer>32</integer>
+			</dict>
+			<key>selectTo</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>32</integer>
+			</dict>
+		</dict>
 		<key>rakefile.rb</key>
 		<dict>
 			<key>caret</key>
 			<dict>
 				<key>column</key>
-				<integer>76</integer>
+				<integer>28</integer>
 				<key>line</key>
-				<integer>43</integer>
+				<integer>8</integer>
 			</dict>
 			<key>firstVisibleColumn</key>
 			<integer>0</integer>
 			<key>firstVisibleLine</key>
-			<integer>41</integer>
+			<integer>0</integer>
+		</dict>
+		<key>settings/gcode-defaults.h</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>24</integer>
+		</dict>
+		<key>settings/user-gcode.h</key>
+		<dict>
+			<key>caret</key>
+			<dict>
+				<key>column</key>
+				<integer>0</integer>
+				<key>line</key>
+				<integer>0</integer>
+			</dict>
+			<key>firstVisibleColumn</key>
+			<integer>0</integer>
+			<key>firstVisibleLine</key>
+			<integer>0</integer>
 		</dict>
 		<key>source/pcb-gcode.h</key>
 		<dict>
@@ -252,6 +358,11 @@
 		<string>pcb-gcode.ulp</string>
 		<string>docs/changelog.txt</string>
 		<string>rakefile.rb</string>
+		<string>profiles/mach.pp</string>
+		<string>settings/gcode-defaults.h</string>
+		<string>docs/examples/04151_lcdi2c.bot.drill.tap</string>
+		<string>docs/examples/04151_lcdi2c.bot.etch.tap</string>
+		<string>settings/user-gcode.h</string>
 		<string>source/pcb-gcode.h</string>
 		<string>README</string>
 		<string>make/write_convert_units.rb</string>
@@ -259,6 +370,6 @@
 	<key>showFileHierarchyDrawer</key>
 	<true/>
 	<key>windowFrame</key>
-	<string>{{339, 83}, {957, 795}}</string>
+	<string>{{435, 83}, {957, 795}}</string>
 </dict>
 </plist>
