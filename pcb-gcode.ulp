@@ -281,7 +281,8 @@ void drill(int which_side, string suffix)
 					rxy(TOOL_CHANGE_POS_X, TOOL_CHANGE_POS_Y);
 					out(fir(TOOL_CHANGE, get_tool_num_for(my_strtol(drill_args[DRILL_SIZE]), m_current_tool), drill_size));
 					output_tool_changed();
-
+					
+					// Output zero steps and a pause
 					if (DO_TOOL_CHANGE_WITH_ZERO_STEP == YES) {
 						output_tool_zero_begin();
 						fzr(0.000, FEED_RATE_Z);
