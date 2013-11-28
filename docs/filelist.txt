@@ -1,6 +1,0 @@
-pcb-gcode.ulp
-pcb-gcode.h
-pcb-defaults.h
-gcode-defaults.h
-readme.txt
-filelist.txt

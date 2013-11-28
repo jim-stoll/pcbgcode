@@ -185,6 +185,7 @@ void get_path()
 {
   int index = 0;
   string last_g_path;
+
   board(B) g_path = filedir(B.name);
 
   last_g_path = g_path;
@@ -199,7 +200,7 @@ void get_path()
     last_g_path = g_path;
   }
 
-  while (path_ulp[index] != "") {
+  while (path_ulp[index] != "" && index < 10) {
     if(filetime(path_ulp[index] + "/source/pcb-gcode.h")) {
       g_path = path_ulp[index];
       return;
