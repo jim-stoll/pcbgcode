@@ -265,6 +265,10 @@ void drill(int which_side, string suffix)
 				drill_y = scale_y(my_strtol(drill_args[DRILL_Y]));
 				save_extents(drill_x, drill_y);
 
+        //
+        // Check to see if the drill size has changed,
+        // if so, output a tool change and optional zero code.
+        //
 				if (drill_size == last_size) {
 					output_drill_hole(drill_x, drill_y, DRILL_DEPTH);
 				}
@@ -281,8 +285,7 @@ void drill(int which_side, string suffix)
 					if (DO_TOOL_CHANGE_WITH_ZERO_STEP == YES) {
 						output_tool_zero_begin();
 						fzr(0.000, FEED_RATE_Z);
-						// fixme: wondering about the following line
-						out(fir(TOOL_CHANGE, m_current_tool, drill_size));
+						out(OPERATOR_PAUSE + EOL);
 						output_tool_zero_end();
 					}
 
