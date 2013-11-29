@@ -717,6 +717,7 @@ void output_mill_code(string file_name)
 {
 	int state;
 	int old_x, old_y;
+	int first_run = true;
 
 	board(B) {
 		output(get_filename(), "wt") {
@@ -732,11 +733,12 @@ void output_mill_code(string file_name)
 				// If this is a mill layer, check if we should continue
 				// a line, or start a new one.
 				if (P.layer == MILL_LAYER) {
-					if (P.x1 == old_x && P.y1 == old_y) {
+					if (P.x1 == old_x && P.y1 == old_y && !first_run) {
 						state = ST_CONTINUE_LINE;
 					}
 					else {
 						state = ST_START_LINE;
+						first_run = false;
 					}
 
 					// if this is an arc, it is treated specially.
