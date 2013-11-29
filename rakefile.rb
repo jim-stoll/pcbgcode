@@ -6,7 +6,7 @@ require 'pp'
 require 'rake/clean'
 
 # this will be improved later
-PCB_GCODE_VERSION = "3.6.0.5"
+PCB_GCODE_VERSION = "3.6.1"
 
 RELEASE_FILE = "~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip"
 
@@ -66,17 +66,14 @@ task :write_convert_units do
   system("make/write_convert_units.rb")
 end
 
-desc "Be sure the build isn't happening from a working svn directory."
-task :check_svn do
-  if File.exist?('.svn')
-    abort("Cannot build with .svn files present.")
-  end
-end
-
-CLOBBER.include('docs/pcbgcode.aux', 'docs/pcbgcode.glo', 'docs/pcbgcode.gls', 'docs/pcbgcode.idx',
+CLEAN.include('docs/pcbgcode.aux', 'docs/pcbgcode.glo', 'docs/pcbgcode.gls', 'docs/pcbgcode.idx',
     'docs/pcbgcode.ilg', 'docs/pcbgcode.ind', 'docs/pcbgcode.lof', 'docs/pcbgcode.log', 
     'docs/pcbgcode.lot', 'docs/pcbgcode.out', 'docs/pcbgcode.toc'
 )
 
-task :default => [:check_svn, 'docs/pcbgcode.pdf', :fix_viewers, :safe_options, :write_convert_units, :release_file] do
+CLOBBER.include("~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip", "../pcb-gcode-#{PCB_GCODE_VERSION}",
+    "../pcb-gcode-#{PCB_GCODE_VERSION}.zip"
+)
+
+task :default => ['docs/pcbgcode.pdf', :fix_viewers, :safe_options, :write_convert_units, :release_file] do
 end
