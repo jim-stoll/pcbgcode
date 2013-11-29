@@ -38,6 +38,10 @@ void stack_push(string astring) {
 	g_stack[g_stack_ndx++] = astring;
 }
 
+void stack_put(int n, string astring) {
+  g_stack[n] = astring;
+}
+
 string stack_elem(int n) {
   return g_stack[n];
 }
@@ -55,10 +59,17 @@ int stack_fwd_iter() {
 	return g_fwd_iter;
 }
 
+int past_end_of_stack(int n) {
+  if (n > (g_stack_ndx - 1))
+    return END_OF_STACK;
+  return !END_OF_STACK;
+}
+
 int stack_fwd_next() {
 	if (g_fwd_iter == END_OF_STACK)
 		return END_OF_STACK;
-	if (g_fwd_iter < (g_stack_ndx - 1)) {
+//	if (g_fwd_iter < (g_stack_ndx - 1)) {
+  if (!past_end_of_stack(g_fwd_iter)) {
 		return ++g_fwd_iter;
 	}
 	g_fwd_iter = END_OF_STACK;
