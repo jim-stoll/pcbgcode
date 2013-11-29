@@ -269,6 +269,7 @@ void begin_gcode(void)
 	out(get_mode());
 
 	out(ABSOLUTE_MODE);
+	rz(DEFAULT_Z_HIGH);
 	rxy(X_HOME, Y_HOME);
 	out(fr(SPINDLE_ON, SPINDLE_ON_TIME));
 }
