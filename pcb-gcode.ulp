@@ -181,34 +181,6 @@ real distance(real x1, real y1, real x2, real y2) {
   return (sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)));
 }
 
-real total_distance() {
-	real drill_size;
-	real drill_x;
-	real drill_y;
-  string drill_args[];
-  real last_x = 0.0;
-  real last_y = 0.0;
-  real last_size = -1;
-  real total = 0.0;
-  
-  for (int i = 0; i < stack_count(); i++) {
-		strsplit(drill_args, stack_elem(i), '\t');
-		drill_size = units(my_strtol(drill_args[DRILL_SIZE]));
-		drill_x = scale_x(my_strtol(drill_args[DRILL_X]));
-		drill_y = scale_y(my_strtol(drill_args[DRILL_Y]));
-		if (drill_size != last_size) {
-		  last_size = drill_size;
-		  last_x = 0;
-		  last_y = 0;
-		}
-		total += distance(last_x, last_y, drill_x, drill_y);
-		last_x = drill_x;
-		last_y = drill_y;
-		last_size = drill_size;
-  }
-  return total;
-}
-
 // 
 // Sorts a stack of drills in g_stack by distance from last hole.
 //
@@ -232,30 +204,8 @@ void pythagorean_sort() {
   real before_distance;
   real after_distance;
 
-  string s;
-  string msg;
-  
   // Sort by size, x, then y
   stack_sort();
-  
-  before_distance = total_distance();
-
-  real last_x = 0;
-  real last_y = 0;
-  real dist;
-  msg = "before:\n";
-  for (i = 0; i < 10; i++) {
-		strsplit(drill_args1, stack_elem(i), '\t');
-		drill_size1 = units(my_strtol(drill_args1[DRILL_SIZE]));
-		drill_x1 = scale_x(my_strtol(drill_args1[DRILL_X]));
-		drill_y1 = scale_y(my_strtol(drill_args1[DRILL_Y]));    
-		dist = distance(last_x, last_y, drill_x1, drill_y1);
-		last_x = drill_x1;
-		last_y = drill_y1;
-    sprintf(s, "%d: %2.5f  %2.5f  %2.5f  %2.5f\n", i, drill_size1, drill_x1, drill_y1, dist);
-    msg += s;
-  }
-
 
   for (i = 0; i <= stack_count(); i++) {
 		strsplit(drill_args1, stack_elem(i), '\t');
@@ -279,8 +229,6 @@ void pythagorean_sort() {
         break;
 
       if (distance(drill_x1, drill_y1, drill_x3, drill_y3) < distance(drill_x1, drill_y1, drill_x2, drill_y2)) {
-//        sprintf(s, "Swap:\n%s\n%s\n", stack_elem(j), stack_elem(i+1));
-//        Message(s);
         tmp = stack_elem(j);
         stack_put(j, stack_elem(i+1));
         stack_put(i+1, tmp);
@@ -289,27 +237,6 @@ void pythagorean_sort() {
       j++;
     }
   }
-  
-  after_distance = total_distance();
-  
-  last_x = 0;
-  last_y = 0;
-  msg += "after:\n";
-  for (i = 0; i < 10; i++) {
-		strsplit(drill_args1, stack_elem(i), '\t');
-		drill_size1 = units(my_strtol(drill_args1[DRILL_SIZE]));
-		drill_x1 = scale_x(my_strtol(drill_args1[DRILL_X]));
-		drill_y1 = scale_y(my_strtol(drill_args1[DRILL_Y]));    
-		dist = distance(last_x, last_y, drill_x1, drill_y1);
-		last_x = drill_x1;
-		last_y = drill_y1;
-    sprintf(s, "%d: %2.5f  %2.5f  %2.5f  %2.5f\n", i, drill_size1, drill_x1, drill_y1, dist);
-    msg += s;
-  }
-  Message(msg);
-  
-  sprintf(s, "before %f\nafter  %f\n", before_distance, after_distance);
-  Message(s);
 }
 
 /*
