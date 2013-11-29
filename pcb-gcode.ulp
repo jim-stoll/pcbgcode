@@ -531,11 +531,6 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down)
 			real end_x = rx1;
 			real end_y = ry1;
 		
-			if (1 /* USE_IJ_RELATIVE */) {
-				cx = rx2 - rx1;
-				cy = ry2 - ry1;
-			}
-
 			rz(DEFAULT_Z_UP);
 			rxy(end_x, end_y);
 			fzr(z_down, FEED_RATE_Z);
