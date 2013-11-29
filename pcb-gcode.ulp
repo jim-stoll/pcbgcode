@@ -379,42 +379,6 @@ void drill(int which_side, string suffix)
 } 
 // drill
 
-int m_first_spot_drill = YES;
-void spot_drill_hole(int x, int y)
-{
-	real drill_x;
-	real drill_y;
-
-	drill_x = scale_x(x);
-	drill_y = scale_y(y);
-	save_extents(drill_x, drill_y);
-
-	if (m_first_spot_drill) {
-		output_drill_first_hole(drill_x, drill_y, SPOT_DRILL_DEPTH);
-		m_first_spot_drill = NO;
-	}
-	else {
-		output_drill_hole(drill_x, drill_y, SPOT_DRILL_DEPTH);
-	}
-}
-
-void spot_drill(UL_BOARD B)
-{
-	if (SPOT_DRILL == NO) { return; }
-
-	B.holes(H) spot_drill_hole(H.x, H.y);
-	B.signals(S) S.vias(V) spot_drill_hole(V.x, V.y);
-	B.elements(E) {
-		E.package.contacts(C) {
-			if (C.pad) {
-				spot_drill_hole(C.pad.x, C.pad.y);
-			}
-		}
-		E.package.holes(H) spot_drill_hole(H.x, H.y);
-	} 
-	// B.elements
-}
-
 string m_lines;
 string LINE_SEP = "\n";
 string COORD_SEP = ",";
@@ -424,6 +388,53 @@ string coords(real x1, real y1, real x2, real y2)
 {
 	return frrrr(COORD_FMT + COORD_SEP + COORD_FMT + COORD_SEP +
 		COORD_FMT + COORD_SEP + COORD_FMT + LINE_SEP, x1, y1, x2, y2);
+}
+
+int m_first_spot_drill = YES;
+void spot_drill_hole(int drill_size, int x, int y)
+{
+	real drill_x;
+	real drill_y;
+  real offset;
+  
+	drill_x = scale_x(x);
+	drill_y = scale_y(y);
+	save_extents(drill_x, drill_y);
+
+  if (SPOT_DRILL == YES) {
+    if (m_first_spot_drill) {
+      output_drill_first_hole(drill_x, drill_y, SPOT_DRILL_DEPTH);
+      m_first_spot_drill = NO;
+    }
+    else {
+      output_drill_hole(drill_x, drill_y, SPOT_DRILL_DEPTH);
+    }
+  }
+	
+	offset = units(get_drill_for(drill_size)) / 2;
+  
+	m_lines += coords(drill_x - offset, drill_y - offset, drill_x + offset, drill_y + offset);
+	m_lines += coords(drill_x - offset, drill_y + offset, drill_x + offset, drill_y - offset);
+}
+
+void spot_drill(UL_BOARD B)
+{
+//	if (SPOT_DRILL == NO) { return; }
+
+  // meh: this is kind of hackie
+  m_lines += fi("# pass=%d\n", m_pass_num + 2);
+
+	B.holes(H) spot_drill_hole(H.drill, H.x, H.y);
+	B.signals(S) S.vias(V) spot_drill_hole(V.drill, V.x, V.y);
+	B.elements(E) {
+		E.package.contacts(C) {
+			if (C.pad) {
+				spot_drill_hole(C.pad.drill, C.pad.x, C.pad.y);
+			}
+		}
+		E.package.holes(H) spot_drill_hole(H.drill, H.x, H.y);
+	} 
+	// B.elements
 }
 
 //
