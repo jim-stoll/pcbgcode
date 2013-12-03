@@ -13,7 +13,6 @@
 #include "source/filecopy.h"
 #include "source/math.h"
 #include "source/filename_subs.h"
-#include "plugin_headers.h"
 
 int m_current_units = OUTPUT_UNITS;
 string m_uom_suffix = "unknown";
@@ -186,6 +185,151 @@ else if (EAGLE_VERSION == 6) {
 }
 sprintf(m_eagle_compatibility, "%d.%d (%s)", EAGLE_VERSION, EAGLE_RELEASE, m_compatibility);
 
+void save_pcb_defaults()
+{
+	fileerror();
+	output(g_path + "/settings/pcb-defaults.h", "wt") {
+
+		int now = time();
+
+		printf(
+      "//\n// Default values for generating gcode from a PCB.\n//\n");
+		printf("// These settings were last changed with "
+			"pcb-gcode-setup: %s\n//\n", t2string(now));
+		printf("//\n// Changes you make in this file will be overwritten "
+			"if you use pcb-gcode-setup.\n//\n\n");
+
+    write_bool_param("SINGLE_PASS", SINGLE_PASS);
+		write_real_param("ISO_MIN", ISO_MIN);
+		write_real_param("ISO_MAX", ISO_MAX);
+		write_real_param("ISO_STEP", ISO_STEP);
+		printf("\n");
+
+		write_bool_param("GENERATE_TOP_OUTLINES", GENERATE_TOP_OUTLINES);
+		write_bool_param("GENERATE_TOP_DRILL", GENERATE_TOP_DRILL);
+		write_bool_param("GENERATE_TOP_FILL", GENERATE_TOP_FILL);
+		printf("\n");
+
+		write_bool_param("GENERATE_BOTTOM_OUTLINES", 
+      GENERATE_BOTTOM_OUTLINES);
+		write_bool_param("GENERATE_BOTTOM_DRILL", GENERATE_BOTTOM_DRILL);
+		write_bool_param("GENERATE_BOTTOM_FILL", GENERATE_BOTTOM_FILL);
+    write_bool_param("MIRROR_BOTTOM", 
+      MIRROR_BOTTOM);
+    write_bool_param("SIMPLE_DRILL_CODE", SIMPLE_DRILL_CODE);
+    
+		printf("\n");
+
+		write_bool_param("GENERATE_MILLING", GENERATE_MILLING);
+		printf("\n");
+
+		write_bool_param("GENERATE_TEXT", GENERATE_TEXT);
+		printf("\n");
+    
+    write_bool_param("SPOT_DRILL", SPOT_DRILL);
+    write_real_param("SPOT_DRILL_DEPTH", SPOT_DRILL_DEPTH);
+    printf("\n");
+
+		write_bool_param("DO_TOOL_CHANGE_WITH_ZERO_STEP",
+			DO_TOOL_CHANGE_WITH_ZERO_STEP);
+		printf("\n");
+
+		write_bool_param("FLIP_BOARD_IN_Y", FLIP_BOARD_IN_Y);
+		printf("\n");
+    
+		// Place a // in front of units not being used
+		if (OUTPUT_UNITS != U_MICRONS) printf("//");
+		write_int_defined("OUTPUT_UNITS", "U_MICRONS");
+		if (OUTPUT_UNITS != U_MILLIMETERS) printf("//");
+		write_int_defined("OUTPUT_UNITS", "U_MILLIMETERS");
+		if (OUTPUT_UNITS != U_MILS) printf("//");
+		write_int_defined("OUTPUT_UNITS", "U_MILS");
+		if (OUTPUT_UNITS != U_INCHES) printf("//");
+		write_int_defined("OUTPUT_UNITS", "U_INCHES");
+	}
+	if(fileerror())
+		exit(1);
+}
+
+void save_pcb_machine()
+{
+  output(g_path + "/settings/pcb-machine.h") {
+    printf("//\n");
+    printf("// For ease of use, and to avoid overwritting your settings,\n");
+    printf("// use pcb-gcode-setup to make changes to these settings.\n");
+    printf("//\n\n");
+    write_real_param("DEFAULT_Z_HIGH", DEFAULT_Z_HIGH);
+    write_real_param("DEFAULT_Z_UP", DEFAULT_Z_UP);
+    write_real_param("DEFAULT_Z_DOWN", DEFAULT_Z_DOWN);
+    write_real_param("DRILL_DEPTH", DRILL_DEPTH);
+    write_real_param("DRILL_DWELL", DRILL_DWELL);
+    write_real_param("SPINDLE_ON_TIME", SPINDLE_ON_TIME);
+    write_real_param("MILLING_DEPTH", MILLING_DEPTH);
+    write_real_param("TEXT_DEPTH", TEXT_DEPTH);
+    write_real_param("TOOL_CHANGE_POS_X", TOOL_CHANGE_POS_X);
+    write_real_param("TOOL_CHANGE_POS_Y", TOOL_CHANGE_POS_Y);
+    write_real_param("TOOL_CHANGE_POS_Z", TOOL_CHANGE_POS_Z);
+    write_real_param("FEED_RATE", FEED_RATE);
+    write_real_param("FEED_RATE_Z", FEED_RATE_Z);
+    write_real_param("DEFAULT_WIDTH", DEFAULT_WIDTH);
+    write_real_param("X_OFFSET", X_OFFSET);
+    write_real_param("Y_OFFSET",Y_OFFSET);
+    write_real_param("X_HOME", X_HOME);
+    write_real_param("Y_HOME",Y_HOME);
+	  write_real_param("EPSILON", EPSILON);
+  }
+}
+
+void save_pcb_gcode_options()
+{
+  output(g_path + "/settings/pcb-gcode-options.h") {
+    printf("//\n");
+    printf("// General Options ");
+	  printf("// Your edits to this file will be overwritten"
+				" by the setup program.\n");
+    printf("//\n");
+    write_bool_param("SHOW_PROGRESS", SHOW_PROGRESS);
+		write_string_param("RESTORE_MENU_FILE", RESTORE_MENU_FILE);
+    write_bool_param("NC_FILE_COMMENT_FROM_BOARD", 
+        NC_FILE_COMMENT_FROM_BOARD);
+    write_bool_param("NC_FILE_COMMENT_DATE", NC_FILE_COMMENT_DATE);
+    write_bool_param("NC_FILE_COMMENT_MACHINE_SETTINGS",
+        NC_FILE_COMMENT_MACHINE_SETTINGS);
+    write_bool_param("NC_FILE_COMMENT_PCB_DEFAULTS_SETTINGS",
+        NC_FILE_COMMENT_PCB_DEFAULTS_SETTINGS);
+		write_bool_param("USER_GCODE", USER_GCODE);
+    write_bool_param("g_debug_flag", g_debug_flag);
+    write_bool_param("COMPACT_GCODE", COMPACT_GCODE);
+    write_bool_param("USE_LINE_NUMBERS", USE_LINE_NUMBERS);
+    write_string_param("LINE_NUMBER_FORMAT", LINE_NUMBER_FORMAT);
+    write_bool_param("SHOW_PREVIEW", SHOW_PREVIEW);
+
+    write_string_param("FILENAME_BASE", FILENAME_BASE);
+    write_string_param("FILENAME_TOP_ETCH_FILE",  FILENAME_TOP_ETCH_FILE);
+    write_string_param("FILENAME_TOP_DRILL_FILE", FILENAME_TOP_DRILL_FILE);
+    write_string_param("FILENAME_TOP_MILL_FILE",  FILENAME_TOP_MILL_FILE);
+    write_string_param("FILENAME_TOP_TEXT_FILE",  FILENAME_TOP_TEXT_FILE);
+    write_string_param("FILENAME_TOP_FILL_FILE",  FILENAME_TOP_FILL_FILE);
+
+    write_string_param("FILENAME_BOT_ETCH_FILE",  FILENAME_BOT_ETCH_FILE);
+    write_string_param("FILENAME_BOT_DRILL_FILE", FILENAME_BOT_DRILL_FILE);
+    write_string_param("FILENAME_BOT_MILL_FILE",  FILENAME_BOT_MILL_FILE);
+    write_string_param("FILENAME_BOT_TEXT_FILE",  FILENAME_BOT_TEXT_FILE);
+    write_string_param("FILENAME_BOT_FILL_FILE",  FILENAME_BOT_FILL_FILE);
+    write_string_param("ETCH_FILE_NAME",  ETCH_FILE_NAME);
+    write_string_param("DRILL_FILE_NAME", DRILL_FILE_NAME);
+    write_string_param("MILL_FILE_NAME",  MILL_FILE_NAME);
+    write_string_param("TEXT_FILE_NAME",  TEXT_FILE_NAME);
+    write_string_param("TOP_FILE_NAME",   TOP_FILE_NAME);
+    write_string_param("BOT_FILE_NAME",   BOT_FILE_NAME);
+    write_string_param("DEFAULT_EXTENSION", DEFAULT_EXTENSION);
+
+	write_string_param("DEFAULT_DRILL_FILE", DEFAULT_DRILL_FILE);
+  }
+}
+
+#include "plugin_headers.h"
+
 int Result = dlgDialog("pcb-gcode Setup") {
 
 	set_uom_suffix(OUTPUT_UNITS);
@@ -230,95 +374,95 @@ int Result = dlgDialog("pcb-gcode Setup") {
      *
      ***************************************************************/
     
-    if (program_is_setup()) dlgTabPage("Generation Options") {
-      dlgHBoxLayout {
-	    dlgStretch(20);
-        dlgVBoxLayout {
-        dlgGroup("Top Side") {
-          dlgCheckBox("Generate top outlines", GENERATE_TOP_OUTLINES);
-          dlgCheckBox("Generate top drills  ", GENERATE_TOP_DRILL);
-        }
-        dlgStretch(1);
-      }
-      dlgVBoxLayout {
-        dlgGroup("Bottom Side") {
-          dlgCheckBox("Generate bottom outlines", 
-            GENERATE_BOTTOM_OUTLINES);
-          dlgCheckBox("Generate bottom drills  ", 
-            GENERATE_BOTTOM_DRILL);
-          dlgCheckBox("Mirror ", 
-            MIRROR_BOTTOM);
-        }
-        dlgStretch(1);
-        dlgLabel("<img src='docs/images/isolation_settings_300.gif' width='300'/>");
-        dlgStretch(3);
-      }
-      dlgVBoxLayout {
-        dlgGroup("Board") {
-          dlgVBoxLayout {
-            dlgCheckBox("Show preview ", SHOW_PREVIEW);
-            dlgGridLayout {
-              dlgCell(0, 0) dlgCheckBox("Generate milling", GENERATE_MILLING);
-              dlgCell(0, 1) dlgLabel("Depth ");
-              dlgCell(0, 2) { dlgRealEdit(MILLING_DEPTH); dlgLabel(m_uom_suffix, YES); }
+     if (program_is_setup()) dlgTabPage("Generation Options") {
+       dlgHBoxLayout {
+         dlgStretch(20);
+         dlgVBoxLayout {
+           dlgGroup("Top Side") {
+             dlgCheckBox("Generate top outlines", GENERATE_TOP_OUTLINES);
+             dlgCheckBox("Generate top drills  ", GENERATE_TOP_DRILL);
+           }
+           dlgStretch(1);
+         }
+         dlgVBoxLayout {
+           dlgGroup("Bottom Side") {
+             dlgCheckBox("Generate bottom outlines", 
+             GENERATE_BOTTOM_OUTLINES);
+             dlgCheckBox("Generate bottom drills  ", 
+             GENERATE_BOTTOM_DRILL);
+             dlgCheckBox("Mirror ", 
+             MIRROR_BOTTOM);
+           }
+           dlgStretch(1);
+           dlgLabel("<img src='docs/images/isolation_settings_300.gif' width='300'/>");
+           dlgStretch(3);
+         }
+         dlgVBoxLayout {
+           dlgGroup("Board") {
+             dlgVBoxLayout {
+               dlgCheckBox("Show preview ", SHOW_PREVIEW);
+               dlgGridLayout {
+                 dlgCell(0, 0) dlgCheckBox("Generate milling", GENERATE_MILLING);
+                 dlgCell(0, 1) dlgLabel("Depth ");
+                 dlgCell(0, 2) { dlgRealEdit(MILLING_DEPTH); dlgLabel(m_uom_suffix, YES); }
 
-              dlgCell(1, 0) dlgCheckBox("Generate text", GENERATE_TEXT);
-              dlgCell(1, 1) dlgLabel("Depth ");
-              dlgCell(1, 2) { dlgRealEdit(TEXT_DEPTH); dlgLabel(m_uom_suffix, YES); }
-              dlgCell(2, 0) dlgCheckBox("Spot drill holes", SPOT_DRILL);
-              dlgCell(2, 1) dlgLabel("Depth");
-              dlgCell(2, 2) { dlgRealEdit(SPOT_DRILL_DEPTH);  dlgLabel(m_uom_suffix, YES); }
-            }
-            dlgGridLayout {
-              dlgCell(0, 0, 0, 1) dlgLabel("Isolation");
-              dlgCell(0, 1) {
-                dlgCheckBox("Single pass", SINGLE_PASS) {
-                  if (SINGLE_PASS) {
-/*                    dlgMessageBox("You have selected the single pass option.\n" +
-                    "The next time you run pcb-gcode-setup, the Maximum and Step Size " +
-                    "options will be hidden. Only Minimum will be shown.\n" +
-                    "To change back, just turn Single pass off, " +
-                    "click Accept, and run pcb-gcode-setup again.\n" +
-                    "The minimum, maximum, and step size options will be available again.");
-                    */
-                    m_maximum_label = "not used";
-                    m_step_size_label = "not used";
-                  }
-                  else {
-                    m_maximum_label = "Maximum";
-                    m_step_size_label = "Step size";
-                  }
-                }
-              }
-              dlgCell(1, 0) dlgLabel("Minimum");
-              dlgCell(1, 1) { dlgRealEdit(ISO_MIN); 
-                dlgLabel(m_uom_suffix, YES); 
-              }
-              dlgCell(3, 0) dlgLabel(m_maximum_label, YES);
-              dlgCell(3, 1) { dlgRealEdit(ISO_MAX); 
-                dlgLabel(m_uom_suffix, YES); 
-              }
-              dlgCell(4, 0) dlgLabel(m_step_size_label, YES);
-              dlgCell(4, 1) { dlgRealEdit(ISO_STEP); 
-                dlgLabel(m_uom_suffix, YES); 
-              }
-            }
-            dlgSpacing(10);
-            dlgVBoxLayout {
-              dlgLabel("Etching Tool Size ");
-              dlgHBoxLayout { dlgRealEdit(DEFAULT_WIDTH); 
-                dlgLabel(m_uom_suffix, YES); 
-              }
-            }
-          }
-        }
-        dlgStretch(1);
-      }
-      dlgStretch(20);
-    }
-    dlgHBoxLayout {
-    }
-  }
+                 dlgCell(1, 0) dlgCheckBox("Generate text", GENERATE_TEXT);
+                 dlgCell(1, 1) dlgLabel("Depth ");
+                 dlgCell(1, 2) { dlgRealEdit(TEXT_DEPTH); dlgLabel(m_uom_suffix, YES); }
+                 dlgCell(2, 0) dlgCheckBox("Spot drill holes", SPOT_DRILL);
+                 dlgCell(2, 1) dlgLabel("Depth");
+                 dlgCell(2, 2) { dlgRealEdit(SPOT_DRILL_DEPTH);  dlgLabel(m_uom_suffix, YES); }
+               }
+               dlgGridLayout {
+                 dlgCell(0, 0, 0, 1) dlgLabel("Isolation");
+                 dlgCell(0, 1) {
+                   dlgCheckBox("Single pass", SINGLE_PASS) {
+                     if (SINGLE_PASS) {
+                     /*                    dlgMessageBox("You have selected the single pass option.\n" +
+                     "The next time you run pcb-gcode-setup, the Maximum and Step Size " +
+                     "options will be hidden. Only Minimum will be shown.\n" +
+                     "To change back, just turn Single pass off, " +
+                     "click Accept, and run pcb-gcode-setup again.\n" +
+                     "The minimum, maximum, and step size options will be available again.");
+                     */
+                     m_maximum_label = "not used";
+                     m_step_size_label = "not used";
+                   }
+                   else {
+                     m_maximum_label = "Maximum";
+                     m_step_size_label = "Step size";
+                   }
+                 }
+               }
+               dlgCell(1, 0) dlgLabel("Minimum");
+               dlgCell(1, 1) { dlgRealEdit(ISO_MIN); 
+                 dlgLabel(m_uom_suffix, YES); 
+               }
+               dlgCell(3, 0) dlgLabel(m_maximum_label, YES);
+               dlgCell(3, 1) { dlgRealEdit(ISO_MAX); 
+                 dlgLabel(m_uom_suffix, YES); 
+               }
+               dlgCell(4, 0) dlgLabel(m_step_size_label, YES);
+               dlgCell(4, 1) { dlgRealEdit(ISO_STEP); 
+                 dlgLabel(m_uom_suffix, YES); 
+               }
+             }
+             dlgSpacing(10);
+             dlgVBoxLayout {
+               dlgLabel("Etching Tool Size ");
+               dlgHBoxLayout { dlgRealEdit(DEFAULT_WIDTH); 
+                 dlgLabel(m_uom_suffix, YES); 
+               }
+             }
+           }
+         }
+         dlgStretch(1);
+       }
+       dlgStretch(20);
+     }
+     dlgHBoxLayout {
+     }
+   }
 
     /***************************************************************
      *
@@ -697,68 +841,6 @@ int Result = dlgDialog("pcb-gcode Setup") {
 //         Accept          Accept and make board
 if (Result == 1 || Result == 2) {
 
-	fileerror();
-	output(g_path + "/settings/pcb-defaults.h", "wt") {
-
-		int now = time();
-
-		printf(
-      "//\n// Default values for generating gcode from a PCB.\n//\n");
-		printf("// These settings were last changed with "
-			"pcb-gcode-setup: %s\n//\n", t2string(now));
-		printf("//\n// Changes you make in this file will be overwritten "
-			"if you use pcb-gcode-setup.\n//\n\n");
-
-    write_bool_param("SINGLE_PASS", SINGLE_PASS);
-		write_real_param("ISO_MIN", ISO_MIN);
-		write_real_param("ISO_MAX", ISO_MAX);
-		write_real_param("ISO_STEP", ISO_STEP);
-		printf("\n");
-
-		write_bool_param("GENERATE_TOP_OUTLINES", GENERATE_TOP_OUTLINES);
-		write_bool_param("GENERATE_TOP_DRILL", GENERATE_TOP_DRILL);
-		write_bool_param("GENERATE_TOP_FILL", GENERATE_TOP_FILL);
-		printf("\n");
-
-		write_bool_param("GENERATE_BOTTOM_OUTLINES", 
-      GENERATE_BOTTOM_OUTLINES);
-		write_bool_param("GENERATE_BOTTOM_DRILL", GENERATE_BOTTOM_DRILL);
-		write_bool_param("GENERATE_BOTTOM_FILL", GENERATE_BOTTOM_FILL);
-    write_bool_param("MIRROR_BOTTOM", 
-      MIRROR_BOTTOM);
-    write_bool_param("SIMPLE_DRILL_CODE", SIMPLE_DRILL_CODE);
-    
-		printf("\n");
-
-		write_bool_param("GENERATE_MILLING", GENERATE_MILLING);
-		printf("\n");
-
-		write_bool_param("GENERATE_TEXT", GENERATE_TEXT);
-		printf("\n");
-    
-    write_bool_param("SPOT_DRILL", SPOT_DRILL);
-    write_real_param("SPOT_DRILL_DEPTH", SPOT_DRILL_DEPTH);
-    printf("\n");
-
-		write_bool_param("DO_TOOL_CHANGE_WITH_ZERO_STEP",
-			DO_TOOL_CHANGE_WITH_ZERO_STEP);
-		printf("\n");
-
-		write_bool_param("FLIP_BOARD_IN_Y", FLIP_BOARD_IN_Y);
-		printf("\n");
-    
-		// Place a // in front of units not being used
-		if (OUTPUT_UNITS != U_MICRONS) printf("//");
-		write_int_defined("OUTPUT_UNITS", "U_MICRONS");
-		if (OUTPUT_UNITS != U_MILLIMETERS) printf("//");
-		write_int_defined("OUTPUT_UNITS", "U_MILLIMETERS");
-		if (OUTPUT_UNITS != U_MILS) printf("//");
-		write_int_defined("OUTPUT_UNITS", "U_MILS");
-		if (OUTPUT_UNITS != U_INCHES) printf("//");
-		write_int_defined("OUTPUT_UNITS", "U_INCHES");
-	}
-	if(fileerror())
-		exit(1);
 
 	if(pp_selection > -1) {
 		if (dlgMessageBox(
@@ -779,76 +861,9 @@ if (Result == 1 || Result == 2) {
 		}
 	}
 
-  output(g_path + "/settings/pcb-gcode-options.h") {
-    printf("//\n");
-    printf("// General Options ");
-	  printf("// Your edits to this file will be overwritten"
-				" by the setup program.\n");
-    printf("//\n");
-    write_bool_param("SHOW_PROGRESS", SHOW_PROGRESS);
-		write_string_param("RESTORE_MENU_FILE", RESTORE_MENU_FILE);
-    write_bool_param("NC_FILE_COMMENT_FROM_BOARD", 
-        NC_FILE_COMMENT_FROM_BOARD);
-    write_bool_param("NC_FILE_COMMENT_DATE", NC_FILE_COMMENT_DATE);
-    write_bool_param("NC_FILE_COMMENT_MACHINE_SETTINGS",
-        NC_FILE_COMMENT_MACHINE_SETTINGS);
-    write_bool_param("NC_FILE_COMMENT_PCB_DEFAULTS_SETTINGS",
-        NC_FILE_COMMENT_PCB_DEFAULTS_SETTINGS);
-		write_bool_param("USER_GCODE", USER_GCODE);
-    write_bool_param("g_debug_flag", g_debug_flag);
-    write_bool_param("COMPACT_GCODE", COMPACT_GCODE);
-    write_bool_param("USE_LINE_NUMBERS", USE_LINE_NUMBERS);
-    write_string_param("LINE_NUMBER_FORMAT", LINE_NUMBER_FORMAT);
-    write_bool_param("SHOW_PREVIEW", SHOW_PREVIEW);
-
-    write_string_param("FILENAME_BASE", FILENAME_BASE);
-    write_string_param("FILENAME_TOP_ETCH_FILE",  FILENAME_TOP_ETCH_FILE);
-    write_string_param("FILENAME_TOP_DRILL_FILE", FILENAME_TOP_DRILL_FILE);
-    write_string_param("FILENAME_TOP_MILL_FILE",  FILENAME_TOP_MILL_FILE);
-    write_string_param("FILENAME_TOP_TEXT_FILE",  FILENAME_TOP_TEXT_FILE);
-    write_string_param("FILENAME_TOP_FILL_FILE",  FILENAME_TOP_FILL_FILE);
-
-    write_string_param("FILENAME_BOT_ETCH_FILE",  FILENAME_BOT_ETCH_FILE);
-    write_string_param("FILENAME_BOT_DRILL_FILE", FILENAME_BOT_DRILL_FILE);
-    write_string_param("FILENAME_BOT_MILL_FILE",  FILENAME_BOT_MILL_FILE);
-    write_string_param("FILENAME_BOT_TEXT_FILE",  FILENAME_BOT_TEXT_FILE);
-    write_string_param("FILENAME_BOT_FILL_FILE",  FILENAME_BOT_FILL_FILE);
-    write_string_param("ETCH_FILE_NAME",  ETCH_FILE_NAME);
-    write_string_param("DRILL_FILE_NAME", DRILL_FILE_NAME);
-    write_string_param("MILL_FILE_NAME",  MILL_FILE_NAME);
-    write_string_param("TEXT_FILE_NAME",  TEXT_FILE_NAME);
-    write_string_param("TOP_FILE_NAME",   TOP_FILE_NAME);
-    write_string_param("BOT_FILE_NAME",   BOT_FILE_NAME);
-    write_string_param("DEFAULT_EXTENSION", DEFAULT_EXTENSION);
-
-	write_string_param("DEFAULT_DRILL_FILE", DEFAULT_DRILL_FILE);
-  }
-
-  output(g_path + "/settings/pcb-machine.h") {
-    printf("//\n");
-    printf("// For ease of use, and to avoid overwritting your settings,\n");
-    printf("// use pcb-gcode-setup to make changes to these settings.\n");
-    printf("//\n\n");
-    write_real_param("DEFAULT_Z_HIGH", DEFAULT_Z_HIGH);
-    write_real_param("DEFAULT_Z_UP", DEFAULT_Z_UP);
-    write_real_param("DEFAULT_Z_DOWN", DEFAULT_Z_DOWN);
-    write_real_param("DRILL_DEPTH", DRILL_DEPTH);
-    write_real_param("DRILL_DWELL", DRILL_DWELL);
-    write_real_param("SPINDLE_ON_TIME", SPINDLE_ON_TIME);
-    write_real_param("MILLING_DEPTH", MILLING_DEPTH);
-    write_real_param("TEXT_DEPTH", TEXT_DEPTH);
-    write_real_param("TOOL_CHANGE_POS_X", TOOL_CHANGE_POS_X);
-    write_real_param("TOOL_CHANGE_POS_Y", TOOL_CHANGE_POS_Y);
-    write_real_param("TOOL_CHANGE_POS_Z", TOOL_CHANGE_POS_Z);
-    write_real_param("FEED_RATE", FEED_RATE);
-    write_real_param("FEED_RATE_Z", FEED_RATE_Z);
-    write_real_param("DEFAULT_WIDTH", DEFAULT_WIDTH);
-    write_real_param("X_OFFSET", X_OFFSET);
-    write_real_param("Y_OFFSET",Y_OFFSET);
-    write_real_param("X_HOME", X_HOME);
-    write_real_param("Y_HOME",Y_HOME);
-	write_real_param("EPSILON", EPSILON);
-  }
+  save_pcb_defaults();
+  save_pcb_gcode_options();
+  save_pcb_machine();
   
 }
 
