@@ -77,7 +77,12 @@ int m_layer;
 string g_cmd;
 string g_cmd_temp;
 
+//
 // Save the maximum and minimum coordinates.
+//
+// Params: none
+// Return: none
+//
 real m_max_x;
 real m_max_y;
 real m_min_x;
@@ -90,25 +95,32 @@ void save_extents(real x, real y)
 	m_min_y = min(m_min_y, y);
 }
 
+//
+// Open the platform-specific previewer.
+//
+// Params: none
+// Return: none
+//
 void preview()
 {
-	if (SHOW_PREVIEW) {
-		switch(get_os()) {
-			case OS_MACOSX:
-			system(g_path + "/viewer/application.macosx/viewer.app/Contents/MacOS/JavaApplicationStub");
-			break;
-			case OS_LINUX:
-			system(g_path + "/source/viewer.linux.sh");
-			break;
-			case OS_WINDOWS:
-			system(g_path + "/viewer/application.windows/viewer.exe");
-			dlgMessageBox("Close this window when you have finished with the preview");
-			break;
-			default:
-			Fatal("Oops!", "Can't figure out which OS you have.");
-		}
-	}
+  if (SHOW_PREVIEW) {
+    switch(get_os()) {
+      case OS_MACOSX:
+      system(g_path + "/viewer/application.macosx/viewer.app/Contents/MacOS/JavaApplicationStub");
+      break;
+      case OS_LINUX:
+      system(g_path + "/source/viewer.linux.sh");
+      break;
+      case OS_WINDOWS:
+      system(g_path + "/viewer/application.windows/viewer.exe");
+      dlgMessageBox("Close this window when you have finished with the preview");
+      break;
+      default:
+      Fatal("Oops!", "Can't figure out which OS you have.");
+    }
+  }
 }
+
 //
 // Determine the next phase, and set g_phase accordingly.
 //
@@ -177,12 +189,22 @@ void add_hole(int req_size, int x, int y)
 //
 // Return the distance between two points.
 //
+// Params:
+//  x1, y1, x2, y2  coordinates for two points.
+// Return:
+//  the distance between the points.
+//
 real distance(real x1, real y1, real x2, real y2) {
   return (sqrt((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2)));
 }
 
 // 
 // Sorts a stack of drills in g_stack by distance from last hole.
+//
+// Params: none
+// Return: none
+// Changes: 
+//  the stack
 //
 void pythagorean_sort() {
 	real drill_size1;
@@ -379,7 +401,18 @@ void drill(int which_side, string suffix)
 } 
 // drill
 
+// holds line segments generated for the previewer
 string m_lines;
+
+//
+// Format the coordinates of two points to be used by the previewer.
+//
+// Params:
+//  x1, y1, x2, y2  Two points.
+// Return:
+//  Coordinates formatted for the previewer.
+//
+
 string LINE_SEP = "\n";
 string COORD_SEP = ",";
 string COORD_FMT = "%8.5f";
@@ -390,6 +423,15 @@ string coords(real x1, real y1, real x2, real y2)
 		COORD_FMT + COORD_SEP + COORD_FMT + LINE_SEP, x1, y1, x2, y2);
 }
 
+//
+// Generates gcode for spot drilling and previewing holes.
+//
+// Params:
+//  drill_size Size of the hole to drill.
+//  x, y  Location of the hole.
+// Return: none
+// Changes: m_lines
+//
 int m_first_spot_drill = YES;
 void spot_drill_hole(int drill_size, int x, int y)
 {
@@ -417,6 +459,14 @@ void spot_drill_hole(int drill_size, int x, int y)
 	m_lines += coords(drill_x - offset, drill_y + offset, drill_x + offset, drill_y - offset);
 }
 
+//
+// Enumerates all holes and generates spot drills for them.
+//
+// Params:
+//  B The board.
+// Return: none
+// Changes: m_lines
+//
 void spot_drill(UL_BOARD B)
 {
 //	if (SPOT_DRILL == NO) { return; }
@@ -443,10 +493,12 @@ void spot_drill(UL_BOARD B)
 // Params:
 //  x1,y1   Start of the line.
 //  x2,y2   End of the line.
-//  state
-//  z_down
+//  state   The state of the line being drawn, start, continue, etc.
+//  z_down  Z depth.
 // Returns:
 //  none
+// Changes:
+//  m_lines
 //
 real m_arc_begin_x;
 real m_arc_begin_y;
@@ -568,6 +620,9 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down)
 //  which_side  The side to operate on.
 // Return:
 //  none
+// Changes:
+//  m_layer
+//  g_cmd
 //
 void generate_outlines(int which_side)
 {
@@ -575,10 +630,10 @@ void generate_outlines(int which_side)
 
 	g_cmd = "";
 
-	if (which_side == TOP)
-	m_layer = TOP_LAYER;
-	else
-	m_layer = BOTTOM_LAYER;
+  if (which_side == TOP)
+    m_layer = TOP_LAYER;
+  else
+    m_layer = BOTTOM_LAYER;
 
 	board(B) {
 		real f = BORDER_SIZE;
@@ -619,6 +674,17 @@ void generate_outlines(int which_side)
 } 
 // generate_outlines
 
+//
+// Output info and lines to a file for the previewer.
+//
+// Params:
+//  path  Path and filename.
+//  mode  File open mode. May be write or append.
+// Returns:
+//  none
+// Changes:
+//  none
+//
 void out_lines(string path, string mode)
 {
   output(path, mode) {
@@ -638,6 +704,9 @@ void out_lines(string path, string mode)
 //  file_name   Output filename.
 // Return:
 //  none
+// Changes:
+//  g_width
+//  m_lines
 //
 void output_text_code(string file_name)
 {
@@ -718,6 +787,9 @@ void output_text_code(string file_name)
 //  file_name   Output filename.
 // Return:
 //  none
+// Changes:
+//  g_width
+//  m_lines
 //
 void output_mill_code(string file_name)
 {
@@ -800,6 +872,10 @@ void output_mill_code(string file_name)
 //  task
 // Return:
 //  none
+// Changes:
+//  g_side
+//  m_layer
+//  g_cmd
 //
 void write_outlines(int which_side, string suffix, int task)
 {
@@ -960,11 +1036,6 @@ void write_outlines(int which_side, string suffix, int task)
 } 
 // write_outlines
 
-/* string get_phase_name(int phase)
-{
-	return PHASE_NAME[phase];
-}
- */
 void gen_progress_menu(int phase)
 {
 	output(path_scr[0] + '/' + "source/pcb-gcode-prg.scr") {
