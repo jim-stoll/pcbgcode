@@ -1229,20 +1229,14 @@ switch (g_phase) {
 // Set things up for the next phase.
 next_phase();
 
-if (SHOW_PROGRESS == YES) {
-	gen_progress_menu(g_phase);
-}
-
 // If this is not the last phase, exit with a command line for
 // Eagle to process. The command includes running this program again.
 if (g_phase < PH_LAST_PHASE) {
 	sprintf(g_cmd,
 		"%s"
 		"window fit;\n"
-		"%s"
 		"run '%s' '%s' '%f' '%f' '%d' '%d';\n",
 		g_cmd,
-		(SHOW_PROGRESS) ? "script pcb-gcode-prg.scr;\n" : "",
 		argv[PROGRAM_NAME_ARG], m_file_name, g_width, m_isolate,
 		m_pass_num, g_phase
 		);
@@ -1250,14 +1244,5 @@ if (g_phase < PH_LAST_PHASE) {
 }
 else {
 	g_cmd = "window fit;\n";
-	if (SHOW_PROGRESS) {
-		if (RESTORE_MENU_FILE != "") {
-			g_cmd = g_cmd + "script " + RESTORE_MENU_FILE + ";\n";
-		}
-		else {
-			g_cmd = g_cmd + "menu;\n";
-		}
-	}
-
 	exit(g_cmd);
 }

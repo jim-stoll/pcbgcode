@@ -288,8 +288,6 @@ void save_pcb_gcode_options()
 	  printf("// Your edits to this file will be overwritten"
 				" by the setup program.\n");
     printf("//\n");
-    write_bool_param("SHOW_PROGRESS", SHOW_PROGRESS);
-		write_string_param("RESTORE_MENU_FILE", RESTORE_MENU_FILE);
     write_bool_param("NC_FILE_COMMENT_FROM_BOARD", 
         NC_FILE_COMMENT_FROM_BOARD);
     write_bool_param("NC_FILE_COMMENT_DATE", NC_FILE_COMMENT_DATE);
@@ -881,7 +879,4 @@ switch (Result) {
 		break;
 }
 
-if (SHOW_PROGRESS && RESTORE_MENU_FILE != "") {
-	m_cmd = "script " + RESTORE_MENU_FILE + ";\n" + m_cmd;
-}
 exit(m_cmd);
