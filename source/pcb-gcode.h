@@ -84,9 +84,8 @@ enum {
   PH_TOP_DRILL         =  9,
   PH_BOTTOM_DRILL      = 10,
   PH_MILL              = 11,
-	PH_TEXT				= 12,
-
-  PH_LAST_PHASE = 13
+	PH_TEXT              = 12,
+  PH_LAST_PHASE        = 13
 };
 
 string PHASE_NAME[] = {

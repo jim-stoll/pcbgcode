@@ -318,6 +318,12 @@ void output_kind_begin()
 			out(MILL_BEGIN[ALL]);
 			out(MILL_BEGIN[g_side]);
 			break;
+
+    case PH_TEXT:
+      out(TEXT_BEGIN[ALL]);
+      out(TEXT_BEGIN[g_side]);
+      break;
+
 		default:
 			dlgMessageBox("!Unknown g_phase " + int_to_string(g_phase) 
 					+ " in output_kind_begin()");
@@ -360,6 +366,12 @@ void output_kind_end()
 			out(MILL_END[g_side]);
 			out(MILL_END[ALL]);
 			break;
+
+    case PH_TEXT:
+      out(TEXT_END[ALL]);
+      out(TEXT_END[g_side]);
+      break;
+
 		default:
 			dlgMessageBox("!Unknown g_phase " + int_to_string(g_phase) 
 					+ " in output_kind_end()");
