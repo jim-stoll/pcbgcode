@@ -23,6 +23,7 @@ string FR_FORMAT  = "F%-5.2f "; 	/* feedrate format */
 string IJ_FORMAT  = "I" + FORMAT + "J" + FORMAT;
 string EOL        = "\n";				  		/* standard line ending */
 string PARAM      = "P";							/* some use P, some # for parameters */
+
 //
 // Modes
 //
@@ -50,6 +51,11 @@ string SPINDLE_ON     = "M03" + EOL + DWELL;
 string SPINDLE_OFF    = "M05" + EOL;
 string END_PROGRAM    = "M02" + EOL;
 string OPERATOR_PAUSE = "M06 ";
+
+//
+// Spindle speed
+//
+string SPINDLE_SPEED  = "S%.0f" + EOL;
 
 //
 // Coordinates

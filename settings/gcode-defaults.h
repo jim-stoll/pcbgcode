@@ -54,6 +54,11 @@ string END_PROGRAM    = "M02" + EOL;
 string OPERATOR_PAUSE = "M06 ";
 
 //
+// Spindle speed
+//
+string SPINDLE_SPEED  = "S%.0f" + EOL;
+
+//
 // Coordinates
 //
 string MOVE_X   = "X" + FORMAT;

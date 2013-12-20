@@ -337,10 +337,8 @@ void drill(int which_side, string suffix)
 			} 
 			// for
 
-			// Set the mode for the user's UOM.
-			out(get_mode());
-			out(ABSOLUTE_MODE);
-
+			begin_gcode(SPINDLE_DRILL_RPM);
+			
 			//
 			// Generate drill code.
 			//
@@ -720,7 +718,7 @@ void output_text_code(string file_name)
 			output_file_preamble();
 
 			// Initialize the device (i.e. the output file).
-			begin_gcode();
+			begin_gcode(SPINDLE_MILL_RPM);
 
 			// Process all the wires.
 			B.texts(T) T.wires(W) {
@@ -804,7 +802,7 @@ void output_mill_code(string file_name)
 			output_file_preamble();
 
 			// Initialize the device (i.e. the output file).
-			begin_gcode();
+			begin_gcode(SPINDLE_MILL_RPM);
 
 			// Process all the wires.
 			B.wires(W) W.pieces(P) {
@@ -885,6 +883,7 @@ void write_outlines(int which_side, string suffix, int task)
 	int first = 1;
 	int frame_wire;
 	int state;
+	real spindle_speed;
 
 	if (m_pass_num == 0) {
 		mode = "wt";
@@ -895,20 +894,24 @@ void write_outlines(int which_side, string suffix, int task)
 	g_side = which_side;
 	switch (which_side) {
 		case TOP:
-		m_layer = TOP_LAYER;
-		break;
+		  m_layer = TOP_LAYER;
+		  spindle_speed = SPINDLE_ETCH_RPM;
+		  break;
 		case BOTTOM:
-		m_layer = BOTTOM_LAYER;
-		break;
+		  m_layer = BOTTOM_LAYER;
+		  spindle_speed = SPINDLE_ETCH_RPM;
+		  break;
 		case MILL:
-		m_layer = MILL_LAYER;
-		break;
+		  m_layer = MILL_LAYER;
+		  spindle_speed = SPINDLE_MILL_RPM;
+		  break;
 		case TEXT:
-		m_layer = TEXT_LAYER;
-		break;
+		  m_layer = TEXT_LAYER;
+		  spindle_speed = SPINDLE_MILL_RPM;
+		  break;
 		default:
-		sprintf(g_debug, "Illegal which_side %d in write_outlines", which_side);
-		Fatal("Sorry...", g_debug);
+		  sprintf(g_debug, "Illegal which_side %d in write_outlines", which_side);
+		  Fatal("Sorry...", g_debug);
 	}
 
 	if (m_layer == MILL_LAYER || m_layer == TEXT_LAYER) {
@@ -965,7 +968,7 @@ void write_outlines(int which_side, string suffix, int task)
 						}
 						if (m_pass_num == 0) {
 							output_file_preamble();
-							begin_gcode();
+							begin_gcode(spindle_speed);
 						}
 						else {
 							output_between_outline_passes();

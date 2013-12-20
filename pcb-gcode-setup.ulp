@@ -264,6 +264,9 @@ void save_pcb_machine()
     write_real_param("DRILL_DEPTH", DRILL_DEPTH);
     write_real_param("DRILL_DWELL", DRILL_DWELL);
     write_real_param("SPINDLE_ON_TIME", SPINDLE_ON_TIME);
+    write_real_param("SPINDLE_ETCH_RPM", SPINDLE_ETCH_RPM);
+    write_real_param("SPINDLE_DRILL_RPM", SPINDLE_DRILL_RPM);
+    write_real_param("SPINDLE_MILL_RPM", SPINDLE_MILL_RPM);
     write_real_param("MILLING_DEPTH", MILLING_DEPTH);
     write_real_param("TEXT_DEPTH", TEXT_DEPTH);
     write_real_param("TOOL_CHANGE_POS_X", TOOL_CHANGE_POS_X);
@@ -535,6 +538,12 @@ int Result = dlgDialog("pcb-gcode Setup") {
 				dlgGridLayout {
 					dlgCell(1, 0) dlgLabel("Spin Up Time ");
 					dlgCell(1, 1) dlgRealEdit(SPINDLE_ON_TIME); // DO NOT CONVERT
+					dlgCell(2, 0) dlgLabel("Etch RPM");
+					dlgCell(2, 1) dlgRealEdit(SPINDLE_ETCH_RPM); // DO NOT CONVERT
+					dlgCell(3, 0) dlgLabel("Drill RPM");
+					dlgCell(3, 1) dlgRealEdit(SPINDLE_DRILL_RPM); // DO NOT CONVERT
+					dlgCell(4, 0) dlgLabel("Mill RPM");
+					dlgCell(4, 1) dlgRealEdit(SPINDLE_MILL_RPM); // DO NOT CONVERT
 				}
 			}
 			dlgGroup("Feed Rates") {
