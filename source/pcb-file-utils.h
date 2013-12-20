@@ -221,7 +221,7 @@ void output_file_heading()
 	if (NC_FILE_COMMENT_MACHINE_SETTINGS) {
 		comm("Settings from pcb-machine.h");
 		comm("  Tool Size");
-		comm(fr(FORMAT, g_width));
+		comm(fr(FORMAT, g_tool_size));
 		comm("Z Axis Settings");
 		comm("  High     Up        Down     Drill");
 		comm(fr(FORMAT, DEFAULT_Z_HIGH) + "\t" +

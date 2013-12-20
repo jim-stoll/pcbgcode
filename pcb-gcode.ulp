@@ -53,7 +53,7 @@
        "</table>"
 			 "<hr>"
      
-g_width = DEFAULT_WIDTH;
+g_tool_size = TOOL_SIZE;
 
 // Filename to output to.
 string m_file_name = "";
@@ -660,9 +660,9 @@ void generate_outlines(int which_side)
 		,
 		UNIT_OF_MEASURE,
 		m_isolate,
-		g_width,
+		g_tool_size,
 		m_layer,
-		OUTLINES_SIGNAL_NAME, g_width,
+		OUTLINES_SIGNAL_NAME, g_tool_size,
 		x1, y1, x2, y1, x2, y2, x1, y2, x1, y1
 		);
 		g_cmd = g_cmd + cmd_temp;
@@ -688,7 +688,7 @@ void out_lines(string path, string mode)
   output(path, mode) {
 	if (m_pass_num == 0) {
 		printf("# board=%s\n", elided_path(get_filename(), 30));
-		printf("# tool size=%f\n", g_width);
+		printf("# tool size=%f\n", g_tool_size);
 	}
 	printf("# pass=%d\n", m_pass_num + 1);
     printf(m_lines);
@@ -703,7 +703,7 @@ void out_lines(string path, string mode)
 // Return:
 //  none
 // Changes:
-//  g_width
+//  g_tool_size
 //  m_lines
 //
 void output_text_code(string file_name)
@@ -764,7 +764,7 @@ void output_text_code(string file_name)
 		user_file_closed(get_filename(), "wt");
 	} 
 	// board
-	g_width = abs(TEXT_DEPTH);
+	g_tool_size = abs(TEXT_DEPTH);
 	out_lines(g_path + "/viewer/data/optimize_me.txt", "wt");
 	out_lines(g_path + "/viewer/applet/data/optimize_me.txt", "wt");
 	out_lines(g_path + "/viewer/application.macosx/data/optimize_me.txt", "wt");
@@ -786,7 +786,7 @@ void output_text_code(string file_name)
 // Return:
 //  none
 // Changes:
-//  g_width
+//  g_tool_size
 //  m_lines
 //
 void output_mill_code(string file_name)
@@ -847,7 +847,7 @@ void output_mill_code(string file_name)
 	} 
 	// board
 
-	g_width = abs(MILLING_DEPTH);
+	g_tool_size = abs(MILLING_DEPTH);
 	out_lines(g_path + "/viewer/data/optimize_me.txt", "wt");
 	out_lines(g_path + "/viewer/applet/data/optimize_me.txt", "wt");
 	out_lines(g_path + "/viewer/application.macosx/data/optimize_me.txt", "wt");
@@ -1128,11 +1128,11 @@ if (FILENAMES_8_CHARACTERS) {
 }
 
 // Use a default width if one is not given.
-if (argv[WIDTH_ARG]) {
-	g_width = strtod(argv[WIDTH_ARG]);
+if (argv[TOOL_SIZE_ARG]) {
+	g_tool_size = strtod(argv[TOOL_SIZE_ARG]);
 }
 else {
-	g_width = DEFAULT_WIDTH;
+	g_tool_size = TOOL_SIZE;
 }
 
 // Get the isolate parameter or use the default.
@@ -1240,7 +1240,7 @@ if (g_phase < PH_LAST_PHASE) {
 		"window fit;\n"
 		"run '%s' '%s' '%f' '%f' '%d' '%d';\n",
 		g_cmd,
-		argv[PROGRAM_NAME_ARG], m_file_name, g_width, m_isolate,
+		argv[PROGRAM_NAME_ARG], m_file_name, g_tool_size, m_isolate,
 		m_pass_num, g_phase
 		);
 	exit(g_cmd);
