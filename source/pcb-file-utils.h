@@ -260,15 +260,18 @@ void output_file_heading()
 // Writes the header for the output file.
 //
 // Params:
-//  none
+//  spindle_speed
 // Returns:
 //  none
 //
-void begin_gcode(void)
+void begin_gcode(real spindle_speed)
 {
 	out(get_mode());
 
 	out(ABSOLUTE_MODE);
+
+	out(fr(SPINDLE_SPEED, spindle_speed));
+
 	rz(DEFAULT_Z_HIGH);
 	rxy(X_HOME, Y_HOME);
 	out(fr(SPINDLE_ON, SPINDLE_ON_TIME));
