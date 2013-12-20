@@ -52,7 +52,7 @@ enum { TOP = 0, BOTTOM = 1, MILL = 2, TEXT = 3, ALL = 4 };
 
 int PROGRAM_NAME_ARG = 0;
 int FILENAME_ARG = 1;
-int WIDTH_ARG = 2;
+int TOOL_SIZE_ARG = 2;
 int ISO_ARG = 3;
 int PASS_ARG = 4;
 int PHASE_ARG = 5;
@@ -124,7 +124,7 @@ int DRILL_Y = 2;
 
 string UNIT_OF_MEASURE = "not set";
 
-real g_width = 0.01;
+real g_tool_size = 0.01;
 int g_side = TOP;
 
 // Which phase of the process we're working on.

@@ -84,7 +84,7 @@ void convert_units(int new_units)
     ISO_MIN = convert(ISO_MIN, m_current_units, new_units);
     ISO_MAX = convert(ISO_MAX, m_current_units, new_units);
     ISO_STEP = convert(ISO_STEP, m_current_units, new_units);
-    DEFAULT_WIDTH = convert(DEFAULT_WIDTH, m_current_units, new_units);
+    TOOL_SIZE = convert(TOOL_SIZE, m_current_units, new_units);
     DEFAULT_Z_HIGH = convert(DEFAULT_Z_HIGH, m_current_units, new_units);
     DEFAULT_Z_UP = convert(DEFAULT_Z_UP, m_current_units, new_units);
     DEFAULT_Z_DOWN = convert(DEFAULT_Z_DOWN, m_current_units, new_units);
@@ -274,7 +274,7 @@ void save_pcb_machine()
     write_real_param("TOOL_CHANGE_POS_Z", TOOL_CHANGE_POS_Z);
     write_real_param("FEED_RATE", FEED_RATE);
     write_real_param("FEED_RATE_Z", FEED_RATE_Z);
-    write_real_param("DEFAULT_WIDTH", DEFAULT_WIDTH);
+    write_real_param("TOOL_SIZE", TOOL_SIZE);
     write_real_param("X_OFFSET", X_OFFSET);
     write_real_param("Y_OFFSET",Y_OFFSET);
     write_real_param("X_HOME", X_HOME);
@@ -451,7 +451,7 @@ int Result = dlgDialog("pcb-gcode Setup") {
              dlgSpacing(10);
              dlgVBoxLayout {
                dlgLabel("Etching Tool Size ");
-               dlgHBoxLayout { dlgRealEdit(DEFAULT_WIDTH); 
+               dlgHBoxLayout { dlgRealEdit(TOOL_SIZE); 
                  dlgLabel(m_uom_suffix, YES); 
                }
              }
