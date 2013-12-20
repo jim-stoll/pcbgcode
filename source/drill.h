@@ -118,10 +118,12 @@ load_rack();
 /**
  * Returns a drill that the user has in stock,
  * based on the min and max values of the hole.
+ * Optionally, counts the number of substitutions made.
+ *
  *
 **/
 int g_did_subs;
-int get_drill_for(int req_size)
+int get_drill_for_and_count(int req_size, int do_count)
 {
 	int i;
 	string key;
@@ -162,7 +164,7 @@ int get_drill_for(int req_size)
 			if (g_mins[i] == 0) g_mins[i] = u2inch(req_size);
 			g_mins[i] = min(g_mins[i], u2inch(req_size));
 			g_maxs[i] = max(g_maxs[i], u2inch(req_size));
-			g_drill_sub_cnt[i] += 1;
+			if (do_count) g_drill_sub_cnt[i] += 1;
 			//      sprintf(temp_str, "req = %f, %d min = %f, max = %f", u2inch(req_size), i, g_mins[i], g_maxs[i]);
 			//      dlgMessageBox(temp_str);
 			g_did_subs = 1;
@@ -176,6 +178,17 @@ int get_drill_for(int req_size)
 	return req_size;
 }
 
+/*
+ * Returns a drill for a requested hole size.
+ * Calls get_drill_for_and_count() and retains default side effect of counting hole substitutions.
+ *
+ */
+int get_drill_for(int req_size)
+{
+  return get_drill_for_and_count(req_size, true);
+}
+
+
 /**
  * Returns a tool number for a given size, or 
  * a default if the size isn't available, there is no
@@ -187,7 +200,7 @@ int get_tool_num_for(int req_size, int default_tool)
 	if (!m_have_rack) {
 		return default_tool;
 	}
-	get_drill_for(req_size);
+	get_drill_for_and_count(req_size, false);
 	if (m_last_match == -1) m_last_match = default_tool;
 	return m_last_match;
 }
