@@ -11,7 +11,7 @@ int END_OF_STACK = -1;
 //
 // Global variables
 //
-string g_stack[];
+numeric string g_stack[];
 int g_stack_ndx = 0;
 int g_fwd_iter = 0;
 int g_rev_iter = 0;
