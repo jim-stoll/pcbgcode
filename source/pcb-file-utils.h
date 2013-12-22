@@ -45,6 +45,13 @@ real cur_x = -999.999;
 real cur_y = -999.999;
 real cur_z = -999.999;
 
+void reset_current_positions(void)
+{
+  cur_x = -999.999;
+  cur_y = -999.999;
+  cur_z = -999.999;
+}
+
 void xy(real x, real y)
 {
 	if (close(x, cur_x) && close(y, cur_y)) {
@@ -271,6 +278,8 @@ void begin_gcode(real spindle_speed)
 	out(ABSOLUTE_MODE);
 
 	out(fr(SPINDLE_SPEED, spindle_speed));
+	
+	reset_current_positions();
 
 	rz(DEFAULT_Z_HIGH);
 	rxy(X_HOME, Y_HOME);
