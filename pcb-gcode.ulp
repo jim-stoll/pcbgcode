@@ -325,6 +325,8 @@ void drill(int which_side, string suffix)
 				drill_size_mm  = u2mm(my_strtol(drill_args[DRILL_SIZE]));
 				drill_size = my_strtol(drill_args[DRILL_SIZE]);
 
+				if (drill_size_mm == 0.0) continue;
+
 				if (drill_size != last_size) {
 					++m_current_tool;
 					drill_tool_num = get_tool_num_for(my_strtol(drill_args[DRILL_SIZE]), m_current_tool);
@@ -349,6 +351,8 @@ void drill(int which_side, string suffix)
 				drill_x = scale_x(my_strtol(drill_args[DRILL_X]));
 				drill_y = scale_y(my_strtol(drill_args[DRILL_Y]));
 				save_extents(drill_x, drill_y);
+
+				if (drill_size == 0.0) continue;
 
         //
         // Check to see if the drill size has changed,
