@@ -52,6 +52,33 @@ void reset_current_positions(void)
   cur_z = -999.999;
 }
 
+void update_cur_z(real z)
+{
+  cur_z = z;
+}
+
+void update_cur_x(real x)
+{
+  cur_x = x;
+}
+
+void update_cur_y(real y)
+{
+  cur_y = y;
+}
+
+void update_cur_xy(real x, real y)
+{
+  update_cur_x(x);
+  update_cur_y(y);
+}
+
+void update_cur_xyz(real x, real y, real z)
+{
+  update_cur_xy(x, y);
+  update_cur_z(z);
+}
+
 void xy(real x, real y)
 {
 	if (close(x, cur_x) && close(y, cur_y)) {
@@ -61,26 +88,23 @@ void xy(real x, real y)
 	if (COMPACT_GCODE == YES) {
 		if (! close(x, cur_x) && ! close(y, cur_y)) {
 			out(frr(MOVE_XY, x, y) + EOL);
-			cur_x = x;
-			cur_y = y;
+			update_cur_xy(x, y);
 			return;
 		}
 		if (! close(x, cur_x)) {
 			out(fr(MOVE_X, x) + EOL);
-			cur_x = x;
-			cur_y = y;
+			update_cur_xy(x, y);
 			return;
 		}
 		if (! close(y, cur_y)) {
 			out(fr(MOVE_Y, y) + EOL);
-			cur_y = y;
+			update_cur_xy(x, y);
 			return;
 		}
 	}
 	if (! close(x, cur_x) || ! close(y, cur_y)) {
 		out(frr(MOVE_XY, x, y) + EOL);
-		cur_x = x;
-		cur_y = y;
+		update_cur_xy(x, y);
 	}
 }
 
@@ -96,7 +120,7 @@ void fx(real x)
 {
 	if (! close(x, cur_x)) {
 		out(fr(FEED_MOVE_X, x) + EOL);
-		cur_x = x;
+		update_cur_x(x);
 	}
 }
 
@@ -104,7 +128,7 @@ void fy(real y)
 {
 	if (! close(y, cur_y)) {
 		out(fr(FEED_MOVE_Y, y) + EOL);
-		cur_y = y;
+		update_cur_y(y);
 	}
 }
 
@@ -112,7 +136,7 @@ void fz(real z)
 {
 	if (! close(z, cur_z)) {
 		out(fr(FEED_MOVE_Z, z) + EOL);
-		cur_z = z;
+		update_cur_z(z);
 	}
 }
 
@@ -121,15 +145,14 @@ void fz(real z)
 void fzr(real z, real f) 
 {
 	out( frr(FEED_MOVE_Z_WITH_RATE, z, f)      + EOL); 
-	cur_z = z;
+	update_cur_z(z);
 }
 
 void fxy(real x, real y)
 {
 	if (! close(x, cur_x) || ! close(y, cur_y)) {
 		out( frr(FEED_MOVE_XY, x, y)               + EOL);
-		cur_x = x;
-		cur_y = y;
+		update_cur_xy(x, y);
 	}
 }
 
@@ -138,15 +161,15 @@ void fxy(real x, real y)
 void fxyr(real x, real y, real f) 
 {
 	out( frrr(FEED_MOVE_XY_WITH_RATE, x, y, f) + EOL);
+	update_cur_xy(x, y);
 }
 
 void fxyz(real x, real y, real z)
 {
 	if (! close(x, cur_x) || ! close(y, cur_y) || ! close(z, cur_z)) {
 		out(frrr(FEED_MOVE_XYZ, x, y, z)           + EOL);
-		cur_x = x;
-		cur_y = y;
-		cur_z = z;
+		update_cur_xy(x, y);
+		update_cur_z(z);
 	}
 }
 
@@ -157,7 +180,7 @@ void rx(real x)
 {
 	if (! close(x, cur_x)) {
 		out(fr(RAPID_MOVE_X, x) + EOL);
-		cur_x = x;
+		update_cur_x(x);
 	}
 }
 
@@ -165,7 +188,7 @@ void ry(real y)
 {
 	if (! close(y, cur_y)) {
 		out(fr(RAPID_MOVE_Y, y) + EOL);
-		cur_y = y;
+		update_cur_y(y);
 	}
 }
 
@@ -173,7 +196,7 @@ void rz(real z)
 {
 	if (! close(z, cur_z)) {
 		out(fr(RAPID_MOVE_Z, z) + EOL);
-		cur_z = z;
+		update_cur_z(z);
 	}
 }
 
@@ -181,8 +204,7 @@ void rxy(real x, real y)
 {
 	if (! close(x, cur_x) || ! close(y, cur_y)) {
 		out( frr(RAPID_MOVE_XY, x, y)               + EOL);
-		cur_x = x;
-		cur_y = y;
+		update_cur_xy(x, y);
 	}
 }
 
@@ -190,9 +212,8 @@ void rxyz(real x, real y, real z)
 {
 	if (! close(x, cur_x) || ! close(y, cur_y) || ! close(z, cur_z)) {
 		out(frrr(RAPID_MOVE_XYZ, x, y, z)           + EOL);
-		cur_x = x;
-		cur_y = y;
-		cur_z = z;
+		update_cur_xy(x, y);
+		update_cur_z(z);
 	}
 }
 
@@ -472,6 +493,7 @@ void output_drill_first_hole(real drill_x, real drill_y, real depth)
 			depth, FEED_RATE_Z, DEFAULT_Z_UP,
 			DRILL_DWELL);
 		out(tt);
+		update_cur_xy(drill_x, drill_y);
 	}
 }
 
@@ -484,5 +506,6 @@ void output_drill_hole(real drill_x, real drill_y, real depth)
 	}
 	else {
 		out(frr(DRILL_HOLE, drill_x, drill_y));
+		update_cur_xy(drill_x, drill_y);		
 	}
 }
