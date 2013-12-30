@@ -4,7 +4,7 @@
 (This file generated from the board:)
 (.../pcbgcode.repo/docs/examples/enabtmr.brd)
 (Current profile is .../pcbgcode-work/profiles/mach.pp  )
-(This file generated 12/4/13 4:52 PM)
+(This file generated 12/30/13 2:51 PM)
 (Settings from pcb-machine.h)
 (  Tool Size)
 (0.0070  )
@@ -27,6 +27,7 @@
 G20
 (Absolute Coordinates)
 G90
+S10000
 G00 Z0.5000  
 G00 X0.0000  Y0.0000  
 M03

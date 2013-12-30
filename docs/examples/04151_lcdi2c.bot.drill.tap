@@ -4,7 +4,7 @@
 (This file generated from the board:)
 (.../docs/examples/04151_lcdi2c.brd)
 (Current profile is .../pcbgcode-work/profiles/mach.pp  )
-(This file generated 12/4/13 4:54 PM)
+(This file generated 12/30/13 2:55 PM)
 (Settings from pcb-machine.h)
 (  Tool Size)
 (0.0070  )
@@ -24,17 +24,20 @@
 (Generated top outlines, top drill, bottom outlines, bottom drill, )
 (Unit of measure: inch)
 ( Tool|       Size       |  Min Sub |  Max Sub |   Count )
-( T02 | 0.813mm 0.0320in | 0.0320in | 0.0320in |      49 )
-( T03 | 1.016mm 0.0400in | 0.0400in | 0.0400in |      17 )
-( T06 | 2.159mm 0.0850in | 0.0850in | 0.1250in |       5 )
-( T00 | 0.000mm 0.0000in | 0.0000in | 0.0000in |       1 )
+( T02 | 0.813mm 0.0320in | 0.0320in | 0.0320in |      48 )
+( T03 | 1.016mm 0.0400in | 0.0400in | 0.0400in |      16 )
+( T06 | 2.159mm 0.0850in | 0.0850in | 0.1250in |       4 )
 (Inch Mode)
 G20
 (Absolute Coordinates)
 G90
+S25000
+G00 Z0.5000  
+G00 X0.0000  Y0.0000  
+M03
+G04 P3.000000
 M05
 G00 Z1.0000  
-G00 X0.0000  Y0.0000  
 M06 T02  ; 0.0320  
 G01 Z0.0000  F10    
 M06 
@@ -91,6 +94,7 @@ G82 X-1.7500 Y1.1200
 G82 X-1.7500 Y1.2200  
 M05
 G00 Z1.0000  
+G00 X0.0000  Y0.0000  
 M06 T03  ; 0.0400  
 G01 Z0.0000  F10    
 M06 
@@ -115,6 +119,7 @@ G82 X-2.0000 Y1.0300
 G82 X-2.3000 Y1.0300  
 M05
 G00 Z1.0000  
+G00 X0.0000  Y0.0000  
 M06 T06  ; 0.0850  
 G01 Z0.0000  F10    
 M06 
@@ -125,15 +130,6 @@ G82 X-0.1500 Y0.1300  Z-0.0320 F10    R0.1000  P1.000000
 G82 X-0.5029 Y0.7576  
 G82 X-0.1500 Y1.1900  
 G82 X-1.1171 Y0.7576  
-M05
-G00 Z1.0000  
-M06 T00  ; 0.0000  
-G01 Z0.0000  F10    
-M06 
-G00 Z0.1000  
-M03
-G04 P3.000000
-G82 X0.0000  Y0.0000  Z-0.0320 F10    R0.1000  P1.000000
 T01 
 G00 Z0.5000  
 M05
