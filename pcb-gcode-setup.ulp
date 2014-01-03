@@ -138,6 +138,10 @@ int num_pp_files;
 
 num_pp_files = fileglob(pp_files, g_path + "/profiles/*.pp");
 
+if (num_pp_files == 0) {
+  path_not_set_error();
+}
+
 for(int i=0; i < num_pp_files; i++) {
   string lines[];
   
@@ -850,7 +854,7 @@ if (Result == 1 || Result == 2) {
 
 
 	if(pp_selection > -1) {
-		if (dlgMessageBox(
+		if (!program_is_setup() || dlgMessageBox(
       "<qt>If you have made manual changes to gcode-defaults.h, they"
 			" will be overwritten by your new gcode style selection.<p>"
 			"(Click <b>Yes</b> if you aren't sure.)<p>"

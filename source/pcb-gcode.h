@@ -175,6 +175,15 @@ int program_is_setup()
 	return YES;
 }
 
+void path_not_set_error()
+{
+  dlgMessageBox("There is a problem with your installation of pcb-gcode.\n" +
+  "You probably need to add the path to pcb-gcode's folder in " +
+  "EAGLE's Control Panel | Options | Directories | User Language Programs setting.\n"
+  "Please see the Configuration section of the manual");
+  exit(-1);
+}
+
 
 // Find the path where all our files are located. It must be one of the directories in the
 // Options | Directories | User Language Programs settings.
@@ -211,11 +220,7 @@ void get_path()
 get_path();
 
 if (g_path == "") {
-  dlgMessageBox("There is a problem with your installation of pcb-gcode.\n" +
-  "You probably need to add the path to pcb-gcode's folder in " +
-  "EAGLE's Control Panel | Options | Directories | User Language Programs.\n"
-  "Please see docs/readme.html");
-  exit(-1);
+  path_not_set_error();
 }
 else {
 //  dlgMessageBox("g_path = " + g_path);
