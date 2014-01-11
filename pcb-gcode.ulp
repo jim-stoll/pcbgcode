@@ -504,11 +504,14 @@ void spot_drill(UL_BOARD B)
 //
 real m_arc_begin_x;
 real m_arc_begin_y;
+real m_arc_radius;
 int pair_count = 0;
 int MAX_COORDS_PER_LINE = 4;
-void device_draw(int x1, int y1, int x2, int y2, int state, real z_down)
+void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radius)
 {
 	real rx1, ry1, rx2, ry2;
+	
+	string str;
 	
 	rx1 = scale_x(x1);
 	ry1 = scale_y(y1);
@@ -528,7 +531,7 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down)
 
 			rz(DEFAULT_Z_UP);
 			rxy(rx1, ry1);
-			fzr(z_down, FEED_RATE_Z);
+			fzr(z_down_or_radius, FEED_RATE_Z);
 			fxyr(rx2, ry2, FEED_RATE);
 			pair_count = 0;
 			break;
@@ -586,6 +589,7 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down)
 			user_arc_begin(rx1, ry1, rx2, ry2);
 			m_arc_begin_x = rx1;
 			m_arc_begin_y = ry1;
+			m_arc_radius = units(z_down_or_radius);
 			break;
 
 		// Finish an arc.
@@ -595,17 +599,18 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down)
 			real cy = ry2;
 			real end_x = rx1;
 			real end_y = ry1;
-		
+			
 			rz(DEFAULT_Z_UP);
 			rxy(end_x, end_y);
-			fzr(z_down, FEED_RATE_Z);
+			fzr(z_down_or_radius, FEED_RATE_Z);
+			
 			if (g_side == TOP || MIRROR_BOTTOM == YES) {
-				out(frrrr(CIRCLE_TOP, m_arc_begin_x, m_arc_begin_y, cx, cy));
-			}
-			else {
-				out(frrrr(CIRCLE_BOTTOM, m_arc_begin_x, m_arc_begin_y, cx, cy));
-			}
-			break;
+        out(frrr(ARC_TOP, m_arc_begin_x, m_arc_begin_y, m_arc_radius));
+      }
+      else {
+        out(frrr(ARC_BOTTOM, m_arc_begin_x, m_arc_begin_y, m_arc_radius));
+      }
+		  break;
 
 	}
 	// switch(state)
@@ -739,7 +744,7 @@ void output_text_code(string file_name)
 
 						// if this is an arc, it is treated specially.
 						if (W.arc) {
-							device_draw( W.arc.x1, W.arc.y1, W.arc.x2, W.arc.y2, ST_ARC_BEGIN, TEXT_DEPTH);
+							device_draw( W.arc.x1, W.arc.y1, W.arc.x2, W.arc.y2, ST_ARC_BEGIN, W.arc.radius);
 							device_draw( W.arc.x2, W.arc.y2, W.arc.xc, W.arc.yc, ST_ARC_END, TEXT_DEPTH);
 							save_extents(W.x1, W.y1);
 							save_extents(W.x2, W.y2);
@@ -753,7 +758,7 @@ void output_text_code(string file_name)
 							save_extents(W.x1, W.y1);
 							save_extents(W.x2, W.y2);
 						} 
-						// if (W.arc)
+						// if (W.arc) 
 					} 
 					// if (W.layer == TEXT_LAYER)
 				}
@@ -823,7 +828,7 @@ void output_mill_code(string file_name)
 
 					// if this is an arc, it is treated specially.
 					if (P.arc) {
-						device_draw( P.arc.x1, P.arc.y1, P.arc.x2, P.arc.y2, ST_ARC_BEGIN, MILLING_DEPTH);
+						device_draw( P.arc.x1, P.arc.y1, P.arc.x2, P.arc.y2, ST_ARC_BEGIN, P.arc.radius);
 						device_draw( P.arc.x2, P.arc.y2, P.arc.xc, P.arc.yc, ST_ARC_END, MILLING_DEPTH);
 						save_extents(P.x1, P.y1);
 						save_extents(P.x2, P.y2);
