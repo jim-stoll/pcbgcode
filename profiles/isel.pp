@@ -18,11 +18,13 @@ string COMMENT_END    = ")";
 // 
 // Format strings for coordinates, etc.
 //
+string EOL        = "\n";				  		/* standard line ending */
+string PARAM      = "#";							/* some use P, some # for parameters */
 string FORMAT     = "%-6.0f ";      /* coordinate format */
 string FR_FORMAT  = "F%-5.0f "; 	/* feedrate format */
 string IJ_FORMAT  = "I" + FORMAT + "J" + FORMAT;
-string EOL        = "\n";				  		/* standard line ending */
-string PARAM      = "#";							/* some use P, some # for parameters */
+string R_FORMAT   = "R" + FORMAT;
+
 //
 // Modes
 //
@@ -125,5 +127,5 @@ string TOOL_CHANGE_TABLE_FORMAT(int tool_number, real size_mm, real size_inch, r
 //
 // Circles / Arcs
 //
-string CIRCLE_TOP     = ARC_CW + MOVE_XY + IJ_FORMAT + EOL;
-string CIRCLE_BOTTOM  = ARC_CCW + MOVE_XY + IJ_FORMAT + EOL;
+string ARC_TOP     = ARC_CW + MOVE_XY + R_FORMAT + EOL;
+string ARC_BOTTOM  = ARC_CCW + MOVE_XY + R_FORMAT + EOL;
