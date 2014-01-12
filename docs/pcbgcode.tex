@@ -590,7 +590,7 @@ The previewer does not read and interpret the NC files directly, but uses an int
 	\center{
 	\includegraphics[width=14cm]{figs/Previewer-Screen-Shot.png}
 	}
-	\caption{The previewer showing a multi-pass file for the bottom side of an example PCB included with pcb-gcode.}
+	\caption{The previewer showing a multi-pass file for the bottom side of an example PCB included with pcb-gcode. Each $\times$ represents a drill hole in the drill file.}
 	\label{fig:PreviewerScreenShot}
 \end{figure}
 
@@ -863,7 +863,7 @@ T06	0.085in		0.070in	0.125in	1.5in
 \section{User GCode}\index{user gcode}\label{sec:UserGCode}
 
 \warning{Advanced}
-The pcb−gcode ULP allows you to customize the g−code created for your boards to a great degree. If you don't see an option in the profile that suits your needs, you can add your code to the \code{user-gcode.h} file. To enable user g-code, run \code{pcb-gcode-setup}, click the \code{GCode Options} tab, then turn the \code{Use user gcode...} option on. Generate a set of NC files for a board. Let's say, for example, that after you change the tool when you're drilling from the bottom of the board, you want the tool to move to X5 Y5 Z5, turn the spindle off, then turn it back on. Since this has to do with drilling the bottom of the board, we should look at the ...bot.drill.tap (bottom drill) file. An excerpt from a file is shown in Listing \vref{lst:BottomDrillBeforeGCode}.
+The pcb-gcode ULP allows you to customize the g-code created for your boards to a great degree. If you don't see an option in the profile that suits your needs, you can add your code to the \code{user-gcode.h} file. To enable user g-code, run \code{pcb-gcode-setup}, click the \code{GCode Options} tab, then turn the \code{Use user gcode...} option on. Generate a set of NC files for a board. Let's say, for example, that after you change the tool when you're drilling from the bottom of the board, you want the tool to move to X5 Y5 Z5, turn the spindle off, then turn it back on. Since this has to do with drilling the bottom of the board, we should look at the ...bot.drill.tap (bottom drill) file. An excerpt from a file is shown in Listing \vref{lst:BottomDrillBeforeGCode}.
 
 \begin{lstlisting}[caption={Bottom drill file before adding user g-code.},label={lst:BottomDrillBeforeGCode}]
 G90
@@ -879,10 +879,10 @@ M03
 G04 P3.000000
 (Bottom Tool Change End)
 (Tool Change End)
-G82 X−1.6200 Y1.2900 Z−0.1000 F9.80  R0.0200 P0.250000
-G82 X−1.8800 Y0.5900
-G82 X−1.9500 Y1.4900
-G82 X−1.9500 Y1.8100
+G82 X-1.6200 Y1.2900 Z-0.1000 F9.80  R0.0200 P0.250000
+G82 X-1.8800 Y0.5900
+G82 X-1.9500 Y1.4900
+G82 X-1.9500 Y1.8100
 \end{lstlisting}
 
 We want to add our commands after the tool is changed when drilling the bottom of the board. Looking at the sample above, you will find this line:
@@ -890,7 +890,7 @@ We want to add our commands after the tool is changed when drilling the bottom o
 (Bottom Tool Change End)
 \end{lstlisting}
 
-That's where we want our code to go. Now you can open user-gcode.h in your favorite editor, and use the Search or Find feature to find the line with Bottom Tool Change End. Here's an excerpt from the user−gcode.h file:
+That's where we want our code to go. Now you can open user-gcode.h in your favorite editor, and use the Search or Find feature to find the line with Bottom Tool Change End. Here's an excerpt from the user-gcode.h file:
 
 \begin{lstlisting}
 TOOL_ZERO_BEGIN[BOTTOM]	= "(Bottom Tool zero begin)\n";
@@ -912,7 +912,7 @@ TOOL_CHANGE_END[BOTTOM] = "(Bottom Tool Change End)\n"
                           "G04 P3.000000 (wait 3 more seconds\n";
 \end{lstlisting}
 
-Notice that all the lines have a \lstinline!\n! before the last \lstinline!"! and that the last line is the only one that ends with a semi−colon \lstinline!;!.
+Notice that all the lines have a \lstinline!\n! before the last \lstinline!"! and that the last line is the only one that ends with a semi-colon \lstinline!;!.
 Generate the files again. Open the bottom drill file in the editor and have a look. Here's how the sample looks now:
 \begin{lstlisting}
 G90
@@ -933,10 +933,10 @@ G04 P3.000000 (wait 3 seconds)
 M03 (spindle on)
 G04 P3.000000 (wait 3 more seconds)
 (Tool Change End)
-G82 X−1.6200 Y1.2900 Z−0.1000 F9.80  R0.0200 P0.250000
-G82 X−1.8800 Y0.5900
-G82 X−1.9500 Y1.4900
-G82 X−1.9500 Y1.8100
+G82 X-1.6200 Y1.2900 Z-0.1000 F9.80  R0.0200 P0.250000
+G82 X-1.8800 Y0.5900
+G82 X-1.9500 Y1.4900
+G82 X-1.9500 Y1.8100
 \end{lstlisting}
 Note that the lines added to the user-gcode.h file are now in the generated g-code from lines 13-17.
 
@@ -948,7 +948,7 @@ To conclude, the steps to follow are:
 \item Find the file that you want the code to be put in (bot, top, etc.).
 \item Find the location in the file that you want the code.
 \item Find the comment near that location.
-\item Find the comment in the user−gcode.h file.
+\item Find the comment in the user-gcode.h file.
 \item Insert your code after the comment.
 \item Generate the files again and check to be sure it is correct.
 \end{enumerate}
@@ -994,6 +994,7 @@ string PARAM      = "P";              /* some use P, some # for parameters */
 string FORMAT     = "%-7.4f ";        /* coordinate format */
 string FR_FORMAT  = "F%-5.0f ";       /* feedrate format */
 string IJ_FORMAT  = "I" + FORMAT + "J" + FORMAT;
+string R_FORMAT   = "R" + FORMAT;
 
 //
 // Modes
@@ -1092,8 +1093,8 @@ string TOOL_CHANGE_TABLE_FORMAT(int tool_number, real size_mm, real size_inch, r
 //
 // Circles / Arcs
 //
-string CIRCLE_TOP     = ARC_CW + MOVE_XY + IJ_FORMAT + EOL;
-string CIRCLE_BOTTOM  = ARC_CCW + MOVE_XY + IJ_FORMAT + EOL;
+string ARC_TOP     = ARC_CW + MOVE_XY + R_FORMAT + EOL;
+string ARC_BOTTOM  = ARC_CCW + MOVE_XY + R_FORMAT + EOL;
 
 \end{lstlisting}
 
