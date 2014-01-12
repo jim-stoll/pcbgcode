@@ -713,6 +713,8 @@ The first option on line 11, \code{FILENAMES\_8\_CHARACTERS}, tells pcb-gcode wh
     \item[FR\_{}FORMAT] is the format used to insert feedrate parameters into the g-code. In the example, the leading \code{F} indicates this is a feedrate parameter. The rest of the format is similar to \code{FORMAT} --- leading negative sign possible, 5 digits wide, no digits to the right of the decimal point.
     
     \item[IJ\_{}FORMAT] is used to output \code{I J} coordinates to the g-code file. You can see by the definition on line 26 that this format reuses the \code{FORMAT} definition defined earlier.
+    
+    \item[R\_{}FORMAT] is used by commands that require an \code{R} parameter, usually the radius for an arc command.
 \end{description}
 
 \item[Modes] Inch, metric, etc. modes
@@ -800,8 +802,8 @@ The first option on line 11, \code{FILENAMES\_8\_CHARACTERS}, tells pcb-gcode wh
 
 \item[Circles / Arcs] Arc and circle commands.
 \begin{description}
-	\item[CIRCLE\_{}TOP] a clockwise circle on the top of the board. Takes \code{X Y I J} as parameters.
-	\item[CIRCLE\_{}BOTTOM] a counter-clockwise circle on the bottom of the board. Takes \code{X Y I J} as parameters.
+	\item[ARC\_{}TOP] is an arc on the top of the board. Takes \code{X Y R} as parameters.
+	\item[ARC\_{}BOTTOM] an arc on the bottom of the board. Takes \code{X Y R} as parameters.
 \end{description}
 \end{description}
 
