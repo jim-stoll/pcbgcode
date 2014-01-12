@@ -413,8 +413,14 @@ void spot_drill_hole(int drill_size, int x, int y)
 	
 	offset = units(get_drill_for(drill_size)) / 2;
   
-	m_lines += coords(drill_x - offset, drill_y - offset, drill_x + offset, drill_y + offset);
-	m_lines += coords(drill_x - offset, drill_y + offset, drill_x + offset, drill_y - offset);
+  //
+  // Generate X's for drill preview if drills are turned on for this side.
+  //
+  if ((g_side == TOP && GENERATE_TOP_DRILL == YES) ||
+      (g_side == BOTTOM && GENERATE_BOTTOM_DRILL == YES)) {
+	  m_lines += coords(drill_x - offset, drill_y - offset, drill_x + offset, drill_y + offset);
+	  m_lines += coords(drill_x - offset, drill_y + offset, drill_x + offset, drill_y - offset);
+	}
 }
 
 void spot_drill(UL_BOARD B)
