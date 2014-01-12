@@ -75,6 +75,20 @@ Copyright \copyright\ 2013\\[1em]
 % Adobe bug workoround
 \pdfminorversion=4
 
+% no-break code environment to prevent page-breaking a listing
+\lstnewenvironment{nbcode}[1][]%
+  {\minipage{\linewidth} 
+   \lstset{language=eagle,
+	basicstyle=\ttfamily\small,
+	numberstyle=\small\color{gray},
+	numbers=left,
+	showstringspaces=false,
+	stepnumber=1,
+%	frame=shadowbox,
+	breaklines=true,#1}}
+  {\endminipage}
+
+
 %======================================================================
 %======================================================================
 \begin{document}
@@ -267,7 +281,9 @@ isolation = EtchingToolSize+MinimumIsolation+PassNumber*StepSize
 \end{figure}
 
 \subsection{Drilling}
-Compared to the isolation passes and files, drill file creation is relatively straight forward. Each hole in the board is sorted according to size and then position. Optionally a rack file can be used. Rack files contain a list of drills the user has available and the size holes they can be used for. For more information on rack files, see Section \vref{sec:DrillRackFiles}. G-code is created to position and drill each hole. Tool changes can be included in the file so that the user or an automated tool changer can change the bit.
+Compared to the isolation passes and files, drill file creation is relatively straight forward. Each hole in the board is sorted according to size and distance from other holes of the same size. G-code is created to position and drill each hole. Tool changes can be included in the file so that the user or an automated tool changer can change the bit. Optionally a rack file can be used. 
+
+Rack files contain a list of drills the user has available and the size holes they can be used for. For example, if a library part has a 1mm hole, and another part has a 1.1mm hole, a 1.1mm drill bit could be used for both. For more information on rack files, see Section \vref{sec:DrillRackFiles}. 
 
 %======================================================================
 %
@@ -814,7 +830,7 @@ As can be seen, drills with different units of measure are supported. This inclu
 Looking at Listing \ref{lst:SampleRackFile}, the meaning of the fields are as follows:
 
 \begin{description}
-	\item[tool] The tool number to use. This is somewhat arbitrary unless the machine has a tool changer. Just be sure to start with 1 and increment by 1.
+	\item[tool] The tool number to use. This is somewhat arbitrary unless the machine has a tool changer or you have offsets or lengths set up for different tool numbers. Tool numbers can begin at any reasonable number, such as T01, T16, etc.
 	\item[drill\_size] The size of the actual drill. These should be in ascending order from smallest to largest.
 	\item[minimum] The smallest hole size this drill should be used for.
 	\item[maximum] The largest hole this drill should be used for.
@@ -844,7 +860,7 @@ T05	0.062in		0.055in	0.070in	1.5in
 T06	0.085in		0.070in	0.125in	1.5in
 \end{lstlisting}
 
-\begin{lstlisting}[caption={Sample entries for rack files},label={lst:SampleEntries}]
+\begin{nbcode}[caption={Sample entries for rack files},label={lst:SampleEntries}]
 0.032in   0.032 inches
 62ml      62 mils, 0.062 inches
 0.43mm    0.43 millimeters
@@ -853,7 +869,7 @@ T06	0.085in		0.070in	0.125in	1.5in
 0.12      0.12 inches
 0.60      0.60 millimeters
 43        43 wire gage drill
-\end{lstlisting}
+\end{nbcode}
 
 
 
