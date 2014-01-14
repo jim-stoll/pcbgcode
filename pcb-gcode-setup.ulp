@@ -92,8 +92,6 @@ void convert_units(int new_units)
     TOOL_CHANGE_POS_X = convert(TOOL_CHANGE_POS_X, m_current_units, new_units);
     TOOL_CHANGE_POS_Y = convert(TOOL_CHANGE_POS_Y, m_current_units, new_units);
     TOOL_CHANGE_POS_Z = convert(TOOL_CHANGE_POS_Z, m_current_units, new_units);
-    FEED_RATE_ETCH_XY = convert(FEED_RATE_ETCH_XY, m_current_units, new_units);
-    FEED_RATE_ETCH_Z = convert(FEED_RATE_ETCH_Z, m_current_units, new_units);
     EPSILON = convert(EPSILON, m_current_units, new_units);
 
     set_uom_suffix(OUTPUT_UNITS);

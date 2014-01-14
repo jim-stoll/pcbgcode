@@ -608,13 +608,13 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 			
 			rz(DEFAULT_Z_UP);
 			rxy(end_x, end_y);
-			fzr(z_down_or_radius, FEED_RATE_ETCH_Z);
+			fzr(z_down_or_radius, FEED_RATE_MILL_Z);
 			
 			if (g_side == TOP || MIRROR_BOTTOM == YES) {
-        out(frrr(ARC_TOP, m_arc_begin_x, m_arc_begin_y, m_arc_radius));
+        out(frrrr(ARC_TOP, m_arc_begin_x, m_arc_begin_y, m_arc_radius, fr_xy));
       }
       else {
-        out(frrr(ARC_BOTTOM, m_arc_begin_x, m_arc_begin_y, m_arc_radius));
+        out(frrrr(ARC_BOTTOM, m_arc_begin_x, m_arc_begin_y, m_arc_radius, fr_xy));
       }
 		  break;
 
