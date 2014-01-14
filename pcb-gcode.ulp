@@ -374,7 +374,7 @@ void drill(int which_side, string suffix)
 					// Output zero steps and a pause
 					if (DO_TOOL_CHANGE_WITH_ZERO_STEP == YES) {
 						output_tool_zero_begin();
-						fzr(0.000, FEED_RATE_Z);
+						fzr(0.000, FEED_RATE_DRILL_Z);
 						out(OPERATOR_PAUSE + EOL);
 						output_tool_zero_end();
 					}
@@ -513,7 +513,7 @@ real m_arc_begin_y;
 real m_arc_radius;
 int pair_count = 0;
 int MAX_COORDS_PER_LINE = 4;
-void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radius)
+void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radius, real fr_xy, real fr_z)
 {
 	real rx1, ry1, rx2, ry2;
 	
@@ -537,8 +537,8 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 
 			rz(DEFAULT_Z_UP);
 			rxy(rx1, ry1);
-			fzr(z_down_or_radius, FEED_RATE_Z);
-			fxyr(rx2, ry2, FEED_RATE);
+			fzr(z_down_or_radius, fr_z);
+			fxyr(rx2, ry2, fr_xy);
 			pair_count = 0;
 			break;
 
@@ -608,7 +608,7 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 			
 			rz(DEFAULT_Z_UP);
 			rxy(end_x, end_y);
-			fzr(z_down_or_radius, FEED_RATE_Z);
+			fzr(z_down_or_radius, FEED_RATE_ETCH_Z);
 			
 			if (g_side == TOP || MIRROR_BOTTOM == YES) {
         out(frrr(ARC_TOP, m_arc_begin_x, m_arc_begin_y, m_arc_radius));
@@ -750,15 +750,15 @@ void output_text_code(string file_name)
 
 						// if this is an arc, it is treated specially.
 						if (W.arc) {
-							device_draw( W.arc.x1, W.arc.y1, W.arc.x2, W.arc.y2, ST_ARC_BEGIN, W.arc.radius);
-							device_draw( W.arc.x2, W.arc.y2, W.arc.xc, W.arc.yc, ST_ARC_END, TEXT_DEPTH);
+							device_draw( W.arc.x1, W.arc.y1, W.arc.x2, W.arc.y2, ST_ARC_BEGIN, W.arc.radius, FEED_RATE_TEXT_XY, FEED_RATE_TEXT_Z);
+							device_draw( W.arc.x2, W.arc.y2, W.arc.xc, W.arc.yc, ST_ARC_END, TEXT_DEPTH, FEED_RATE_TEXT_XY, FEED_RATE_TEXT_Z);
 							save_extents(W.x1, W.y1);
 							save_extents(W.x2, W.y2);
 							state = ST_START_LINE;
 						}
 						else {
 							// Draw the line (i.e. output the gcode for the line).
-							device_draw(W.x1, W.y1, W.x2, W.y2, state, TEXT_DEPTH);
+							device_draw(W.x1, W.y1, W.x2, W.y2, state, TEXT_DEPTH, FEED_RATE_TEXT_XY, FEED_RATE_TEXT_Z);
 							old_x = W.x2;
 							old_y = W.y2;
 							save_extents(W.x1, W.y1);
@@ -834,15 +834,15 @@ void output_mill_code(string file_name)
 
 					// if this is an arc, it is treated specially.
 					if (P.arc) {
-						device_draw( P.arc.x1, P.arc.y1, P.arc.x2, P.arc.y2, ST_ARC_BEGIN, P.arc.radius);
-						device_draw( P.arc.x2, P.arc.y2, P.arc.xc, P.arc.yc, ST_ARC_END, MILLING_DEPTH);
+						device_draw( P.arc.x1, P.arc.y1, P.arc.x2, P.arc.y2, ST_ARC_BEGIN, P.arc.radius, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
+						device_draw( P.arc.x2, P.arc.y2, P.arc.xc, P.arc.yc, ST_ARC_END, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
 						save_extents(P.x1, P.y1);
 						save_extents(P.x2, P.y2);
 						state = ST_START_LINE;
 					}
 					else {
 						// Draw the line (i.e. output the gcode for the line).
-						device_draw(P.x1, P.y1, P.x2, P.y2, state, MILLING_DEPTH);
+						device_draw(P.x1, P.y1, P.x2, P.y2, state, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
 						old_x = P.x2;
 						old_y = P.y2;
 						save_extents(P.x1, P.y1);
@@ -899,6 +899,8 @@ void write_outlines(int which_side, string suffix, int task)
 	int frame_wire;
 	int state;
 	real spindle_speed;
+	real fr_xy;
+	real fr_z;
 
 	if (m_pass_num == 0) {
 		mode = "wt";
@@ -911,18 +913,26 @@ void write_outlines(int which_side, string suffix, int task)
 		case TOP:
 		  m_layer = TOP_LAYER;
 		  spindle_speed = SPINDLE_ETCH_RPM;
+		  fr_xy = FEED_RATE_ETCH_XY;
+		  fr_z = FEED_RATE_ETCH_Z;
 		  break;
 		case BOTTOM:
 		  m_layer = BOTTOM_LAYER;
 		  spindle_speed = SPINDLE_ETCH_RPM;
+		  fr_xy = FEED_RATE_ETCH_XY;
+		  fr_z = FEED_RATE_ETCH_Z;
 		  break;
 		case MILL:
 		  m_layer = MILL_LAYER;
 		  spindle_speed = SPINDLE_MILL_RPM;
+		  fr_xy = FEED_RATE_MILL_XY;
+		  fr_z = FEED_RATE_MILL_Z;
 		  break;
 		case TEXT:
 		  m_layer = TEXT_LAYER;
 		  spindle_speed = SPINDLE_MILL_RPM;
+		  fr_xy = FEED_RATE_TEXT_XY;
+		  fr_z = FEED_RATE_TEXT_Z;
 		  break;
 		default:
 		  sprintf(g_debug, "Illegal which_side %d in write_outlines", which_side);
@@ -966,8 +976,8 @@ void write_outlines(int which_side, string suffix, int task)
 			if (rubout_layer != -1) {
 				B.wires(W) {
 					if (W.layer == rubout_layer) {
-						device_draw(W.x1, W.y1, W.x2, W.y2, ST_START_LINE, DEFAULT_Z_DOWN);
-						device_draw(W.x1, W.y1, W.x2, W.y2, ST_END_LINE, DEFAULT_Z_DOWN); // fixme needed?
+						device_draw(W.x1, W.y1, W.x2, W.y2, ST_START_LINE, DEFAULT_Z_DOWN, fr_xy, fr_z);
+						device_draw(W.x1, W.y1, W.x2, W.y2, ST_END_LINE, DEFAULT_Z_DOWN, fr_xy, fr_z); // fixme needed?
 					}
 				}
 			}
@@ -1009,7 +1019,7 @@ void write_outlines(int which_side, string suffix, int task)
 								}
 
 								if (!frame_wire) {
-									device_draw(W.x1, W.y1, W.x2, W.y2, state, DEFAULT_Z_DOWN);
+									device_draw(W.x1, W.y1, W.x2, W.y2, state, DEFAULT_Z_DOWN, fr_xy, fr_z);
 								}					
 							} 
 							// P.contours(W)
@@ -1017,7 +1027,7 @@ void write_outlines(int which_side, string suffix, int task)
 
 							case TASK_FILL:
 							P.fillings(W) {
-								device_draw(W.x1, W.y1, W.x2, W.y2, ST_START_LINE, DEFAULT_Z_DOWN);
+								device_draw(W.x1, W.y1, W.x2, W.y2, ST_START_LINE, DEFAULT_Z_DOWN, fr_xy, fr_z);
 							}
 							break;
 						} 

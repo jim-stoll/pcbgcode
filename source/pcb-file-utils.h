@@ -226,6 +226,9 @@ void comm(string str)
 
 void output_file_heading()
 {
+  real fr_xy;
+  real fr_z;
+  
 	if (NC_FILE_COMMENT_FROM_BOARD) {
 		comm(elided_path(argv[PROGRAM_NAME_ARG], 30));
 		comm("Copyright 2005 - 2012 by John Johnson");
@@ -255,24 +258,32 @@ void output_file_heading()
 	      comm("  Tool Size");
 	      comm(fr(FORMAT, g_tool_size));
 		    comm(fr("spindle speed = %6.4f", SPINDLE_ETCH_RPM));
+		    fr_xy = FEED_RATE_ETCH_XY;
+		    fr_z = FEED_RATE_ETCH_Z;
 		    break;
       case PH_MILL:
         comm(fr("spindle speed = %6.4f", SPINDLE_MILL_RPM));
         comm(fr("milling depth = %6.4f", MILLING_DEPTH));
+		    fr_xy = FEED_RATE_MILL_XY;
+		    fr_z = FEED_RATE_MILL_Z;
         break;
       case PH_TEXT:
-        comm(fr("spindle speed = %6.4f", SPINDLE_MILL_RPM));
+        comm(fr("spindle speed = %6.4f", SPINDLE_TEXT_RPM));
         comm(fr("text depth = %6.4f", TEXT_DEPTH));
+		    fr_xy = FEED_RATE_TEXT_XY;
+		    fr_z = FEED_RATE_TEXT_Z;
         break;
       case PH_TOP_DRILL:
       case PH_BOTTOM_DRILL:
         comm(fr("spindle speed = %6.4f", SPINDLE_DRILL_RPM));
+		    fr_xy = 0;
+		    fr_z = FEED_RATE_DRILL_Z;
         break;
     }
 		comm(frrr("tool change at " + FORMAT +  FORMAT + FORMAT, 
 			TOOL_CHANGE_POS_X, TOOL_CHANGE_POS_Y, TOOL_CHANGE_POS_Z));
-		comm("feed rate xy = " + fr(FR_FORMAT, FEED_RATE));
-		comm("feed rate z  = " + fr(FR_FORMAT, FEED_RATE_Z));
+		comm("feed rate xy = " + fr(FR_FORMAT, fr_xy));
+		comm("feed rate z  = " + fr(FR_FORMAT, fr_z));
 	}
 	comm("Z Axis Settings");
 	comm("  High     Up        Down     Drill");
@@ -500,13 +511,13 @@ void output_drill_first_hole(real drill_x, real drill_y, real depth)
 
 	if (SIMPLE_DRILL_CODE) {
 		rxy(drill_x, drill_y);
-		fzr(depth, FEED_RATE_Z);
+		fzr(depth, FEED_RATE_DRILL_Z);
 		rz(DEFAULT_Z_UP);
 	}
 	else {
 	//"G82 X%fY%f Z%f F10.0 R0.1 #250\n",
 		sprintf(tt, DRILL_FIRST_HOLE, drill_x, drill_y,
-			depth, FEED_RATE_Z, DEFAULT_Z_UP,
+			depth, FEED_RATE_DRILL_Z, DEFAULT_Z_UP,
 			DRILL_DWELL);
 		out(tt);
 		update_cur_xy(drill_x, drill_y);
@@ -517,7 +528,7 @@ void output_drill_hole(real drill_x, real drill_y, real depth)
 {
 	if (SIMPLE_DRILL_CODE) {
 		rxy(drill_x, drill_y);
-		fzr(depth, FEED_RATE_Z);
+		fzr(depth, FEED_RATE_DRILL_Z);
 		rz(DEFAULT_Z_UP);
 	}
 	else {

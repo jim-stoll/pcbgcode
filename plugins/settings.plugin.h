@@ -35,7 +35,6 @@ void save_settings_to(string file)
   save_any_changes();
   filecopy(g_path + "/settings/pcb-defaults.h", file + ".def");
   filecopy(g_path + "/settings/pcb-machine.h", file + ".mac");
-  dlgMessageBox("Settings saved to " + file);
 }
 
 void save_settings(string file)

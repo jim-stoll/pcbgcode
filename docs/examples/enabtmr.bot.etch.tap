@@ -4,7 +4,7 @@
 (This file generated from the board:)
 (.../pcbgcode.repo/docs/examples/enabtmr.brd)
 (Current profile is .../pcbgcode-work/profiles/mach.pp  )
-(This file generated 1/14/14 12:06 PM)
+(This file generated 1/14/14 1:21 PM)
 (Settings from pcb-machine.h)
 (spindle on time = 3.0000)
 (  Tool Size)
@@ -15314,7 +15314,7 @@ G01 X-0.2908 Y0.7780
 G01 X-0.2819 Y0.7804  
 G01 X-0.2728 Y0.7816  
 G00 Z0.1000  
-G82 X-0.2200 Y0.1800  Z-0.0110 F10    R0.1000  P1.000000
+G82 X-0.2200 Y0.1800  Z-0.0110 F20    R0.1000  P1.000000
 G82 X-0.2300 Y2.0300  
 G82 X-3.0700 Y2.0100  
 G82 X-3.0700 Y0.1900  
