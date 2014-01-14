@@ -248,22 +248,38 @@ void output_file_heading()
 
 	if (NC_FILE_COMMENT_MACHINE_SETTINGS) {
 		comm("Settings from pcb-machine.h");
-		comm("  Tool Size");
-		comm(fr(FORMAT, g_tool_size));
-		comm("Z Axis Settings");
-		comm("  High     Up        Down     Drill");
-		comm(fr(FORMAT, DEFAULT_Z_HIGH) + "\t" +
-			fr(FORMAT, DEFAULT_Z_UP) + "\t" + 
-			fr(FORMAT, DEFAULT_Z_DOWN) + "\t" +
-			fr(FORMAT, DRILL_DEPTH));
 		comm(fr("spindle on time = %6.4f", SPINDLE_ON_TIME));
-		comm(fr("milling depth = %6.4f", MILLING_DEPTH));
-		comm(fr("text depth = %6.4f", TEXT_DEPTH));
+		switch(g_phase) {
+		  case PH_TOP_OUT_WRITE:
+		  case PH_BOTTOM_OUT_WRITE:
+	      comm("  Tool Size");
+	      comm(fr(FORMAT, g_tool_size));
+		    comm(fr("spindle speed = %6.4f", SPINDLE_ETCH_RPM));
+		    break;
+      case PH_MILL:
+        comm(fr("spindle speed = %6.4f", SPINDLE_MILL_RPM));
+        comm(fr("milling depth = %6.4f", MILLING_DEPTH));
+        break;
+      case PH_TEXT:
+        comm(fr("spindle speed = %6.4f", SPINDLE_MILL_RPM));
+        comm(fr("text depth = %6.4f", TEXT_DEPTH));
+        break;
+      case PH_TOP_DRILL:
+      case PH_BOTTOM_DRILL:
+        comm(fr("spindle speed = %6.4f", SPINDLE_DRILL_RPM));
+        break;
+    }
 		comm(frrr("tool change at " + FORMAT +  FORMAT + FORMAT, 
 			TOOL_CHANGE_POS_X, TOOL_CHANGE_POS_Y, TOOL_CHANGE_POS_Z));
 		comm("feed rate xy = " + fr(FR_FORMAT, FEED_RATE));
 		comm("feed rate z  = " + fr(FR_FORMAT, FEED_RATE_Z));
 	}
+	comm("Z Axis Settings");
+	comm("  High     Up        Down     Drill");
+	comm(fr(FORMAT, DEFAULT_Z_HIGH) + "\t" +
+		fr(FORMAT, DEFAULT_Z_UP) + "\t" + 
+		fr(FORMAT, DEFAULT_Z_DOWN) + "\t" +
+		fr(FORMAT, DRILL_DEPTH));
 
 	if (NC_FILE_COMMENT_PCB_DEFAULTS_SETTINGS) {
 		comm("Settings from pcb-defaults.h");
