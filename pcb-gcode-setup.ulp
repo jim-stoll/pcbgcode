@@ -92,8 +92,8 @@ void convert_units(int new_units)
     TOOL_CHANGE_POS_X = convert(TOOL_CHANGE_POS_X, m_current_units, new_units);
     TOOL_CHANGE_POS_Y = convert(TOOL_CHANGE_POS_Y, m_current_units, new_units);
     TOOL_CHANGE_POS_Z = convert(TOOL_CHANGE_POS_Z, m_current_units, new_units);
-    FEED_RATE = convert(FEED_RATE, m_current_units, new_units);
-    FEED_RATE_Z = convert(FEED_RATE_Z, m_current_units, new_units);
+    FEED_RATE_ETCH_XY = convert(FEED_RATE_ETCH_XY, m_current_units, new_units);
+    FEED_RATE_ETCH_Z = convert(FEED_RATE_ETCH_Z, m_current_units, new_units);
     EPSILON = convert(EPSILON, m_current_units, new_units);
 
     set_uom_suffix(OUTPUT_UNITS);
@@ -271,13 +271,20 @@ void save_pcb_machine()
     write_real_param("SPINDLE_ETCH_RPM", SPINDLE_ETCH_RPM);
     write_real_param("SPINDLE_DRILL_RPM", SPINDLE_DRILL_RPM);
     write_real_param("SPINDLE_MILL_RPM", SPINDLE_MILL_RPM);
+    write_real_param("SPINDLE_TEXT_RPM", SPINDLE_TEXT_RPM);
     write_real_param("MILLING_DEPTH", MILLING_DEPTH);
     write_real_param("TEXT_DEPTH", TEXT_DEPTH);
     write_real_param("TOOL_CHANGE_POS_X", TOOL_CHANGE_POS_X);
     write_real_param("TOOL_CHANGE_POS_Y", TOOL_CHANGE_POS_Y);
     write_real_param("TOOL_CHANGE_POS_Z", TOOL_CHANGE_POS_Z);
-    write_real_param("FEED_RATE", FEED_RATE);
-    write_real_param("FEED_RATE_Z", FEED_RATE_Z);
+    write_real_param("FEED_RATE_ETCH_XY", FEED_RATE_ETCH_XY);
+    write_real_param("FEED_RATE_ETCH_Z", FEED_RATE_ETCH_Z);
+    write_real_param("FEED_RATE_DRILL_XY", FEED_RATE_DRILL_XY);
+    write_real_param("FEED_RATE_DRILL_Z", FEED_RATE_DRILL_Z);
+    write_real_param("FEED_RATE_MILL_XY", FEED_RATE_MILL_XY);
+    write_real_param("FEED_RATE_MILL_Z", FEED_RATE_MILL_Z);
+    write_real_param("FEED_RATE_TEXT_XY", FEED_RATE_TEXT_XY);
+    write_real_param("FEED_RATE_TEXT_Z", FEED_RATE_TEXT_Z);
     write_real_param("TOOL_SIZE", TOOL_SIZE);
     write_real_param("X_OFFSET", X_OFFSET);
     write_real_param("Y_OFFSET",Y_OFFSET);
@@ -520,6 +527,12 @@ int Result = dlgDialog("pcb-gcode Setup") {
 					}
 				}
 			}
+			dlgGroup("Spindle") {
+				dlgGridLayout {
+					dlgCell(1, 0) dlgLabel("Spin Up Time ");
+					dlgCell(1, 1) dlgRealEdit(SPINDLE_ON_TIME); // DO NOT CONVERT
+				}
+			}
 			dlgStretch(20);
 		}
 		dlgHBoxLayout {
@@ -538,28 +551,32 @@ int Result = dlgDialog("pcb-gcode Setup") {
 					convert_units(U_INCHES); 
 				}
 			}
-			dlgGroup("Spindle") {
-				dlgGridLayout {
-					dlgCell(1, 0) dlgLabel("Spin Up Time ");
-					dlgCell(1, 1) dlgRealEdit(SPINDLE_ON_TIME); // DO NOT CONVERT
-					dlgCell(2, 0) dlgLabel("Etch RPM");
-					dlgCell(2, 1) dlgRealEdit(SPINDLE_ETCH_RPM); // DO NOT CONVERT
-					dlgCell(3, 0) dlgLabel("Drill RPM");
-					dlgCell(3, 1) dlgRealEdit(SPINDLE_DRILL_RPM); // DO NOT CONVERT
-					dlgCell(4, 0) dlgLabel("Mill RPM");
-					dlgCell(4, 1) dlgRealEdit(SPINDLE_MILL_RPM); // DO NOT CONVERT
-				}
-			}
 			dlgGroup("Feed Rates") {
 				dlgGridLayout {
-					dlgCell(1, 0) dlgLabel("X Y ");
-					dlgCell(1, 1) { dlgRealEdit(FEED_RATE); 
-						dlgLabel(m_uom_suffix, YES); dlgLabel("/min"); 
-					}
-					dlgCell(2, 0) dlgLabel("Z ");
-					dlgCell(2, 1) { dlgRealEdit(FEED_RATE_Z); 
-						dlgLabel(m_uom_suffix, YES); dlgLabel("/min"); 
-					}
+				  dlgCell(1, 0) dlgLabel("Feed rate " + m_uom_suffix + "/min", YES);
+				  dlgCell(1, 1) dlgLabel("X Y");
+				  dlgCell(1, 2) dlgLabel("Z");
+				  dlgCell(1, 3) dlgLabel("Spindle rev/min");
+				  
+					dlgCell(2, 0) dlgLabel("Etch");
+					dlgCell(2, 1) dlgRealEdit(FEED_RATE_ETCH_XY); // DO NOT CONVERT
+					dlgCell(2, 2) dlgRealEdit(FEED_RATE_ETCH_Z); // DO NOT CONVERT
+					dlgCell(2, 3) dlgRealEdit(SPINDLE_ETCH_RPM); // DO NOT CONVERT
+
+					dlgCell(3, 0) dlgLabel("Drill");
+					dlgCell(3, 2) dlgRealEdit(FEED_RATE_DRILL_Z); // DO NOT CONVERT
+					dlgCell(3, 3) dlgRealEdit(SPINDLE_DRILL_RPM); // DO NOT CONVERT
+
+					dlgCell(4, 0) dlgLabel("Mill");
+					dlgCell(4, 1) dlgRealEdit(FEED_RATE_MILL_XY); // DO NOT CONVERT
+					dlgCell(4, 2) dlgRealEdit(FEED_RATE_MILL_Z); // DO NOT CONVERT
+					dlgCell(4, 3) dlgRealEdit(SPINDLE_MILL_RPM); // DO NOT CONVERT
+
+					dlgCell(5, 0) dlgLabel("Text");
+					dlgCell(5, 1) dlgRealEdit(FEED_RATE_TEXT_XY); // DO NOT CONVERT
+					dlgCell(5, 2) dlgRealEdit(FEED_RATE_TEXT_Z); // DO NOT CONVERT
+					dlgCell(5, 3) dlgRealEdit(SPINDLE_TEXT_RPM); // DO NOT CONVERT
+
 				}
 			}
 			dlgGroup("Misc") {

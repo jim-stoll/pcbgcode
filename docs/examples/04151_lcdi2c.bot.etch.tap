@@ -4,7 +4,7 @@
 (This file generated from the board:)
 (.../docs/examples/04151_lcdi2c.brd)
 (Current profile is .../pcbgcode-work/profiles/mach.pp  )
-(This file generated 1/14/14 12:03 PM)
+(This file generated 1/14/14 1:22 PM)
 (Settings from pcb-machine.h)
 (spindle on time = 3.0000)
 (  Tool Size)
@@ -8657,7 +8657,7 @@ G01 X-2.2782 Y0.8675
 G01 X-2.2718 Y0.8675  
 G01 X-2.1985 Y0.8675  
 G00 Z0.1000  
-G82 X-0.1500 Y1.1900  Z-0.0110 F10    R0.1000  P1.000000
+G82 X-0.1500 Y1.1900  Z-0.0110 F20    R0.1000  P1.000000
 G82 X-0.1500 Y0.1300  
 G82 X-1.2700 Y0.2300  
 G82 X-1.3700 Y0.2300  

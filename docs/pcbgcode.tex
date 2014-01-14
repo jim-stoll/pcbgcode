@@ -373,15 +373,15 @@ If you choose not to use the previewer, simply turn it off. See \figurename \vre
 
 Click the \code{Machine} tab to view the machine options as shown in \figurename \vref{fig:SetupMachine}. First select the preferred unit of measure by selecting it under \code{Units}. \index{unit of measure}
 
-Now set the settings for the Z axis. \code{Z High} should be high enough to clear any clamps or fixtures that hold the PCB down.\index{Z High} Set \code{Z Up} high enough to clear the board when moving from location to location.\index{Z Up} Set \code{Z Down} to the depth into the board that the tool should cut.\index{Z Down} \code{Drill Depth} should be set deep enough to drill through the PCB.\index{Drill Depth} \code{Drill Dwell} is the time, in seconds, that the drill should pause at the bottom of the hole.\index{Drill Dwell}
+Now set the settings for the Z axis. \code{Z High} should be high enough to clear any clamps or fixtures that hold the PCB down.\index{Z High} Set \code{Z Up} high enough to clear the board when moving from location to location.\index{Z Up} Set \code{Z Down} to the depth into the board that the tool should cut when etching.\index{Z Down} \code{Drill Depth} should be set deep enough to drill through the PCB.\index{Drill Depth} \code{Drill Dwell} is the time, in seconds, that the drill should pause at the bottom of the hole.\index{Drill Dwell}
 
-The \code{Tool Change} options are the position where the tool should be moved for changing the tool.\index{Tool Change}
+The \code{Tool Change} options are the position where the tool should be moved when a new tool is required.\index{Tool Change}
 
 The \code{Spin Up Time} in the \code{Spindle} box should be set to the length of time in seconds that it takes the spindle to come up to speed. If the spindle is manually controlled, this can be set to \code{1}.\index{Spin Up Time}
 
-The \code{Feed Rates} should be set for \code{X Y} moves as well as \code{Z} moves. Rates here will usually be quite low unless the machine has a very fast spindle. See a machinist's reference on how to calculate the optimal feed rate, use trial and error, or post to the Yahoo! group email list for advice.
+The \code{Feed Rates} should be set for \code{X Y} moves as well as \code{Z} moves. Rates here will usually be quite low unless the machine has a very fast spindle. See a machinist's reference on how to calculate the optimal feed rate, use trial and error, or post to the Yahoo! group email list for advice. Note that there are separate feed rates for \code{X Y}, and \code{Z}, and there is a spindle speed setting for each of the four operations pcb-gcode can generate files for.\index{Feed Rates}
 
-\code{Epsilon} is the minimum move that will be written to the g-code file. For instance, if \code{Epsilon} is set to $0.0001''$ and the g-code file will not contain movements less than $0.0001''$. This option will rarely need to be changed.
+\code{Epsilon} is the minimum move that will be written to the g-code file. For instance, if \code{Epsilon} is set to $0.0001''$ then the g-code file will not contain movements less than $0.0001''$. This option will rarely need to be changed.
 
 The \code{Default Drill Rack File} option allows for the selection of a rack file to be used if one has not been setup for a particular board. In most cases this can be left blank to start with. See Section \vref{sec:DrillRackFiles} for more information about setting up rack files. 
 

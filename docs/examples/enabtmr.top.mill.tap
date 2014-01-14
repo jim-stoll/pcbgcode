@@ -4,13 +4,13 @@
 (This file generated from the board:)
 (.../pcbgcode.repo/docs/examples/enabtmr.brd)
 (Current profile is .../pcbgcode-work/profiles/mach.pp  )
-(This file generated 1/14/14 12:07 PM)
+(This file generated 1/14/14 1:22 PM)
 (Settings from pcb-machine.h)
 (spindle on time = 3.0000)
-(spindle speed = 10000.0000)
+(spindle speed = 15000.0000)
 (milling depth = -0.0100)
 (tool change at 0.0000  0.0000  1.0000  )
-(feed rate xy = F20    )
+(feed rate xy = F10    )
 (feed rate z  = F10    )
 (Z Axis Settings)
 (  High     Up        Down     Drill)
@@ -25,7 +25,7 @@
 G20
 (Absolute Coordinates)
 G90
-S10000
+S15000
 G00 Z0.5000  
 G00 X0.0000  Y0.0000  
 M03
@@ -33,7 +33,7 @@ G04 P3.000000
 G00 Z0.1000  
 G00 X0.9700  Y0.6300  
 G01 Z-0.0100 F10    
-G01 X1.1100  Y0.6300  F20    
+G01 X1.1100  Y0.6300  F10    
 G01 X1.1900  Y0.7100  
 G01 X1.2600  Y0.7100  
 G01 X1.2600  Y0.5000  
