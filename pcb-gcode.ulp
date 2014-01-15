@@ -269,14 +269,13 @@ void pythagorean_sort() {
  *
  * Params:
  *  which_side    Side to produce the file for.
- *  suffix        Suffix to use for the file name (i.e. bd).
  * Returns:
  *  none
  * Changes:
  *  m_current_tool
  *  g_side
 */
-void drill(int which_side, string suffix)
+void drill(int which_side)
 {
 	int num_lines;
 	int i;
@@ -903,7 +902,6 @@ void output_mill_code()
 //
 // Params:
 //  which_side    Side of the board to work on.
-//  suffix        Suffix of the file.
 //  task
 // Return:
 //  none
@@ -913,7 +911,7 @@ void output_mill_code()
 //  g_cmd
 //  g_debug
 //
-void write_outlines(int which_side, string suffix, int task)
+void write_outlines(int which_side, int task)
 {
 	string mode;
 	int x1 = INT_MAX, y1 = INT_MAX, x2 = INT_MIN, y2 = INT_MIN;
@@ -1082,8 +1080,9 @@ void write_outlines(int which_side, string suffix, int task)
 } 
 // write_outlines
 
+//
 // Make sure a board is available to work on.
-// todo move towards bottom
+//
 if (!board) {
      Fatal("No board!", "Please run this program from the board editor");
 }
@@ -1171,6 +1170,7 @@ else {
 }
 
 get_current_profile();
+
 if (g_phase == PH_TOP_OUT_GEN && m_pass_num == 0 && program_is_setup() == NO)
 {
 	exit("run pcb-gcode-setup");
@@ -1186,7 +1186,7 @@ switch (g_phase) {
    break;
  case PH_TOP_OUT_WRITE:
    if (GENERATE_TOP_OUTLINES == YES)
-     write_outlines(TOP, "top", OUTLINES);
+     write_outlines(TOP, OUTLINES);
    break;
 
  case PH_TOP_FILL_GEN:
@@ -1195,7 +1195,7 @@ switch (g_phase) {
    break;
  case PH_TOP_FILL_WRITE:
    if (GENERATE_TOP_FILL == YES)
-     write_outlines(TOP, "tf", FILL);
+     write_outlines(TOP, FILL);
    break;
 
  case PH_BOTTOM_OUT_GEN:
@@ -1204,7 +1204,7 @@ switch (g_phase) {
    break;
  case PH_BOTTOM_OUT_WRITE:
    if (GENERATE_BOTTOM_OUTLINES == YES)
-     write_outlines(BOTTOM, "bot", OUTLINES);
+     write_outlines(BOTTOM, OUTLINES);
    break;
 
  case PH_BOTTOM_FILL_GEN:
@@ -1213,26 +1213,26 @@ switch (g_phase) {
    break;
  case PH_BOTTOM_FILL_WRITE:
    if (GENERATE_BOTTOM_FILL == YES)
-     write_outlines(BOTTOM, "bf", FILL);
+     write_outlines(BOTTOM, FILL);
    break;
 
  case PH_TOP_DRILL:
    if (GENERATE_TOP_DRILL == YES)
-     drill(TOP, "td");
+     drill(TOP);
    break;
  case PH_BOTTOM_DRILL:
    if (GENERATE_BOTTOM_DRILL == YES)
-     drill(BOTTOM, "bd");
+     drill(BOTTOM);
    break;
 
  case PH_MILL:
    if (GENERATE_MILLING == YES)
-     write_outlines(MILL, "mil", MILL_BOARD);
+     write_outlines(MILL, MILL_BOARD);
    break;
 
  case PH_TEXT:
    if (GENERATE_TEXT == YES)
-     write_outlines(TEXT, "txt", MILL_TEXT);
+     write_outlines(TEXT, MILL_TEXT);
    break;
 
  default:
