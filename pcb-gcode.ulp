@@ -711,6 +711,25 @@ void out_lines(string path, string mode)
 }
 
 //
+// Output preview data to the platform specific files.
+//
+// Params:
+//  mode    File open mode. May be write or append.
+// Returns:
+//  none
+// Changes:
+//  none
+//
+void output_preview_data(string mode)
+{
+  out_lines(g_path + "/viewer/data/optimize_me.txt", mode);
+	out_lines(g_path + "/viewer/applet/data/optimize_me.txt", mode);
+	out_lines(g_path + "/viewer/application.macosx/data/optimize_me.txt", mode);
+	out_lines(g_path + "/viewer/application.linux/data/optimize_me.txt", mode);
+	out_lines(g_path + "/viewer/application.windows/data/optimize_me.txt", mode);
+}
+
+//
 // Write text from the Milling layer to a text engraving file.
 //
 // Params:
@@ -780,12 +799,7 @@ void output_text_code(string file_name)
 	} 
 	// board
 	g_tool_size = abs(TEXT_DEPTH);
-	out_lines(g_path + "/viewer/data/optimize_me.txt", "wt");
-	out_lines(g_path + "/viewer/applet/data/optimize_me.txt", "wt");
-	out_lines(g_path + "/viewer/application.macosx/data/optimize_me.txt", "wt");
-	out_lines(g_path + "/viewer/application.linux/data/optimize_me.txt", "wt");
-	out_lines(g_path + "/viewer/application.windows/data/optimize_me.txt", "wt");
-	
+	output_preview_data("wt");
 	preview();
 
 	m_lines = "";
@@ -863,11 +877,7 @@ void output_mill_code(string file_name)
 	// board
 
 	g_tool_size = abs(MILLING_DEPTH);
-	out_lines(g_path + "/viewer/data/optimize_me.txt", "wt");
-	out_lines(g_path + "/viewer/applet/data/optimize_me.txt", "wt");
-	out_lines(g_path + "/viewer/application.macosx/data/optimize_me.txt", "wt");
-	out_lines(g_path + "/viewer/application.linux/data/optimize_me.txt", "wt");
-	out_lines(g_path + "/viewer/application.windows/data/optimize_me.txt", "wt");
+	output_preview_data("wt");
 	
 	preview();
 	
@@ -1055,11 +1065,7 @@ void write_outlines(int which_side, string suffix, int task)
 	} 
 	// output
 	user_file_closed(get_filename(), mode);
-	out_lines(g_path + "/viewer/data/optimize_me.txt", mode);
-	out_lines(g_path + "/viewer/applet/data/optimize_me.txt", mode);
-	out_lines(g_path + "/viewer/application.macosx/data/optimize_me.txt", mode);
-	out_lines(g_path + "/viewer/application.linux/data/optimize_me.txt", mode);
-	out_lines(g_path + "/viewer/application.windows/data/optimize_me.txt", mode);
+	output_preview_data(mode);
 
 } 
 // write_outlines
