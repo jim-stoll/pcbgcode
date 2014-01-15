@@ -88,6 +88,9 @@ enum {
   PH_LAST_PHASE        = 13
 };
 
+string FILEMODE_WRITE_TEXT = "wt";
+string FILEMODE_APPEND_TEXT = "at";
+
 string PHASE_NAME[] = {
 	"invalid",
 	"Gen_Top_Outlines", "Write_Top_Outlines", 

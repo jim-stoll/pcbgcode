@@ -311,7 +311,7 @@ void drill(int which_side, string suffix)
 		// Create the drill g-code file.
 		//
 		last_size = -1;
-		output(get_filename(), "wt") {
+		output(get_filename(), FILEMODE_WRITE_TEXT) {
 			output_file_preamble();
 
 			//
@@ -746,8 +746,8 @@ void output_text_code(string file_name)
 	int old_x, old_y;
 
 	board(B) {
-		output(get_filename(), "wt") {
-			user_file_opened(get_filename(), "wt");
+		output(get_filename(), FILEMODE_WRITE_TEXT) {
+			user_file_opened(get_filename(), FILEMODE_WRITE_TEXT);
 
 			output_file_preamble();
 
@@ -795,11 +795,11 @@ void output_text_code(string file_name)
 			user_file_closing();
 		} 
 		// output
-		user_file_closed(get_filename(), "wt");
+		user_file_closed(get_filename(), FILEMODE_WRITE_TEXT);
 	} 
 	// board
 	g_tool_size = abs(TEXT_DEPTH);
-	output_preview_data("wt");
+	output_preview_data(FILEMODE_WRITE_TEXT);
 	preview();
 
 	m_lines = "";
@@ -825,8 +825,8 @@ void output_mill_code(string file_name)
 	int first_run = true;
 
 	board(B) {
-		output(get_filename(), "wt") {
-			user_file_opened(get_filename(), "wt");
+		output(get_filename(), FILEMODE_WRITE_TEXT) {
+			user_file_opened(get_filename(), FILEMODE_WRITE_TEXT);
 
 			output_file_preamble();
 
@@ -872,12 +872,12 @@ void output_mill_code(string file_name)
 			user_file_closing();
 		} 
 		// output
-		user_file_closed(get_filename(), "wt");
+		user_file_closed(get_filename(), FILEMODE_WRITE_TEXT);
 	} 
 	// board
 
 	g_tool_size = abs(MILLING_DEPTH);
-	output_preview_data("wt");
+	output_preview_data(FILEMODE_WRITE_TEXT);
 	
 	preview();
 	
@@ -913,10 +913,10 @@ void write_outlines(int which_side, string suffix, int task)
 	real fr_z;
 
 	if (m_pass_num == 0) {
-		mode = "wt";
+		mode = FILEMODE_WRITE_TEXT;
 	}
 	else {
-		mode = "at";
+		mode = FILEMODE_APPEND_TEXT;
 	}
 	g_side = which_side;
 	switch (which_side) {

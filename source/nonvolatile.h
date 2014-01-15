@@ -12,7 +12,7 @@ string m_params[];
 string empty[];
 
 if (filetime(STORAGE_NAME) == 0) {
-  output(STORAGE_NAME, "wt") {
+  output(STORAGE_NAME, FILEMODE_WRITE_TEXT) {
     printf("created%c%s\s", SEPARATOR, t2string(time()));
   }
 }
@@ -80,7 +80,7 @@ void set_nv_param(string name, string value)
      }
    }
   }
-  output(STORAGE_NAME, "wt") {
+  output(STORAGE_NAME, FILEMODE_WRITE_TEXT) {
    for (i = 0; i < num_params; i++) {
      printf("%s\n", m_params[i]);
    }

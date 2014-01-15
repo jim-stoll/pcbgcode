@@ -190,7 +190,7 @@ sprintf(m_eagle_compatibility, "%d.%d (%s)", EAGLE_VERSION, EAGLE_RELEASE, m_com
 void save_pcb_defaults()
 {
 	fileerror();
-	output(g_path + "/settings/pcb-defaults.h", "wt") {
+	output(g_path + "/settings/pcb-defaults.h", FILEMODE_WRITE_TEXT) {
 
 		int now = time();
 
