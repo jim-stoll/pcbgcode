@@ -307,7 +307,7 @@ void output_file_heading()
 			(GENERATE_BOTTOM_FILL)      ? "bottom fill"       : ""
 			);
 		comm(tt);
-		comm("Unit of measure: " + UNIT_OF_MEASURE);
+		comm("Unit of measure: " + get_unit_of_measure());
 	}
 }
 

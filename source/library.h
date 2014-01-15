@@ -208,3 +208,31 @@ int get_os()
     return OS_LINUX;
   return OS_WINDOWS;
 }
+
+
+string get_unit_of_measure()
+{
+  string unit_of_measure = "not set";
+  
+  //
+  // Set unit of measure.
+  //
+  switch (OUTPUT_UNITS) {
+  	case U_MICRONS:
+  	  unit_of_measure = "mic";
+  	  break;
+  	case U_MILLIMETERS:
+  	  unit_of_measure = "mm";
+  	  break;
+  	case U_MILS:
+  	  unit_of_measure = "mil";
+  	  break;
+  	case U_INCHES:
+  	  unit_of_measure = "inch";
+  	  break;
+  }
+
+  return unit_of_measure;
+}
+
+

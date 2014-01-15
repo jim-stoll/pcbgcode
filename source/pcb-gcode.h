@@ -125,8 +125,6 @@ int DRILL_SIZE = 0;
 int DRILL_X = 1;
 int DRILL_Y = 2;
 
-string UNIT_OF_MEASURE = "not set";
-
 real g_tool_size = 0.01;
 int g_side = TOP;
 

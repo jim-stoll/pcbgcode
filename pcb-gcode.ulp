@@ -685,7 +685,7 @@ void generate_outlines(int which_side)
 		"polygon %s %f (%f %f) (%f %f) (%f %f) (%f %f) (%f %f);\n"
 		"ratsnest;\n"
 		,
-		UNIT_OF_MEASURE,
+		get_unit_of_measure(),
 		m_isolate,
 		g_tool_size,
 		m_layer,
@@ -1086,24 +1086,6 @@ void write_outlines(int which_side, string suffix, int task)
 // todo move towards bottom
 if (!board) {
      Fatal("No board!", "Please run this program from the board editor");
-}
-
-//
-// Set unit of measure.
-//
-switch (OUTPUT_UNITS) {
-	case U_MICRONS:
-	  UNIT_OF_MEASURE = "mic";
-	  break;
-	case U_MILLIMETERS:
-	  UNIT_OF_MEASURE = "mm";
-	  break;
-	case U_MILS:
-	  UNIT_OF_MEASURE = "mil";
-	  break;
-	case U_INCHES:
-	  UNIT_OF_MEASURE = "inch";
-	  break;
 }
 
 //
