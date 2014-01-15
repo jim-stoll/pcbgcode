@@ -39,36 +39,110 @@ string FILENAME_BOT_FILL_FILE_SAMPLE;
 
 string temp_str;
 
+//
+// Set the unit of measure suffix to one of the entries from the M_UOM_SUFFIXES table.
+//
+// Params:
+//  n   Suffix number to select.
+// Return:
+//  none
+// Changes:
+//  m_uom_suffix
+//
 void set_uom_suffix(int n)
 {
 	m_uom_suffix = M_UOM_SUFFIXES[n];
 }
 
+//
+// Get the current unit of measure suffix.
+//
+// Params:
+//  none
+// Return:
+//  string  The current suffix.
+// Changes:
+//  none
 string get_uom_suffix()
 {
 	return m_uom_suffix;
 }
 
+//
+// Write a boolean setting to the currently open file.
+//
+// Params:
+//  name  Name of the setting.
+//  value True or false.
+// Returns:
+//  none
+// Changes:
+//  none
+//
 void write_bool_param(string name, int value) 
 {
   printf("int %s = %s;\n", name, (value) ? "YES" : "NO");
 }
 
+//
+// Write an integer setting to the currently open file.
+//
+// Params:
+//  name  Name of the setting.
+//  value Integer value.
+// Returns:
+//  none
+// Changes:
+//  none
+//
 void write_int_param(string name, int value) 
 {
   printf("int %s = %d;\n", name, value);
 }
 
+//
+// Write a defined integer setting to the currently open file.
+//
+// Params:
+//  name  Name of the setting.
+//  value String value of the define (ie. U_INCHES).
+// Returns:
+//  none
+// Changes:
+//  none
+//
 void write_int_defined(string name, string value) 
 {
   printf("int %s = %s;\n", name, value);
 }
 
+//
+// Write a real setting to the currently open file.
+//
+// Params:
+//  name  Name of the setting.
+//  value Real value.
+// Returns:
+//  none
+// Changes:
+//  none
+//
 void write_real_param(string name, real value) 
 {
   printf("real %s = %f;\n", name, value);
 }
 
+//
+// Write a string setting to the currently open file.
+//
+// Params:
+//  name  Name of the setting.
+//  value Sting value.
+// Returns:
+//  none
+// Changes:
+//  none
+//
 void write_string_param(string name, string value) 
 {
   printf("string %s = \"%s\";\n", name, value);
@@ -101,8 +175,17 @@ void convert_units(int new_units)
 
 // UNIT CONVERSION END TAG DO NOT REMOVE
 
+//
 // Copy the *.release.h files to *.h, thereby restoring
 // their default contents.
+//
+// Params:
+//  none
+// Returns:
+//  none
+// Changes:
+//  none
+//
 void restore_file_defaults()
 {
 	string restore_files[];
@@ -129,6 +212,9 @@ void restore_file_defaults()
     g_path + "/settings/gcode-defaults.h");
 }
 
+//
+// Load profile file names and details
+//
 int pp_selection = -1;
 string pp_files[];
 string pp_auth_desc[];
@@ -162,6 +248,9 @@ for(int i=0; i < num_pp_files; i++) {
   }
 }
 
+//
+// Change labels for Maximum and Step size if single pass is set.
+//
 string m_maximum_label = "Maximum";
 string m_step_size_label = "Step size";
 if (SINGLE_PASS) {
@@ -169,6 +258,9 @@ if (SINGLE_PASS) {
   m_step_size_label = "not used";
 }
 
+//
+// Determine EAGLE compatibilty.
+//
 string m_eagle_compatibility = "";
 string m_compatibility = "";
 if (EAGLE_VERSION < 5) {
@@ -187,6 +279,16 @@ else if (EAGLE_VERSION == 6) {
 }
 sprintf(m_eagle_compatibility, "%d.%d (%s)", EAGLE_VERSION, EAGLE_RELEASE, m_compatibility);
 
+//
+// Save settings for the pcb-defaults.h file.
+//
+// Params:
+//  none
+// Returns:
+//  none
+// Changes:
+//  none
+//
 void save_pcb_defaults()
 {
 	fileerror();
@@ -253,6 +355,16 @@ void save_pcb_defaults()
 		exit(1);
 }
 
+//
+// Save settings for the pcb-machine.h file.
+//
+// Params:
+//  none
+// Returns:
+//  none
+// Changes:
+//  none
+//
 void save_pcb_machine()
 {
   output(g_path + "/settings/pcb-machine.h") {
@@ -292,6 +404,16 @@ void save_pcb_machine()
   }
 }
 
+//
+// Save the settings for the pcb-gcode.h file.
+//
+// Params:
+//  none
+// Returns:
+//  none
+// Changes:
+//  none
+//
 void save_pcb_gcode_options()
 {
   output(g_path + "/settings/pcb-gcode-options.h") {
@@ -340,6 +462,9 @@ void save_pcb_gcode_options()
 
 #include "plugin_headers.h"
 
+//
+// Construct the dialog and accept input.
+//
 int Result = dlgDialog("pcb-gcode Setup") {
 
 	set_uom_suffix(OUTPUT_UNITS);
@@ -864,6 +989,9 @@ int Result = dlgDialog("pcb-gcode Setup") {
 	}
 };
 
+//
+// Do what the user chose, either Accept or Accept and make board.
+//
 //         Accept          Accept and make board
 if (Result == 1 || Result == 2) {
 
@@ -893,6 +1021,9 @@ if (Result == 1 || Result == 2) {
   
 }
 
+//
+// Setup the appropriate exit command.
+//
 m_cmd = "";
 switch (Result) {
 	// Accept
