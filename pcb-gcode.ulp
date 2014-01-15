@@ -80,8 +80,10 @@ string g_cmd_temp;
 //
 // Save the maximum and minimum coordinates.
 //
-// Params: none
-// Return: none
+// Params:
+//  x, y    Coordinates to be tested, and possibly saved as min or max values.
+// Return:
+//  none
 //
 real m_max_x;
 real m_max_y;
@@ -164,12 +166,13 @@ void next_phase(void)
 //////////////////////////////////////////////////
 
 //
-// Add a hole drilling command to the command string.
+// Add a drill hole entry (size, x, y) to the stack.
 //
 // Params:
 //  Size    Drill size.
-//  x       x coordinate.
-//  y       y coordinate.
+//  req_size  Desired drill hole size. (May be subbed.)
+//  x         x coordinate.
+//  y         y coordinate.
 // Returns:
 //  none
 // Changes:
@@ -270,7 +273,8 @@ void pythagorean_sort() {
  * Returns:
  *  none
  * Changes:
- *  side
+ *  m_current_tool
+ *  g_side
 */
 void drill(int which_side, string suffix)
 {
@@ -278,7 +282,6 @@ void drill(int which_side, string suffix)
 	int i;
 	real last_size;
 	string drill_args[];
-	m_current_tool = 0;
 	real drill_size_mm;
 	real drill_size_inch;
 	real drill_size;
@@ -286,6 +289,7 @@ void drill(int which_side, string suffix)
 	real drill_y;
 	int drill_tool_num;
 
+	m_current_tool = 0;
 	g_side = which_side;
 
 	//
@@ -432,7 +436,10 @@ string coords(real x1, real y1, real x2, real y2)
 //  drill_size Size of the hole to drill.
 //  x, y  Location of the hole.
 // Return: none
-// Changes: m_lines
+// Changes: 
+//  m_first_spot_drill
+//  m_lines
+//  g_side
 //
 int m_first_spot_drill = YES;
 void spot_drill_hole(int drill_size, int x, int y)
@@ -473,11 +480,11 @@ void spot_drill_hole(int drill_size, int x, int y)
 // Params:
 //  B The board.
 // Return: none
-// Changes: m_lines
+// Changes: 
+//  m_lines
 //
 void spot_drill(UL_BOARD B)
 {
-//	if (SPOT_DRILL == NO) { return; }
 
   // meh: this is kind of hackie
   m_lines += fi("# pass=%d\n", m_pass_num + 2);
@@ -502,11 +509,16 @@ void spot_drill(UL_BOARD B)
 //  x1,y1   Start of the line.
 //  x2,y2   End of the line.
 //  state   The state of the line being drawn, start, continue, etc.
-//  z_down  Z depth.
+//  z_down_or_radius  Z depth or radius of arc
+//  fr_xy   XY feed rate
+//  fr_z    Z feed rate
 // Returns:
 //  none
 // Changes:
 //  m_lines
+//  m_arc_begin_x
+//  m_arc_begin_y
+//  m_arc_radius
 //
 real m_arc_begin_x;
 real m_arc_begin_y;
@@ -733,14 +745,14 @@ void output_preview_data(string mode)
 // Write text from the Milling layer to a text engraving file.
 //
 // Params:
-//  file_name   Output filename.
+//  none
 // Return:
 //  none
 // Changes:
 //  g_tool_size
 //  m_lines
 //
-void output_text_code(string file_name)
+void output_text_code()
 {
 	int state;
 	int old_x, old_y;
@@ -811,14 +823,14 @@ void output_text_code(string file_name)
 // Write layer data to mill files.
 //
 // Params:
-//  file_name   Output filename.
+//  none
 // Return:
 //  none
 // Changes:
 //  g_tool_size
 //  m_lines
 //
-void output_mill_code(string file_name)
+void output_mill_code()
 {
 	int state;
 	int old_x, old_y;
@@ -899,6 +911,7 @@ void output_mill_code(string file_name)
 //  g_side
 //  m_layer
 //  g_cmd
+//  g_debug
 //
 void write_outlines(int which_side, string suffix, int task)
 {
@@ -952,16 +965,16 @@ void write_outlines(int which_side, string suffix, int task)
 	if (m_layer == MILL_LAYER || m_layer == TEXT_LAYER) {
 		if (which_side == MILL) {
 			g_side = TOP;
-			output_mill_code(m_file_name + "mt" + DEFAULT_EXTENSION);
+			output_mill_code();
 			g_side = BOTTOM;
-			output_mill_code(m_file_name + "mb" + DEFAULT_EXTENSION);
+			output_mill_code();
 			return;
 		}
 		else {
 			g_side = TOP;
-			output_text_code(m_file_name + "tt" + DEFAULT_EXTENSION);
+			output_text_code();
 			g_side = BOTTOM;
-			output_text_code(m_file_name + "tb" + DEFAULT_EXTENSION);
+			output_text_code();
 			return;
 		}
 	} 
@@ -1011,7 +1024,6 @@ void write_outlines(int which_side, string suffix, int task)
 
 						switch (task) {
 							case TASK_OUTLINES:
-							// P.contours jtj
 							P.contours(W) {
 								if (first) {
 									x0 = W.x1;
@@ -1070,23 +1082,6 @@ void write_outlines(int which_side, string suffix, int task)
 } 
 // write_outlines
 
-void gen_progress_menu(int phase)
-{
-	output(path_scr[0] + '/' + "source/pcb-gcode-prg.scr") {
-		printf("MENU \\\n");
-		for(int i = 1; i < PH_LAST_PHASE; i++) {
-			if (i == phase) {
-				printf("--%s-- \\\n", get_phase_name(i));     
-				// " (for TextMate)
-			}
-			else {
-				printf("  %s  \\\n", get_phase_name(i));
-			}
-		}
-		printf(";\n");
-	}
-}
-
 // Make sure a board is available to work on.
 // todo move towards bottom
 if (!board) {
@@ -1094,7 +1089,7 @@ if (!board) {
 }
 
 //
-// Process command line arguments.
+// Set unit of measure.
 //
 switch (OUTPUT_UNITS) {
 	case U_MICRONS:
@@ -1111,6 +1106,9 @@ switch (OUTPUT_UNITS) {
 	  break;
 }
 
+//
+// Process command line arguments.
+//
 if (argv[FILENAME_ARG] == "--setup") {
   exit("run pcb-gcode-setup");
 }
