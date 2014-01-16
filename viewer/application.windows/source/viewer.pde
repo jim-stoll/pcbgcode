@@ -74,8 +74,10 @@ String filename = "optimize_me.txt";
 
 String comment = "";
 float tool_size = 0.001;
-
+boolean tool_size_set = false;
+boolean have_spots = false;
 int m_pass;
+int total_passes;
 boolean m_monochrome = false;
 
 /*
@@ -178,14 +180,21 @@ void setup() {
       matches = match(line, "^# tool size=(.+)");
       if (matches != null) {
         tool_size = float(matches[1]);
+        tool_size_set = true;
       }
       matches = match(line, "^# pass=(.+)");
       if (matches != null) {
         m_pass = int(matches[1]);
+        total_passes = max(total_passes, m_pass);
       }
       matches = match(line, "^#");
       if (matches == null) {
         lines = (String[])append(lines, (line + "," + nf(m_pass,2)));
+      }
+      matches = match(line, "^# spot drills");
+      if (matches != null) {
+        m_pass = 0;
+        have_spots = true;
       }
     }
   } while (line != null);
@@ -270,8 +279,10 @@ void ornaments() {
   text(comment, 10, 20);
   
   // tool size and number of passes
-  rtext("tool size " + nfs(tool_size, 1, 3), width - 120, 20);
-  rtext(nfs(m_pass, 1) + " passes", width - 40, 40);
+  if (tool_size_set) {
+    rtext("tool size " + nfs(tool_size, 1, 3), width - 120, 20);
+  }
+  rtext(nfs(total_passes, 1) + " passes", width - 40, 40);
   
   // brief help
   text("Keys: +/- zoom, 1 no zoom, 2 zoom 2x, arrows move, a left, de right, w, up, so down", 10, 40);

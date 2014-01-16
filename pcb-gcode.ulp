@@ -485,9 +485,8 @@ void spot_drill_hole(int drill_size, int x, int y)
 void spot_drill(UL_BOARD B)
 {
 
-  // meh: this is kind of hackie
-  m_lines += fi("# pass=%d\n", m_pass_num + 2);
-
+  m_lines += "# spot drills\n";
+  
 	B.holes(H) spot_drill_hole(H.drill, H.x, H.y);
 	B.signals(S) S.vias(V) spot_drill_hole(V.drill, V.x, V.y);
 	B.elements(E) {
@@ -712,11 +711,11 @@ void generate_outlines(int which_side)
 void out_lines(string path, string mode)
 {
   output(path, mode) {
-	if (m_pass_num == 0) {
-		printf("# board=%s\n", elided_path(get_filename(), 30));
-		printf("# tool size=%f\n", g_tool_size);
-	}
-	printf("# pass=%d\n", m_pass_num + 1);
+  	if (m_pass_num == 0) {
+  		printf("# board=%s\n", elided_path(get_filename(), 30));
+  		printf("# tool size=%f\n", g_tool_size);
+  	}
+  	printf("# pass=%d\n", m_pass_num + 1);
     printf(m_lines);
   }
 }
