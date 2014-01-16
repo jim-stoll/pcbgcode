@@ -485,9 +485,8 @@ void spot_drill_hole(int drill_size, int x, int y)
 void spot_drill(UL_BOARD B)
 {
 
-  // meh: this is kind of hackie
-  m_lines += fi("# pass=%d\n", m_pass_num + 2);
-
+  m_lines += "# spot drills\n";
+  
 	B.holes(H) spot_drill_hole(H.drill, H.x, H.y);
 	B.signals(S) S.vias(V) spot_drill_hole(V.drill, V.x, V.y);
 	B.elements(E) {
@@ -709,14 +708,22 @@ void generate_outlines(int which_side)
 // Changes:
 //  none
 //
-void out_lines(string path, string mode)
+void out_lines(string path, string mode, int layer)
 {
   output(path, mode) {
-	if (m_pass_num == 0) {
-		printf("# board=%s\n", elided_path(get_filename(), 30));
-		printf("# tool size=%f\n", g_tool_size);
-	}
-	printf("# pass=%d\n", m_pass_num + 1);
+  	if (m_pass_num == 0) {
+  		printf("# board=%s\n", elided_path(get_filename(), 30));
+  		if (layer == MILL) {
+  		  printf("# depth=%f\n", MILLING_DEPTH);
+  		}
+  		else if (layer == TEXT) {
+  		  printf("# depth=%f\n", TEXT_DEPTH);
+  		}
+  		else {
+  		  printf("# tool size=%f\n", g_tool_size);
+		  }
+  	}
+  	printf("# pass=%d\n", m_pass_num + 1);
     printf(m_lines);
   }
 }
@@ -731,13 +738,13 @@ void out_lines(string path, string mode)
 // Changes:
 //  none
 //
-void output_preview_data(string mode)
+void output_preview_data(string mode, int layer)
 {
-  out_lines(g_path + "/viewer/data/optimize_me.txt", mode);
-	out_lines(g_path + "/viewer/applet/data/optimize_me.txt", mode);
-	out_lines(g_path + "/viewer/application.macosx/data/optimize_me.txt", mode);
-	out_lines(g_path + "/viewer/application.linux/data/optimize_me.txt", mode);
-	out_lines(g_path + "/viewer/application.windows/data/optimize_me.txt", mode);
+  out_lines(g_path + "/viewer/data/optimize_me.txt", mode, layer);
+	out_lines(g_path + "/viewer/applet/data/optimize_me.txt", mode, layer);
+	out_lines(g_path + "/viewer/application.macosx/data/optimize_me.txt", mode, layer);
+	out_lines(g_path + "/viewer/application.linux/data/optimize_me.txt", mode, layer);
+	out_lines(g_path + "/viewer/application.windows/data/optimize_me.txt", mode, layer);
 }
 
 //
@@ -810,7 +817,7 @@ void output_text_code()
 	} 
 	// board
 	g_tool_size = abs(TEXT_DEPTH);
-	output_preview_data(FILEMODE_WRITE_TEXT);
+	output_preview_data(FILEMODE_WRITE_TEXT, TEXT);
 	preview();
 
 	m_lines = "";
@@ -888,7 +895,7 @@ void output_mill_code()
 	// board
 
 	g_tool_size = abs(MILLING_DEPTH);
-	output_preview_data(FILEMODE_WRITE_TEXT);
+	output_preview_data(FILEMODE_WRITE_TEXT, MILL);
 	
 	preview();
 	
@@ -1075,7 +1082,7 @@ void write_outlines(int which_side, int task)
 	} 
 	// output
 	user_file_closed(get_filename(), mode);
-	output_preview_data(mode);
+	output_preview_data(mode, g_side);
 
 } 
 // write_outlines
