@@ -4,7 +4,7 @@
 (This file generated from the board:)
 (.../docs/examples/04151_lcdi2c.brd)
 (Current profile is .../pcbgcode-work/profiles/mach.pp  )
-(This file generated 1/14/14 1:22 PM)
+(This file generated 1/16/14 12:20 PM)
 (Settings from pcb-machine.h)
 (spindle on time = 3.0000)
 (spindle speed = 20000.0000)

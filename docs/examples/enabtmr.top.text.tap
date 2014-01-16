@@ -4,10 +4,10 @@
 (This file generated from the board:)
 (.../pcbgcode.repo/docs/examples/enabtmr.brd)
 (Current profile is .../pcbgcode-work/profiles/mach.pp  )
-(This file generated 1/14/14 1:22 PM)
+(This file generated 1/16/14 12:20 PM)
 (Settings from pcb-machine.h)
 (spindle on time = 3.0000)
-(spindle speed = 30000.0000)
+(spindle speed = 25000.0000)
 (text depth = -0.0050)
 (tool change at 0.0000  0.0000  1.0000  )
 (feed rate xy = F10    )
@@ -25,7 +25,7 @@
 G20
 (Absolute Coordinates)
 G90
-S15000
+S25000
 G00 Z0.5000  
 G00 X0.0000  Y0.0000  
 M03
