@@ -75,6 +75,8 @@ String filename = "optimize_me.txt";
 String comment = "";
 float tool_size = 0.001;
 boolean tool_size_set = false;
+float tool_depth = 0.000;
+boolean tool_depth_set = false;
 boolean have_spots = false;
 int m_pass;
 int total_passes;
@@ -123,8 +125,8 @@ void prepare_lines(String[] lines) {
  *
  */
 void set_scaling() {
-  x_scale = (width - 70) / (maxx - minx);
-  y_scale = (height - 70) / (maxy - miny);
+  x_scale = (width - 100) / (maxx - minx);
+  y_scale = (height - 100) / (maxy - miny);
   // println("x_scale  = " + nfs(x_scale, 1, 3));
   // println("y_scale  = " + nfs(y_scale, 1, 3));
 
@@ -181,6 +183,11 @@ void setup() {
       if (matches != null) {
         tool_size = float(matches[1]);
         tool_size_set = true;
+      }
+      matches = match(line, "^# depth=(.+)");
+      if (matches != null) {
+        tool_depth = float(matches[1]);
+        tool_depth_set = true;
       }
       matches = match(line, "^# pass=(.+)");
       if (matches != null) {
@@ -281,6 +288,9 @@ void ornaments() {
   // tool size and number of passes
   if (tool_size_set) {
     rtext("tool size " + nfs(tool_size, 1, 3), width - 120, 20);
+  }
+  if (tool_depth_set) {
+    rtext("depth " + nfs(tool_depth, 1, 3), width - 120, 20);
   }
   rtext(nfs(total_passes, 1) + " passes", width - 40, 40);
   
