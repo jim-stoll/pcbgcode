@@ -770,7 +770,7 @@ void output_text_code()
 			output_file_preamble();
 
 			// Initialize the device (i.e. the output file).
-			begin_gcode(SPINDLE_MILL_RPM);
+			begin_gcode(SPINDLE_TEXT_RPM);
 
 			// Process all the wires.
 			B.texts(T) T.wires(W) {
@@ -958,7 +958,7 @@ void write_outlines(int which_side, int task)
 		  break;
 		case TEXT:
 		  m_layer = TEXT_LAYER;
-		  spindle_speed = SPINDLE_MILL_RPM;
+		  spindle_speed = SPINDLE_TEXT_RPM;
 		  fr_xy = FEED_RATE_TEXT_XY;
 		  fr_z = FEED_RATE_TEXT_Z;
 		  break;
