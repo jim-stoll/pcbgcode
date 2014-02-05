@@ -703,6 +703,7 @@ void generate_outlines(int which_side)
 // Params:
 //  path  Path and filename.
 //  mode  File open mode. May be write or append.
+// layer  MILL, TEXT, etc.
 // Returns:
 //  none
 // Changes:
@@ -896,7 +897,6 @@ void output_mill_code()
 
 	g_tool_size = abs(MILLING_DEPTH);
 	output_preview_data(FILEMODE_WRITE_TEXT, MILL);
-	
 	preview();
 	
 	m_lines = "";
@@ -1098,6 +1098,11 @@ void write_outlines(int which_side, int task)
 //
 void write_stencil(int which_side, string suffix)
 {
+  real fr_xy;
+  real fr_z;
+  fr_xy = FEED_RATE_MILL_XY; // jtj fixme
+  fr_z = FEED_RATE_MILL_Z;
+  
 	g_side = which_side;
 	switch (which_side) {
 		case TOP:
@@ -1116,9 +1121,9 @@ void write_stencil(int which_side, string suffix)
 			user_file_opened(get_filename(), "wt");
 
 			output_file_preamble();
-			begin_gcode();
+			begin_gcode(SPINDLE_MILL_RPM);
 
-			int tool_dia = from_units(DEFAULT_WIDTH);
+			int tool_dia = g_tool_size;
 
 			B.elements(E) {
 				E.package.contacts(C) {
@@ -1153,12 +1158,12 @@ void write_stencil(int which_side, string suffix)
 							int x4 = -hx * cos(alpha) + hy * sin(alpha),
 									y4 = -hx * sin(alpha) - hy * cos(alpha);
 
-							device_draw(cx + x1, cy + y1, cx + x2, cy + y2, ST_START_LINE, DEFAULT_Z_DOWN);
-							device_draw(cx + x2, cy + y2, cx + x3, cy + y3, ST_CONTINUE_LINE, DEFAULT_Z_DOWN);
-							device_draw(cx + x3, cy + y3, cx + x4, cy + y4, ST_CONTINUE_LINE, DEFAULT_Z_DOWN);
-							device_draw(cx + x4, cy + y4, cx + x1, cy + y1, ST_CONTINUE_LINE, DEFAULT_Z_DOWN);
+							device_draw(cx + x1, cy + y1, cx + x2, cy + y2, ST_START_LINE, DEFAULT_Z_DOWN, fr_xy, fr_z);
+							device_draw(cx + x2, cy + y2, cx + x3, cy + y3, ST_CONTINUE_LINE, DEFAULT_Z_DOWN, fr_xy, fr_z);
+							device_draw(cx + x3, cy + y3, cx + x4, cy + y4, ST_CONTINUE_LINE, DEFAULT_Z_DOWN, fr_xy, fr_z);
+							device_draw(cx + x4, cy + y4, cx + x1, cy + y1, ST_CONTINUE_LINE, DEFAULT_Z_DOWN, fr_xy, fr_z);
 							// Deburr
-							device_draw(cx + x1, cy + y1, cx + x2, cy + y2, ST_END_LINE, DEFAULT_Z_DOWN);
+							device_draw(cx + x1, cy + y1, cx + x2, cy + y2, ST_END_LINE, DEFAULT_Z_DOWN, fr_xy, fr_z);
 						} // if (dx > 0 && dy > 0)
 					} // if (C.smd)
 				} // package.contacts
@@ -1173,6 +1178,11 @@ void write_stencil(int which_side, string suffix)
 	}
 	// output
 	user_file_closed(get_filename(), "wt");
+	
+	g_tool_size = abs(MILLING_DEPTH);
+	output_preview_data(FILEMODE_WRITE_TEXT, MILL);
+	preview();
+	
 } // write_stencil
 
 /* string get_phase_name(int phase)

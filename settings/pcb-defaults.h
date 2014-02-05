@@ -1,7 +1,7 @@
 //
 // Default values for generating gcode from a PCB.
 //
-// These settings were last changed with pcb-gcode-setup: 2/5/14 10:29 AM
+// These settings were last changed with pcb-gcode-setup: 2/5/14 2:43 PM
 //
 //
 // Changes you make in this file will be overwritten if you use pcb-gcode-setup.
@@ -21,6 +21,7 @@ int GENERATE_BOTTOM_OUTLINES = NO;
 int GENERATE_BOTTOM_DRILL = NO;
 int GENERATE_BOTTOM_FILL = NO;
 int GENERATE_BOTTOM_STENCIL = NO;
+
 int MIRROR_BOTTOM = NO;
 int SIMPLE_DRILL_CODE = NO;
 
