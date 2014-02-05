@@ -48,7 +48,7 @@ enum { ST_INVALID,
 		 ST_ARC_BEGIN,
 		 ST_ARC_END};
 
-enum { TOP = 0, BOTTOM = 1, MILL = 2, TEXT = 3, ALL = 4 };
+enum { TOP = 0, BOTTOM = 1, MILL = 2, TEXT = 3, STENCIL = 4, ALL = 5 };
 
 int PROGRAM_NAME_ARG = 0;
 int FILENAME_ARG = 1;

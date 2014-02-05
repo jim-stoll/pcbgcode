@@ -1100,8 +1100,8 @@ void write_stencil(int which_side, string suffix)
 {
   real fr_xy;
   real fr_z;
-  fr_xy = FEED_RATE_MILL_XY; // jtj fixme
-  fr_z = FEED_RATE_MILL_Z;
+  fr_xy = FEED_RATE_STENCIL_XY;
+  fr_z = FEED_RATE_STENCIL_Z;
   
 	g_side = which_side;
 	switch (which_side) {
@@ -1121,9 +1121,14 @@ void write_stencil(int which_side, string suffix)
 			user_file_opened(get_filename(), "wt");
 
 			output_file_preamble();
-			begin_gcode(SPINDLE_MILL_RPM);
+			begin_gcode(SPINDLE_STENCIL_RPM);
 
-			int tool_dia = g_tool_size;
+			int tool_dia = from_units(STENCIL_TOOL_SIZE);
+			g_tool_size = STENCIL_TOOL_SIZE;
+			if(g_debug_flag) {
+				sprintf(g_debug, "Stencil tool diameter=%f", units(tool_dia));
+				comm(g_debug);
+			} // if (g_debug_flag)
 
 			B.elements(E) {
 				E.package.contacts(C) {
@@ -1179,8 +1184,7 @@ void write_stencil(int which_side, string suffix)
 	// output
 	user_file_closed(get_filename(), "wt");
 	
-	g_tool_size = abs(MILLING_DEPTH);
-	output_preview_data(FILEMODE_WRITE_TEXT, MILL);
+	output_preview_data(FILEMODE_WRITE_TEXT, STENCIL);
 	preview();
 	
 } // write_stencil

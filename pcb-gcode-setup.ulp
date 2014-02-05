@@ -718,7 +718,7 @@ int Result = dlgDialog("pcb-gcode Setup") {
 					dlgCell(6, 1) dlgRealEdit(FEED_RATE_STENCIL_XY); // DO NOT CONVERT
 					dlgCell(6, 2) dlgRealEdit(FEED_RATE_STENCIL_Z); // DO NOT CONVERT
 					dlgCell(6, 3) dlgRealEdit(SPINDLE_STENCIL_RPM); // DO NOT CONVERT
-					dlgCell(6, 4) dlgRealEdit(STENCIL_TOOL_DIA);
+					dlgCell(6, 4) dlgRealEdit(STENCIL_TOOL_SIZE);
 
 
 				}
