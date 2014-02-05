@@ -32,11 +32,13 @@ string FILENAME_TOP_DRILL_FILE_SAMPLE;
 string FILENAME_TOP_MILL_FILE_SAMPLE;
 string FILENAME_TOP_TEXT_FILE_SAMPLE;
 string FILENAME_TOP_FILL_FILE_SAMPLE;
+string FILENAME_TOP_STENCIL_FILE_SAMPLE;
 string FILENAME_BOT_ETCH_FILE_SAMPLE;
 string FILENAME_BOT_DRILL_FILE_SAMPLE;
 string FILENAME_BOT_MILL_FILE_SAMPLE;
 string FILENAME_BOT_TEXT_FILE_SAMPLE;
 string FILENAME_BOT_FILL_FILE_SAMPLE;
+string FILENAME_BOT_STENCIL_FILE_SAMPLE;
 
 string temp_str;
 
@@ -237,6 +239,7 @@ int Result = dlgDialog("pcb-gcode Setup") {
         dlgGroup("Top Side") {
           dlgCheckBox("Generate top outlines", GENERATE_TOP_OUTLINES);
           dlgCheckBox("Generate top drills  ", GENERATE_TOP_DRILL);
+          dlgCheckBox("Generate top stencil ", GENERATE_TOP_STENCIL);
         }
         dlgStretch(1);
       }
@@ -246,6 +249,8 @@ int Result = dlgDialog("pcb-gcode Setup") {
             GENERATE_BOTTOM_OUTLINES);
           dlgCheckBox("Generate bottom drills  ", 
             GENERATE_BOTTOM_DRILL);
+          dlgCheckBox("Generate bottom stencil ",
+            GENERATE_BOTTOM_STENCIL);
           dlgCheckBox("Mirror ", 
             MIRROR_BOTTOM);
         }
@@ -525,13 +530,16 @@ int Result = dlgDialog("pcb-gcode Setup") {
           dlgCell(2, 2) { dlgLabel("Word for 'mill'"); 
             dlgStringEdit(MILL_FILE_NAME);
           }
-          dlgCell(2, 3) { dlgLabel("Word for 'text'"); 
-            dlgStringEdit(TEXT_FILE_NAME); dlgStretch(1);
+          dlgCell(3, 0) { dlgLabel("Word for 'text'");
+            dlgStringEdit(TEXT_FILE_NAME);
           }
-          dlgCell(3, 0) { dlgLabel("Word for 'top'"); 
+          dlgCell(3, 1) { dlgLabel("Word for 'stencil'");
+            dlgStringEdit(STENCIL_FILE_NAME); dlgStretch(1);
+          }
+          dlgCell(4, 0) { dlgLabel("Word for 'top'");
             dlgStringEdit(TOP_FILE_NAME); 
           }
-          dlgCell(3, 1) { dlgLabel("Word for 'bottom'"); 
+          dlgCell(4, 1) { dlgLabel("Word for 'bottom'");
             dlgStringEdit(BOT_FILE_NAME); 
           }
         }
@@ -546,6 +554,8 @@ int Result = dlgDialog("pcb-gcode Setup") {
               dlgCell(3, 1) { dlgStringEdit(FILENAME_TOP_MILL_FILE); }
               dlgCell(4, 0) dlgLabel("Text "); 
               dlgCell(4, 1) { dlgStringEdit(FILENAME_TOP_TEXT_FILE); }
+              dlgCell(5, 0) dlgLabel("Stencil ");
+              dlgCell(5, 1) { dlgStringEdit(FILENAME_TOP_STENCIL_FILE); }
             }
           }
           dlgGroup("Bottom (Solder) Side Files") {
@@ -558,6 +568,8 @@ int Result = dlgDialog("pcb-gcode Setup") {
               dlgCell(3, 1) dlgStringEdit(FILENAME_BOT_MILL_FILE);
               dlgCell(4, 0) dlgLabel("Text "); 
               dlgCell(4, 1) dlgStringEdit(FILENAME_BOT_TEXT_FILE);
+              dlgCell(5, 0) dlgLabel("Stencil ");
+              dlgCell(5, 1) dlgStringEdit(FILENAME_BOT_STENCIL_FILE);
             }
           }
 //          dlgStretch(1);
@@ -575,6 +587,9 @@ int Result = dlgDialog("pcb-gcode Setup") {
             FILENAME_TOP_TEXT_FILE_SAMPLE = sub_side_phase(
               FILENAME_BASE + FILENAME_TOP_TEXT_FILE, 
               TOP, PH_TEXT);
+            FILENAME_TOP_STENCIL_FILE_SAMPLE = sub_side_phase(
+              FILENAME_BASE + FILENAME_TOP_STENCIL_FILE,
+              TOP, PH_TOP_STENCIL);
             FILENAME_BOT_ETCH_FILE_SAMPLE = sub_side_phase(
               FILENAME_BASE + FILENAME_BOT_ETCH_FILE, 
               BOTTOM, PH_BOTTOM_OUT_WRITE);
@@ -587,6 +602,9 @@ int Result = dlgDialog("pcb-gcode Setup") {
             FILENAME_BOT_TEXT_FILE_SAMPLE = sub_side_phase(
               FILENAME_BASE + FILENAME_BOT_TEXT_FILE, 
               BOTTOM, PH_TEXT);
+            FILENAME_BOT_STENCIL_FILE_SAMPLE = sub_side_phase(
+              FILENAME_BASE + FILENAME_BOT_STENCIL_FILE,
+              BOTTOM, PH_BOTTOM_STENCIL);
             FILENAME_TOP_ETCH_FILE_SAMPLE = substitute(
               FILENAME_TOP_ETCH_FILE_SAMPLE, 
               key_value_record(" ", "_"));
@@ -598,6 +616,9 @@ int Result = dlgDialog("pcb-gcode Setup") {
               key_value_record(" ", "_"));
             FILENAME_TOP_TEXT_FILE_SAMPLE  = substitute(
               FILENAME_TOP_TEXT_FILE_SAMPLE, 
+              key_value_record(" ", "_"));
+            FILENAME_TOP_STENCIL_FILE_SAMPLE  = substitute(
+              FILENAME_TOP_STENCIL_FILE_SAMPLE,
               key_value_record(" ", "_"));
             FILENAME_BOT_ETCH_FILE_SAMPLE  = substitute(
               FILENAME_BOT_ETCH_FILE_SAMPLE, 
@@ -611,6 +632,9 @@ int Result = dlgDialog("pcb-gcode Setup") {
             FILENAME_BOT_TEXT_FILE_SAMPLE  = substitute(
               FILENAME_BOT_TEXT_FILE_SAMPLE, 
               key_value_record(" ", "_"));
+            FILENAME_BOT_STENCIL_FILE_SAMPLE  = substitute(
+              FILENAME_BOT_STENCIL_FILE_SAMPLE,
+              key_value_record(" ", "_"));
             temp_str = ";Test Filenames\n"  
             "Spaces in file paths have been "
             "replaced with underscores _ to keep "
@@ -620,11 +644,13 @@ int Result = dlgDialog("pcb-gcode Setup") {
             "Drill:\t" + FILENAME_TOP_DRILL_FILE_SAMPLE + "\n" +
             "Mill:\t" + FILENAME_TOP_MILL_FILE_SAMPLE + "\n" +
             "Text:\t" + FILENAME_TOP_TEXT_FILE_SAMPLE + "\n" +
+            "Stencil:\t" + FILENAME_TOP_STENCIL_FILE_SAMPLE + "\n" +
             "\nBottom:\n"
             "Etch:\t" + FILENAME_BOT_ETCH_FILE_SAMPLE + "\n" +
             "Drill:\t" + FILENAME_BOT_DRILL_FILE_SAMPLE + "\n" +
             "Mill:\t" + FILENAME_BOT_MILL_FILE_SAMPLE + "\n" +
-            "Text:\t" + FILENAME_BOT_TEXT_FILE_SAMPLE + "\n";
+            "Text:\t" + FILENAME_BOT_TEXT_FILE_SAMPLE + "\n" +
+            "Stencil:\t" + FILENAME_BOT_STENCIL_FILE_SAMPLE + "\n";
             dlgMessageBox(temp_str);
           }
           dlgPushButton("Help") {
@@ -718,12 +744,14 @@ if (Result == 1 || Result == 2) {
 		write_bool_param("GENERATE_TOP_OUTLINES", GENERATE_TOP_OUTLINES);
 		write_bool_param("GENERATE_TOP_DRILL", GENERATE_TOP_DRILL);
 		write_bool_param("GENERATE_TOP_FILL", GENERATE_TOP_FILL);
+    write_bool_param("GENERATE_TOP_STENCIL", GENERATE_TOP_STENCIL);
 		printf("\n");
 
 		write_bool_param("GENERATE_BOTTOM_OUTLINES", 
       GENERATE_BOTTOM_OUTLINES);
 		write_bool_param("GENERATE_BOTTOM_DRILL", GENERATE_BOTTOM_DRILL);
 		write_bool_param("GENERATE_BOTTOM_FILL", GENERATE_BOTTOM_FILL);
+    write_bool_param("GENERATE_BOTTOM_STENCIL", GENERATE_BOTTOM_STENCIL);
     write_bool_param("MIRROR_BOTTOM", 
       MIRROR_BOTTOM);
     write_bool_param("SIMPLE_DRILL_CODE", SIMPLE_DRILL_CODE);
@@ -807,16 +835,20 @@ if (Result == 1 || Result == 2) {
     write_string_param("FILENAME_TOP_MILL_FILE",  FILENAME_TOP_MILL_FILE);
     write_string_param("FILENAME_TOP_TEXT_FILE",  FILENAME_TOP_TEXT_FILE);
     write_string_param("FILENAME_TOP_FILL_FILE",  FILENAME_TOP_FILL_FILE);
+    write_string_param("FILENAME_TOP_STENCIL_FILE", FILENAME_TOP_STENCIL_FILE);
 
     write_string_param("FILENAME_BOT_ETCH_FILE",  FILENAME_BOT_ETCH_FILE);
     write_string_param("FILENAME_BOT_DRILL_FILE", FILENAME_BOT_DRILL_FILE);
     write_string_param("FILENAME_BOT_MILL_FILE",  FILENAME_BOT_MILL_FILE);
     write_string_param("FILENAME_BOT_TEXT_FILE",  FILENAME_BOT_TEXT_FILE);
     write_string_param("FILENAME_BOT_FILL_FILE",  FILENAME_BOT_FILL_FILE);
+    write_string_param("FILENAME_BOT_STENCIL_FILE", FILENAME_BOT_STENCIL_FILE);
+
     write_string_param("ETCH_FILE_NAME",  ETCH_FILE_NAME);
     write_string_param("DRILL_FILE_NAME", DRILL_FILE_NAME);
     write_string_param("MILL_FILE_NAME",  MILL_FILE_NAME);
     write_string_param("TEXT_FILE_NAME",  TEXT_FILE_NAME);
+    write_string_param("STENCIL_FILE_NAME", STENCIL_FILE_NAME);
     write_string_param("TOP_FILE_NAME",   TOP_FILE_NAME);
     write_string_param("BOT_FILE_NAME",   BOT_FILE_NAME);
     write_string_param("DEFAULT_EXTENSION", DEFAULT_EXTENSION);

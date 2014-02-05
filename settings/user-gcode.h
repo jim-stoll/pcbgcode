@@ -68,6 +68,19 @@ FILL_END[BOTTOM]   = "(Bottom Fill End)\n";
 FILL_BEGIN[TOP]    = "(Top Fill Begin)\n";
 FILL_END[TOP]      = "(Top Fill End)\n";
 
+// Inserted into stencil files.
+string STENCIL_BEGIN[] = { "", "", "", "" };
+string STENCIL_END[]   = { "", "", "", "" };
+
+STENCIL_BEGIN[ALL]    = "(Stencil Begin)\n";
+STENCIL_END[ALL]      = "(Stencil End)\n";
+
+STENCIL_BEGIN[BOTTOM] = "(Bottom Stencil Begin)\n";
+STENCIL_END[BOTTOM]   = "(Bottom Stencil End)\n";
+
+STENCIL_BEGIN[TOP]    = "(Top Stencil Begin)\n";
+STENCIL_END[TOP]      = "(Top Stencil End)\n";
+
 // Inserted into milling files.
 string MILL_BEGIN[] = { "", "", "", "" };
 string MILL_END[]   = { "", "", "", "" };

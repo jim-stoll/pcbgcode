@@ -243,13 +243,15 @@ void output_file_heading()
 		comm(fr("isolate max = %6.4f", ISO_MAX));
 		comm(fr("isolate step = %6.4f", ISO_STEP));
 		string tt;
-		sprintf(tt, "Generated %s%s%s%s%s%s",
+		sprintf(tt, "Generated %s%s%s%s%s%s%s%s",
 			(GENERATE_TOP_OUTLINES)     ? "top outlines, "    : "",
 			(GENERATE_TOP_DRILL)        ? "top drill, "       : "",
 			(GENERATE_TOP_FILL)         ? "top fill, "        : "",
+			(GENERATE_TOP_STENCIL)      ? "top stencil, "     : "",
 			(GENERATE_BOTTOM_OUTLINES)  ? "bottom outlines, " : "",
 			(GENERATE_BOTTOM_DRILL)     ? "bottom drill, "    : "",
-			(GENERATE_BOTTOM_FILL)      ? "bottom fill"       : ""
+			(GENERATE_BOTTOM_FILL)      ? "bottom fill"       : "",
+			(GENERATE_BOTTOM_STENCIL)   ? "bottom stencil"    : ""
 			);
 		comm(tt);
 		comm("Unit of measure: " + UNIT_OF_MEASURE);
@@ -313,6 +315,12 @@ void output_kind_begin()
 			out(FILL_BEGIN[g_side]);
 			break;
 
+		case PH_TOP_STENCIL:
+		case PH_BOTTOM_STENCIL:
+			out(STENCIL_BEGIN[ALL]);
+			out(STENCIL_BEGIN[g_side]);
+			break;
+
 		case PH_MILL:
 			out(MILL_BEGIN[ALL]);
 			out(MILL_BEGIN[g_side]);
@@ -353,6 +361,12 @@ void output_kind_end()
 		case PH_BOTTOM_FILL_WRITE:
 			out(FILL_END[g_side]);
 			out(FILL_END[ALL]);
+			break;
+
+		case PH_TOP_STENCIL:
+		case PH_BOTTOM_STENCIL:
+			out(STENCIL_END[ALL]);
+			out(STENCIL_END[g_side]);
 			break;
 
 		case PH_MILL:
