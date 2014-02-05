@@ -31,11 +31,13 @@ string FILENAME_TOP_DRILL_FILE_SAMPLE;
 string FILENAME_TOP_MILL_FILE_SAMPLE;
 string FILENAME_TOP_TEXT_FILE_SAMPLE;
 string FILENAME_TOP_FILL_FILE_SAMPLE;
+string FILENAME_TOP_STENCIL_FILE_SAMPLE;
 string FILENAME_BOT_ETCH_FILE_SAMPLE;
 string FILENAME_BOT_DRILL_FILE_SAMPLE;
 string FILENAME_BOT_MILL_FILE_SAMPLE;
 string FILENAME_BOT_TEXT_FILE_SAMPLE;
 string FILENAME_BOT_FILL_FILE_SAMPLE;
+string FILENAME_BOT_STENCIL_FILE_SAMPLE;
 
 string temp_str;
 
@@ -509,37 +511,40 @@ int Result = dlgDialog("pcb-gcode Setup") {
      *
      ***************************************************************/
     
-     if (program_is_setup()) dlgTabPage("Generation Options") {
-       dlgHBoxLayout {
-         dlgStretch(20);
-         dlgVBoxLayout {
-           dlgGroup("Top Side") {
-             dlgCheckBox("Generate top outlines", GENERATE_TOP_OUTLINES);
-             dlgCheckBox("Generate top drills  ", GENERATE_TOP_DRILL);
-           }
-           dlgStretch(1);
-         }
-         dlgVBoxLayout {
-           dlgGroup("Bottom Side") {
-             dlgCheckBox("Generate bottom outlines", 
-             GENERATE_BOTTOM_OUTLINES);
-             dlgCheckBox("Generate bottom drills  ", 
-             GENERATE_BOTTOM_DRILL);
-             dlgCheckBox("Mirror ", 
-             MIRROR_BOTTOM);
-           }
-           dlgStretch(1);
-           dlgLabel("<img src='docs/images/isolation_settings_300.gif' width='300'/>");
-           dlgStretch(3);
-         }
-         dlgVBoxLayout {
-           dlgGroup("Board") {
-             dlgVBoxLayout {
-               dlgCheckBox("Show preview ", SHOW_PREVIEW);
-               dlgGridLayout {
-                 dlgCell(0, 0) dlgCheckBox("Generate milling", GENERATE_MILLING);
-                 dlgCell(0, 1) dlgLabel("Depth ");
-                 dlgCell(0, 2) { dlgRealEdit(MILLING_DEPTH); dlgLabel(m_uom_suffix, YES); }
+    if (program_is_setup()) dlgTabPage("Generation Options") {
+      dlgHBoxLayout {
+	    dlgStretch(20);
+        dlgVBoxLayout {
+        dlgGroup("Top Side") {
+          dlgCheckBox("Generate top outlines", GENERATE_TOP_OUTLINES);
+          dlgCheckBox("Generate top drills  ", GENERATE_TOP_DRILL);
+          dlgCheckBox("Generate top stencil ", GENERATE_TOP_STENCIL);
+        }
+        dlgStretch(1);
+      }
+      dlgVBoxLayout {
+        dlgGroup("Bottom Side") {
+          dlgCheckBox("Generate bottom outlines", 
+            GENERATE_BOTTOM_OUTLINES);
+          dlgCheckBox("Generate bottom drills  ", 
+            GENERATE_BOTTOM_DRILL);
+          dlgCheckBox("Generate bottom stencil ",
+            GENERATE_BOTTOM_STENCIL);
+          dlgCheckBox("Mirror ", 
+            MIRROR_BOTTOM);
+        }
+        dlgStretch(1);
+        dlgLabel("<img src='docs/images/isolation_settings_300.gif' width='300'/>");
+        dlgStretch(3);
+      }
+      dlgVBoxLayout {
+        dlgGroup("Board") {
+          dlgVBoxLayout {
+            dlgCheckBox("Show preview ", SHOW_PREVIEW);
+            dlgGridLayout {
+              dlgCell(0, 0) dlgCheckBox("Generate milling", GENERATE_MILLING);
+              dlgCell(0, 1) dlgLabel("Depth ");
+              dlgCell(0, 2) { dlgRealEdit(MILLING_DEPTH); dlgLabel(m_uom_suffix, YES); }
 
                  dlgCell(1, 0) dlgCheckBox("Generate text", GENERATE_TEXT);
                  dlgCell(1, 1) dlgLabel("Depth ");
@@ -820,13 +825,16 @@ int Result = dlgDialog("pcb-gcode Setup") {
           dlgCell(2, 2) { dlgLabel("Word for 'mill'"); 
             dlgStringEdit(MILL_FILE_NAME);
           }
-          dlgCell(2, 3) { dlgLabel("Word for 'text'"); 
-            dlgStringEdit(TEXT_FILE_NAME); dlgStretch(1);
+          dlgCell(3, 0) { dlgLabel("Word for 'text'");
+            dlgStringEdit(TEXT_FILE_NAME);
           }
-          dlgCell(3, 0) { dlgLabel("Word for 'top'"); 
+          dlgCell(3, 1) { dlgLabel("Word for 'stencil'");
+            dlgStringEdit(STENCIL_FILE_NAME); dlgStretch(1);
+          }
+          dlgCell(4, 0) { dlgLabel("Word for 'top'");
             dlgStringEdit(TOP_FILE_NAME); 
           }
-          dlgCell(3, 1) { dlgLabel("Word for 'bottom'"); 
+          dlgCell(4, 1) { dlgLabel("Word for 'bottom'");
             dlgStringEdit(BOT_FILE_NAME); 
           }
         }
@@ -841,6 +849,8 @@ int Result = dlgDialog("pcb-gcode Setup") {
               dlgCell(3, 1) { dlgStringEdit(FILENAME_TOP_MILL_FILE); }
               dlgCell(4, 0) dlgLabel("Text "); 
               dlgCell(4, 1) { dlgStringEdit(FILENAME_TOP_TEXT_FILE); }
+              dlgCell(5, 0) dlgLabel("Stencil ");
+              dlgCell(5, 1) { dlgStringEdit(FILENAME_TOP_STENCIL_FILE); }
             }
           }
           dlgGroup("Bottom (Solder) Side Files") {
@@ -853,6 +863,8 @@ int Result = dlgDialog("pcb-gcode Setup") {
               dlgCell(3, 1) dlgStringEdit(FILENAME_BOT_MILL_FILE);
               dlgCell(4, 0) dlgLabel("Text "); 
               dlgCell(4, 1) dlgStringEdit(FILENAME_BOT_TEXT_FILE);
+              dlgCell(5, 0) dlgLabel("Stencil ");
+              dlgCell(5, 1) dlgStringEdit(FILENAME_BOT_STENCIL_FILE);
             }
           }
 //          dlgStretch(1);
@@ -870,6 +882,9 @@ int Result = dlgDialog("pcb-gcode Setup") {
             FILENAME_TOP_TEXT_FILE_SAMPLE = sub_side_phase(
               FILENAME_BASE + FILENAME_TOP_TEXT_FILE, 
               TOP, PH_TEXT);
+            FILENAME_TOP_STENCIL_FILE_SAMPLE = sub_side_phase(
+              FILENAME_BASE + FILENAME_TOP_STENCIL_FILE,
+              TOP, PH_TOP_STENCIL);
             FILENAME_BOT_ETCH_FILE_SAMPLE = sub_side_phase(
               FILENAME_BASE + FILENAME_BOT_ETCH_FILE, 
               BOTTOM, PH_BOTTOM_OUT_WRITE);
@@ -882,6 +897,9 @@ int Result = dlgDialog("pcb-gcode Setup") {
             FILENAME_BOT_TEXT_FILE_SAMPLE = sub_side_phase(
               FILENAME_BASE + FILENAME_BOT_TEXT_FILE, 
               BOTTOM, PH_TEXT);
+            FILENAME_BOT_STENCIL_FILE_SAMPLE = sub_side_phase(
+              FILENAME_BASE + FILENAME_BOT_STENCIL_FILE,
+              BOTTOM, PH_BOTTOM_STENCIL);
             FILENAME_TOP_ETCH_FILE_SAMPLE = substitute(
               FILENAME_TOP_ETCH_FILE_SAMPLE, 
               key_value_record(" ", "_"));
@@ -893,6 +911,9 @@ int Result = dlgDialog("pcb-gcode Setup") {
               key_value_record(" ", "_"));
             FILENAME_TOP_TEXT_FILE_SAMPLE  = substitute(
               FILENAME_TOP_TEXT_FILE_SAMPLE, 
+              key_value_record(" ", "_"));
+            FILENAME_TOP_STENCIL_FILE_SAMPLE  = substitute(
+              FILENAME_TOP_STENCIL_FILE_SAMPLE,
               key_value_record(" ", "_"));
             FILENAME_BOT_ETCH_FILE_SAMPLE  = substitute(
               FILENAME_BOT_ETCH_FILE_SAMPLE, 
@@ -906,6 +927,9 @@ int Result = dlgDialog("pcb-gcode Setup") {
             FILENAME_BOT_TEXT_FILE_SAMPLE  = substitute(
               FILENAME_BOT_TEXT_FILE_SAMPLE, 
               key_value_record(" ", "_"));
+            FILENAME_BOT_STENCIL_FILE_SAMPLE  = substitute(
+              FILENAME_BOT_STENCIL_FILE_SAMPLE,
+              key_value_record(" ", "_"));
             temp_str = ";Test Filenames\n"  
             "Spaces in file paths have been "
             "replaced with underscores _ to keep "
@@ -915,11 +939,13 @@ int Result = dlgDialog("pcb-gcode Setup") {
             "Drill:\t" + FILENAME_TOP_DRILL_FILE_SAMPLE + "\n" +
             "Mill:\t" + FILENAME_TOP_MILL_FILE_SAMPLE + "\n" +
             "Text:\t" + FILENAME_TOP_TEXT_FILE_SAMPLE + "\n" +
+            "Stencil:\t" + FILENAME_TOP_STENCIL_FILE_SAMPLE + "\n" +
             "\nBottom:\n"
             "Etch:\t" + FILENAME_BOT_ETCH_FILE_SAMPLE + "\n" +
             "Drill:\t" + FILENAME_BOT_DRILL_FILE_SAMPLE + "\n" +
             "Mill:\t" + FILENAME_BOT_MILL_FILE_SAMPLE + "\n" +
-            "Text:\t" + FILENAME_BOT_TEXT_FILE_SAMPLE + "\n";
+            "Text:\t" + FILENAME_BOT_TEXT_FILE_SAMPLE + "\n" +
+            "Stencil:\t" + FILENAME_BOT_STENCIL_FILE_SAMPLE + "\n";
             dlgMessageBox(temp_str);
           }
           dlgPushButton("Help") {
@@ -1014,10 +1040,11 @@ if (Result == 1 || Result == 2) {
 			m_setup_was_changed = YES;
 		}
 	}
-
   save_pcb_defaults();
   save_pcb_gcode_options();
   save_pcb_machine();
+
+
   
 }
 

@@ -1088,6 +1088,115 @@ void write_outlines(int which_side, int task)
 // write_outlines
 
 //
+// Write stencil toolpath to the file.
+//
+// Params:
+//  which_side    Side of the board to work on.
+//  suffix        Suffix of the file.
+// Return:
+//  none
+//
+void write_stencil(int which_side, string suffix)
+{
+	g_side = which_side;
+	switch (which_side) {
+		case TOP:
+		m_layer = TOP_CREAM_LAYER;
+		break;
+		case BOTTOM:
+		m_layer = BOTTOM_CREAM_LAYER;
+		break;
+		default:
+		sprintf(g_debug, "Illegal which_side %d in write_stencil", which_side);
+		Fatal("Sorry...", g_debug);
+	}
+
+	output(get_filename(), "wt") {
+		board(B) {
+			user_file_opened(get_filename(), "wt");
+
+			output_file_preamble();
+			begin_gcode();
+
+			int tool_dia = from_units(DEFAULT_WIDTH);
+
+			B.elements(E) {
+				E.package.contacts(C) {
+					if (C.smd) {
+						int cx = C.smd.x, cy = C.smd.y;
+						int dx = C.smd.dx[m_layer], dy = C.smd.dy[m_layer];
+						real alpha = C.smd.angle * PI / 180;
+
+						if(g_debug_flag) {
+							sprintf(g_debug, "Pad: cx=%f cy=%f dx=%f dy=%f alpha=%f",
+										  units(cx), units(cy), units(dx), units(dy), alpha);
+							comm(g_debug);
+						} // if (g_debug_flag)
+
+						// Tool size compensation
+						dx -= tool_dia / 2; dy -= tool_dia / 2;
+
+						// Carve out the pad
+						if (dx > 0 && dy > 0) {
+							int hx = dx / 2, hy = dy / 2;
+
+							// rotate (-hx, hy)
+							int x1 = -hx * cos(alpha) - hy * sin(alpha),
+									y1 = -hx * sin(alpha) + hy * cos(alpha);
+							// rotate (hx, hy)
+							int x2 = hx * cos(alpha) - hy * sin(alpha),
+									y2 = hx * sin(alpha) + hy * cos(alpha);
+							// rotate (hx, -hy)
+							int x3 = hx * cos(alpha) + hy * sin(alpha),
+									y3 = hx * sin(alpha) - hy * cos(alpha);
+							// rotate (-hx, -hy)
+							int x4 = -hx * cos(alpha) + hy * sin(alpha),
+									y4 = -hx * sin(alpha) - hy * cos(alpha);
+
+							device_draw(cx + x1, cy + y1, cx + x2, cy + y2, ST_START_LINE, DEFAULT_Z_DOWN);
+							device_draw(cx + x2, cy + y2, cx + x3, cy + y3, ST_CONTINUE_LINE, DEFAULT_Z_DOWN);
+							device_draw(cx + x3, cy + y3, cx + x4, cy + y4, ST_CONTINUE_LINE, DEFAULT_Z_DOWN);
+							device_draw(cx + x4, cy + y4, cx + x1, cy + y1, ST_CONTINUE_LINE, DEFAULT_Z_DOWN);
+							// Deburr
+							device_draw(cx + x1, cy + y1, cx + x2, cy + y2, ST_END_LINE, DEFAULT_Z_DOWN);
+						} // if (dx > 0 && dy > 0)
+					} // if (C.smd)
+				} // package.contacts
+			} // elements
+
+			output_file_postamble();
+			rz(DEFAULT_Z_UP);
+			end_gcode();
+		}
+		// board
+		user_file_closing();
+	}
+	// output
+	user_file_closed(get_filename(), "wt");
+} // write_stencil
+
+/* string get_phase_name(int phase)
+{
+	return PHASE_NAME[phase];
+}
+ */
+void gen_progress_menu(int phase)
+{
+	output(path_scr[0] + '/' + "source/pcb-gcode-prg.scr") {
+		printf("MENU \\\n");
+		for(int i = 1; i < PH_LAST_PHASE; i++) {
+			if (i == phase) {
+				printf("--%s-- \\\n", get_phase_name(i));     
+				// " (for TextMate)
+			}
+			else {
+				printf("  %s  \\\n", get_phase_name(i));
+			}
+		}
+		printf(";\n");
+	}
+}
+
 // Make sure a board is available to work on.
 //
 if (!board) {
@@ -1221,6 +1330,15 @@ switch (g_phase) {
  case PH_BOTTOM_FILL_WRITE:
    if (GENERATE_BOTTOM_FILL == YES)
      write_outlines(BOTTOM, FILL);
+   break;
+
+ case PH_TOP_STENCIL:
+   if (GENERATE_TOP_STENCIL == YES)
+     write_stencil(TOP, "tc");
+   break;
+ case PH_BOTTOM_STENCIL:
+   if (GENERATE_BOTTOM_STENCIL == YES)
+     write_stencil(BOTTOM, "bc");
    break;
 
  case PH_TOP_DRILL:
