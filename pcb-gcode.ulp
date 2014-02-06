@@ -1289,8 +1289,6 @@ void write_outlines(int which_side, int task)
 						tool_x = X_HOME;
 						tool_y = Y_HOME;
 						step = 0;
-				sprintf(g_debug, "CLIMB_MILLING=%d", CLIMB_MILLING);
-				Message(g_debug);
 						// set direction of cut around contour
 						if (((g_side == TOP) && !CLIMB_MILLING) || ((g_side == BOTTOM) && CLIMB_MILLING)) fwd = true; else fwd = false;
 						while (v_next[0] > 0){
