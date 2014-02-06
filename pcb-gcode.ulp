@@ -1132,7 +1132,9 @@ void write_stencil(int which_side, string suffix)
 
 			B.elements(E) {
 				E.package.contacts(C) {
-					if (C.smd) {
+					if (C.smd &&
+					    ((C.smd.layer == LAYER_BOTTOM && m_layer == BOTTOM_CREAM_LAYER) || 
+					    (C.smd.layer == LAYER_TOP && m_layer == TOP_CREAM_LAYER))) {
 						int cx = C.smd.x, cy = C.smd.y;
 						int dx = C.smd.dx[m_layer], dy = C.smd.dy[m_layer];
 						real alpha = C.smd.angle * PI / 180;
