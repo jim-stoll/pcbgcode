@@ -430,6 +430,7 @@ Now that reasonable values have been set for the machine, click the \code{Genera
 		\item[Generate milling] Generate g-code for any wires the user has drawn on the \code{Milling} (46) layer. \code{Depth} sets the milling depth.
 		\item[Generate text] Generate g-code to engrave any vector text the user may have placed on the \code{Milling} layer. \code{Depth} sets the engraving depth. Not that text on the top or bottom layers will be outlined just as the tracks are, whereas text on the milling layer is engraved. That is, the tool along the center of the lines that make up the letter.
 		\item[Spot drill holes] Spot drilling helps the drill bits center themselves and helps prevent "walking." Depth sets the spot drill depth.
+		\item[Prefer climb] Prefer the \emph{climb} direction when etching tracks, that is, the clockwise direction.
 		\item[Isolation] The cutting tool can make several passes around the tracks at an increasing distance each time. This helps eliminate slivers of copper that remain.
 		\begin{description}
 			\item[Single pass] When turned on, only a single pass will be made around the tracks on the board.
