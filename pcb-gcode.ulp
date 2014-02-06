@@ -825,6 +825,25 @@ void output_text_code()
 // output_text_code
 
 
+////////// mlmSolutions added 21 Jan 14
+
+//
+// Checks if two vertices match. If yes, return true else return false.
+//
+// Params:
+//  X1, Y1, X2, Y2
+// Return:
+//  true or false
+// Changes:
+//  nothing
+//
+int match(real X1, real Y1, real X2, real Y2)
+{
+	if ((X1 == X2) && (Y1 == Y2)) return true; else return false;
+}
+//////////
+
+
 //
 // Write layer data to mill files.
 //
@@ -841,6 +860,17 @@ void output_mill_code()
 	int state;
 	int old_x, old_y;
 	int first_run = true;
+
+////////// mlmSolutions added 21 Jan 14
+	int o_n=0, v_n=0;
+	int o_index[], o_processed[];
+	int swap, step;
+	real o_x1[], o_y1[], o_x2[], o_y2[], o_rad[], o_curve[], v_x[], v_y[], v_distance[], v_prefer[];
+	int v_index[], v_segment[], v_start[], v_step[], v_processed[]; 
+	int i, j, curr_seg, cont, new_polyline, prefer_climb;
+	real curr_x, curr_y, tool_x, tool_y, radius;
+	string arc_format_string ;
+//////////
 
 	board(B) {
 		output(get_filename(), FILEMODE_WRITE_TEXT) {
@@ -866,15 +896,37 @@ void output_mill_code()
 
 					// if this is an arc, it is treated specially.
 					if (P.arc) {
-						device_draw( P.arc.x1, P.arc.y1, P.arc.x2, P.arc.y2, ST_ARC_BEGIN, P.arc.radius, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
-						device_draw( P.arc.x2, P.arc.y2, P.arc.xc, P.arc.yc, ST_ARC_END, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
+						//device_draw( P.arc.x1, P.arc.y1, P.arc.x2, P.arc.y2, ST_ARC_BEGIN, P.arc.radius, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
+						//device_draw( P.arc.x2, P.arc.y2, P.arc.xc, P.arc.yc, ST_ARC_END, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
+////////// mlmSolutions added 21 Jan 14
+						// Save the pieces from Eagle
+						o_x1[o_n] = (P.arc.x1);
+						o_y1[o_n] = (P.arc.y1);
+						o_x2[o_n] = (P.arc.x2);
+						o_y2[o_n] = (P.arc.y2);
+						o_rad[o_n] = (P.arc.radius);
+						o_curve[o_n] = W.curve;
+						o_processed[o_n] = false;
+						++o_n;
+//////////
 						save_extents(P.x1, P.y1);
 						save_extents(P.x2, P.y2);
 						state = ST_START_LINE;
 					}
 					else {
 						// Draw the line (i.e. output the gcode for the line).
-						device_draw(P.x1, P.y1, P.x2, P.y2, state, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
+						//device_draw(P.x1, P.y1, P.x2, P.y2, state, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
+////////// mlmSolutions added 21 Jan 14
+						// Save the pieces from Eagle
+						o_x1[o_n] = (P.x1);
+						o_y1[o_n] = (P.y1);
+						o_x2[o_n] = (P.x2);
+						o_y2[o_n] = (P.y2);
+						o_rad[o_n] = 0;	//use radius of 0 to indicate line
+						o_curve[o_n] = 0;
+						o_processed[o_n] = false;
+						++o_n;
+//////////
 						old_x = P.x2;
 						old_y = P.y2;
 						save_extents(P.x1, P.y1);
@@ -885,6 +937,159 @@ void output_mill_code()
 				// if (P.layer == MILL_LAYER)
 			} 
 			// pieces
+////////// mlmSolutions added 21 Jan 14
+
+			prefer_climb = false;	// <<<<<< CHANGE TRUE OR FALSE TO THE RESULT OF USER CHECK BOX ON SETUP SCREEN
+
+			// Put the vertices on seperate rows to more easlily sort them
+			v_n = 0;
+			for (i= 0; i<o_n; ++i){
+				v_x[v_n] = o_x1[i];
+				v_y[v_n] = o_y1[i];
+				v_segment[v_n] = i;	//Store which segment it is from
+				v_start[v_n] = true;
+				v_step[v_n] = 0;
+				v_processed[v_n] = false;
+				v_distance[v_n] = 0;
+				++v_n;
+				v_x[v_n] = o_x2[i];
+				v_y[v_n] = o_y2[i];
+				v_segment[v_n] = i;	//Store which segment it is from
+				v_start[v_n] = false;
+				v_step[v_n] = 0;
+				v_processed[v_n] = false;
+				v_distance[v_n] = 0;
+				++v_n;
+				// this is an attempt to provide a climb or conventional mill selection
+				// it will only work if the HOME location is at or near zero
+				// if we wanted climb cutting (for the top mill) then the segment that moves up the Y axis
+				//   is the prefered direction, so summing the X values for both ends of the segment will
+				//   give the the smallest value and so will be prefered in the sort below where there is 
+				//   a tie between optional potential segments.
+				if (prefer_climb){
+					v_prefer[v_n] = units(o_x1[i]) + units(o_x2[i]);
+					v_prefer[v_n - 1] = v_prefer[v_n];
+				} else {
+					v_prefer[v_n] = units(o_y1[i]) + units(o_y2[i]);
+					v_prefer[v_n - 1] = v_prefer[v_n];
+				}
+			}
+
+			//order vertex list by x, y, seg, start
+			//sort(v_n, v_index, v_x, v_y, v_segment, v_start);
+
+			// Move through all vertices to minimise distance covered
+			// each vertex will be tagged with its step number (order of tool movement)
+			cont = true;
+			tool_x = X_HOME;
+			tool_y = Y_HOME;
+			step = 0;
+			while (cont){
+				//record distance of all unprocessed vertices from current location
+				for (i=0; i < v_n; ++i){
+					if (v_processed[i] == false) v_distance[i] = distance(tool_x, tool_y, units(v_x[i]), units(v_y[i]));
+				}
+				sort(v_n, v_index, v_processed, v_distance, v_prefer);	//the closest unprocessed at the top
+				if (v_processed[v_index[0]] == false){
+					curr_seg = v_segment[v_index[0]];	//remember what segment is closest
+					curr_x = v_x[v_index[0]];
+					curr_y = v_y[v_index[0]];
+					v_processed[v_index[0]] = true;
+					v_step[v_index[0]] = ++step;
+					v_start[v_index[0]] = true;
+
+					// find the vertex of the other end of this segment
+					if ((o_x1[curr_seg] == curr_x) && (o_y1[curr_seg] == curr_y)) {
+						curr_x = o_x2[curr_seg];
+						curr_y = o_y2[curr_seg];
+					} else {
+						curr_x = o_x1[curr_seg];
+						curr_y = o_y1[curr_seg];
+					}
+					// find this vertex and mark it as processed
+					// to minimise the search time remember that the v_XXX arrays were created in segment order, 2 per segment
+					// so start looking at curr_seg * 2 then there will only be two to look at.
+					for (i=curr_seg*2; i < v_n; ++i){
+						if ((v_segment[i] == curr_seg) && (v_x[i] == curr_x) && (v_y[i] == curr_y)){
+							v_processed[i] = true;
+							v_start[i] = false;
+							v_step[i] = ++step;
+							i = v_n; // we found it so stop the for loop
+						}
+					//move the tool position to where we are
+					tool_x = units(curr_x);
+					tool_y = units(curr_y); 
+					}
+				} else {
+					cont = false;
+				}
+
+			}
+
+			// Generate the gcode
+			// As we move through the steps
+			// 1) a move from a start to an end will be a cut (G01, G02 or G03)
+			// 2) if we are at an end and the next start is not at the same location, do a Z retract, G00 to new location, Z plunge
+
+			// sort into step order
+			sort(v_n, v_index, v_step);
+			curr_x = X_HOME;
+			curr_y = Y_HOME;
+			for (i=0; i < v_n; ++i){
+				j = v_index[i];	//save typing and make it more readable and quicker
+				tool_x = units(v_x[j]);
+				tool_y = units(v_y[j]);
+				curr_seg = v_segment[j];
+
+				// is it a segment start
+				if (v_start[j]){
+					// if it is a different location, do Z up across down
+					if (!match(curr_x, curr_y, tool_x, tool_y)){	// do a Z retract and G00 move and Z plunge
+						rz(DEFAULT_Z_UP);
+						rxy(scale_x(v_x[j]), scale_y(v_y[j]));
+						fzr(MILLING_DEPTH, FEED_RATE_MILL_Z);
+
+						// update our current position to start of segment
+						curr_x = tool_x;
+						curr_y = tool_y;
+
+						new_polyline = true;
+					} else {
+						new_polyline = false;
+					}
+				} else {	// its and end so generate the cut
+					// is it a line
+					radius = units(o_rad[curr_seg]);
+					if (radius == 0){	// its a line
+						if (new_polyline){
+							fxyr(scale_x(v_x[j]), scale_y(v_y[j]), FEED_RATE_MILL_XY);
+						} else {
+							fxy(scale_x(v_x[j]), scale_y(v_y[j]));
+						}
+					} else {
+						// If the segment "curve" is > 180 then select -R (greater circle)
+						// If we are cutting from the "start" vertex of the arc, then use a G03, else a G02.
+
+						if (o_curve[curr_seg] > 180) radius = radius * -1;
+
+						// The direction of the arc is opposite for the bottom mill
+						swap = match(o_x1[curr_seg],o_y1[curr_seg],v_x[j],v_y[j]);
+						if (g_side == TOP || MIRROR_BOTTOM == YES) swap = !swap;
+						if (swap){
+							arc_format_string = ARC_CCLOCK;
+						} else {
+							arc_format_string = ARC_CLOCK;
+						}
+						out(frrrr(arc_format_string, scale_x(v_x[j]), scale_y(v_y[j]), radius, FEED_RATE_MILL_XY));
+					}
+
+					// update our current position to end of segment
+					curr_x = tool_x;
+					curr_y = tool_y;
+				}
+			}
+//////////
+
 			output_file_postamble();
 			end_gcode();
 			user_file_closing();
