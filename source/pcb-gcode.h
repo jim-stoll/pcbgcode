@@ -48,7 +48,7 @@ enum { ST_INVALID,
 		 ST_ARC_BEGIN,
 		 ST_ARC_END};
 
-enum { TOP = 0, BOTTOM = 1, MILL = 2, TEXT = 3, ALL = 4 };
+enum { TOP = 0, BOTTOM = 1, MILL = 2, TEXT = 3, STENCIL = 4, ALL = 5 };
 
 int PROGRAM_NAME_ARG = 0;
 int FILENAME_ARG = 1;
@@ -63,6 +63,8 @@ string OUTLINES_SIGNAL_NAME = "_OUTLINES_";
 
 int TOP_LAYER = 1;
 int BOTTOM_LAYER = 16;
+int TOP_CREAM_LAYER = 31;
+int BOTTOM_CREAM_LAYER = 32;
 int MILL_LAYER = 46;
 int TEXT_LAYER = 46; // same as MILL_LAYER
 
@@ -77,15 +79,18 @@ enum {
   PH_TOP_OUT_WRITE     =  2,
   PH_TOP_FILL_GEN      =  3,
   PH_TOP_FILL_WRITE    =  4,
-  PH_BOTTOM_OUT_GEN    =  5,
-  PH_BOTTOM_OUT_WRITE  =  6,
-  PH_BOTTOM_FILL_GEN   =  7,
-  PH_BOTTOM_FILL_WRITE =  8,
-  PH_TOP_DRILL         =  9,
-  PH_BOTTOM_DRILL      = 10,
-  PH_MILL              = 11,
-	PH_TEXT              = 12,
-  PH_LAST_PHASE        = 13
+  PH_TOP_STENCIL       =  5,
+  PH_BOTTOM_OUT_GEN    =  6,
+  PH_BOTTOM_OUT_WRITE  =  7,
+  PH_BOTTOM_FILL_GEN   =  8,
+  PH_BOTTOM_FILL_WRITE =  9,
+  PH_BOTTOM_STENCIL    = 10,
+  PH_TOP_DRILL         = 11,
+  PH_BOTTOM_DRILL      = 12,
+  PH_MILL              = 13,
+	PH_TEXT				       = 14,
+
+  PH_LAST_PHASE = 15
 };
 
 string FILEMODE_WRITE_TEXT = "wt";
@@ -95,8 +100,10 @@ string PHASE_NAME[] = {
 	"invalid",
 	"Gen_Top_Outlines", "Write_Top_Outlines", 
 	"Gen_Top_Fill", "Write_Top_Fill",
+  "Top_Stencil",
 	"Gen_Bottom_Outlines", "Write_Bottom_Outlines", 
 	"Gen_Bottom_Fill", "Write_Bottom_Fill",
+  "Bottom_Stencil",
 	"Top_Drills", "Bottom_Drills", 
 	"Milling", 
 	"Text",
