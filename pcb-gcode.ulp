@@ -80,15 +80,14 @@ string g_cmd_temp;
 
 
 ////////// mlmSolutions added 29 Jan 14
-real v_x[], v_y[];
-int v_index[], v_prev[], v_next[], v_step[], v_cont[], c_start[], c_end[]; 
-int contours;
-int prefer_climb = false;// <<<<<< CHANGE TRUE OR FALSE TO THE RESULT OF USER CHECK BOX ON SETUP SCREEN
+
+real v_x[], v_y[], v_rad[];
+real tool_x, tool_y, vx1, vy1, vx2, vy2, rad;
+int v_index[], v_prev[], v_next[], v_step[], v_cont[], v_curve[], c_start[], c_end[]; 
+int contours, cw, v_n=1, fwd, dist, dist_min, dist_min_index, wire_start, z_up, step, i, j, cont, new_polyline;
+string arc_format_string ;
 
 //////////
-
-
-
 
 //
 // Save the maximum and minimum coordinates.
@@ -558,10 +557,10 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 
 			m_lines += coords(rx1, ry1, rx2, ry2);
 
-//			rz(DEFAULT_Z_UP);
-//			rxy(rx1, ry1);
-//			fzr(z_down_or_radius, fr_z);
-//			fxyr(rx2, ry2, fr_xy);
+			rz(DEFAULT_Z_UP);
+			rxy(rx1, ry1);
+			fzr(z_down_or_radius, fr_z);
+			fxyr(rx2, ry2, fr_xy);
 			pair_count = 0;
 			break;
 
@@ -579,15 +578,16 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 
 			if (COMPACT_GCODE == YES) {
 				if (pair_count == 0) {
-//					fxy(rx2, ry2);
+					fxy(rx2, ry2);
 				}
 				else {
-//					xy(rx2, ry2);
+					xy(rx2, ry2);
 				}
+
 				pair_count++;
 			}
 			else {
-//				fxy(rx2, ry2);
+				fxy(rx2, ry2);
 			}
 			break;
 
@@ -598,11 +598,11 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 
 
 			if (COMPACT_GCODE == YES) {
-//				xy(rx2, ry2);
+				xy(rx2, ry2);
 				pair_count = 0;
 			}
 			else {
-//				fxy(rx2, ry2);
+				fxy(rx2, ry2);
 			}
 			break;
 
@@ -629,18 +629,31 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 			real end_x = rx1;
 			real end_y = ry1;
 			
-//			rz(DEFAULT_Z_UP);
-//			rxy(end_x, end_y);
-//			fzr(z_down_or_radius, FEED_RATE_MILL_Z);
+			rz(DEFAULT_Z_UP);
+			rxy(end_x, end_y);
+			fzr(z_down_or_radius, FEED_RATE_MILL_Z);
 			
 			if (g_side == TOP || MIRROR_BOTTOM == YES) {
-//        out(frrrr(ARC_TOP, m_arc_begin_x, m_arc_begin_y, m_arc_radius, fr_xy));
-      }
-      else {
-//        out(frrrr(ARC_BOTTOM, m_arc_begin_x, m_arc_begin_y, m_arc_radius, fr_xy));
-      }
-		  break;
+        			out(frrrr(ARC_CLOCK, m_arc_begin_x, m_arc_begin_y, m_arc_radius, fr_xy));
+      		}
+      		else {
+        			out(frrrr(ARC_CCLOCK, m_arc_begin_x, m_arc_begin_y, m_arc_radius, fr_xy));
+      		}
+		  	break;
 
+////////// mlmSolutions 5 Feb 14
+
+		case ST_ARC:
+			if (z_up){
+				rz(DEFAULT_Z_UP);
+				rxy(rx1, ry1);
+				fzr(z_down_or_radius, fr_z);
+			}
+			if (((g_side == TOP) && cw) || ((g_side != TOP) && !cw)) str = ARC_CLOCK; else str = ARC_CCLOCK;
+				out(frrrr(str, rx2, ry2, units(rad), fr_xy));
+			break;
+
+//////////
 	}
 	// switch(state)
 }
@@ -892,17 +905,6 @@ void output_mill_code()
 	int old_x, old_y;
 	int first_run = true;
 
-////////// mlmSolutions added 21 Jan 14
-	int o_n=0, v_n=0;
-	int o_index[], o_processed[];
-	int swap, step;
-	real o_x1[], o_y1[], o_x2[], o_y2[], o_rad[], o_curve[], v_x[], v_y[], v_distance[], v_prefer[];
-	int v_index[], v_segment[], v_start[], v_step[], v_processed[]; 
-	int i, j, curr_seg, cont, new_polyline;
-	real curr_x, curr_y, tool_x, tool_y, radius;
-	string arc_format_string ;
-//////////
-
 	board(B) {
 		output(get_filename(), FILEMODE_WRITE_TEXT) {
 			user_file_opened(get_filename(), FILEMODE_WRITE_TEXT);
@@ -911,6 +913,8 @@ void output_mill_code()
 
 			// Initialize the device (i.e. the output file).
 			begin_gcode(SPINDLE_MILL_RPM);
+
+			v_n =1;
 
 			// Process all the wires.
 			B.wires(W) W.pieces(P) {
@@ -927,18 +931,32 @@ void output_mill_code()
 
 					// if this is an arc, it is treated specially.
 					if (P.arc) {
-						device_draw( P.arc.x1, P.arc.y1, P.arc.x2, P.arc.y2, ST_ARC_BEGIN, P.arc.radius, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
-						device_draw( P.arc.x2, P.arc.y2, P.arc.xc, P.arc.yc, ST_ARC_END, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
-////////// mlmSolutions added 21 Jan 14
-						// Save the pieces from Eagle
-						o_x1[o_n] = (P.arc.x1);
-						o_y1[o_n] = (P.arc.y1);
-						o_x2[o_n] = (P.arc.x2);
-						o_y2[o_n] = (P.arc.y2);
-						o_rad[o_n] = (P.arc.radius);
-						o_curve[o_n] = W.curve;
-						o_processed[o_n] = false;
-						++o_n;
+//						device_draw( P.arc.x1, P.arc.y1, P.arc.x2, P.arc.y2, ST_ARC_BEGIN, P.arc.radius, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
+//						device_draw( P.arc.x2, P.arc.y2, P.arc.xc, P.arc.yc, ST_ARC_END, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
+
+////////// mlmSolutions added 5 Feb 14
+						// As we cannot assume that "pieces" come from "wires" in any particular order or that they are contiguous
+						//   we will have to save the start and end vertices.
+						// save arc data
+						v_x[v_n] = P.arc.x1;
+						v_y[v_n] = P.arc.y1;
+						v_rad[v_n] = P.arc.radius;
+						v_curve[v_n] = W.curve;
+						v_prev[v_n] = v_n - 1;
+						v_next[v_n] = 0;
+						v_next[v_n - 1] = v_n;
+						v_step[v_n] = 0;
+						++v_n;
+
+						v_x[v_n] = P.arc.x2;
+						v_y[v_n] = P.arc.y2;
+						v_rad[v_n] = P.arc.radius;
+						v_curve[v_n] = W.curve;
+						v_prev[v_n] = v_n - 1;
+						v_next[v_n] = 0;
+						v_next[v_n - 1] = v_n;
+						v_step[v_n] = 0;
+						++v_n;
 //////////
 						save_extents(P.x1, P.y1);
 						save_extents(P.x2, P.y2);
@@ -946,17 +964,30 @@ void output_mill_code()
 					}
 					else {
 						// Draw the line (i.e. output the gcode for the line).
-						device_draw(P.x1, P.y1, P.x2, P.y2, state, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
-////////// mlmSolutions added 21 Jan 14
-						// Save the pieces from Eagle
-						o_x1[o_n] = (P.x1);
-						o_y1[o_n] = (P.y1);
-						o_x2[o_n] = (P.x2);
-						o_y2[o_n] = (P.y2);
-						o_rad[o_n] = 0;	//use radius of 0 to indicate line
-						o_curve[o_n] = 0;
-						o_processed[o_n] = false;
-						++o_n;
+//						device_draw(P.x1, P.y1, P.x2, P.y2, state, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
+
+////////// mlmSolutions added 5 Feb 14
+						// save line data
+						v_x[v_n] = P.x1;
+						v_y[v_n] = P.y1;
+						v_rad[v_n] = 0;
+						v_curve[v_n] = 0;
+						v_prev[v_n] = v_n - 1;
+						v_next[v_n] = 0;
+						v_next[v_n - 1] = v_n;
+						v_step[v_n] = 0;
+						++v_n;
+
+						v_x[v_n] = P.x2;
+						v_y[v_n] = P.y2;
+						v_rad[v_n] = 0;
+						v_curve[v_n] = 0;
+						v_prev[v_n] = v_n - 1;
+						v_next[v_n] = 0;
+						v_next[v_n - 1] = v_n;
+						v_step[v_n] = 0;
+						++v_n;
+
 //////////
 						old_x = P.x2;
 						old_y = P.y2;
@@ -968,156 +999,74 @@ void output_mill_code()
 				// if (P.layer == MILL_LAYER)
 			} 
 			// pieces
-////////// mlmSolutions added 21 Jan 14 yyyy
 
-			// Put the vertices on seperate rows to more easlily sort them
-			v_n = 0;
-			for (i= 0; i<o_n; ++i){
-				v_x[v_n] = o_x1[i];
-				v_y[v_n] = o_y1[i];
-				v_segment[v_n] = i;	//Store which segment it is from
-				v_start[v_n] = true;
-				v_step[v_n] = 0;
-				v_processed[v_n] = false;
-				v_distance[v_n] = 0;
-				++v_n;
-				v_x[v_n] = o_x2[i];
-				v_y[v_n] = o_y2[i];
-				v_segment[v_n] = i;	//Store which segment it is from
-				v_start[v_n] = false;
-				v_step[v_n] = 0;
-				v_processed[v_n] = false;
-				v_distance[v_n] = 0;
-				++v_n;
-				// this is an attempt to provide a climb or conventional mill selection
-				// it will only work if the HOME location is at or near zero
-				// if we wanted climb cutting (for the top mill) then the segment that moves up the Y axis
-				//   is the prefered direction, so summing the X values for both ends of the segment will
-				//   give the the smallest value and so will be prefered in the sort below where there is 
-				//   a tie between optional potential segments.
-				if (prefer_climb){
-					v_prefer[v_n] = units(o_x1[i]) + units(o_x2[i]);
-					v_prefer[v_n - 1] = v_prefer[v_n];
-				} else {
-					v_prefer[v_n] = units(o_y1[i]) + units(o_y2[i]);
-					v_prefer[v_n - 1] = v_prefer[v_n];
-				}
-			}
+////////// mlmSolutions added 5 Feb 14 yyyy
 
-			//order vertex list by x, y, seg, start
-			//sort(v_n, v_index, v_x, v_y, v_segment, v_start);
-
-			// Move through all vertices to minimise distance covered
-			// each vertex will be tagged with its step number (order of tool movement)
-			cont = true;
+			//Optimises the path using nearest neighbour
 			tool_x = X_HOME;
 			tool_y = Y_HOME;
 			step = 0;
-			while (cont){
-				//record distance of all unprocessed vertices from current location
-				for (i=0; i < v_n; ++i){
-					if (v_processed[i] == false) v_distance[i] = distance(tool_x, tool_y, units(v_x[i]), units(v_y[i]));
-				}
-				sort(v_n, v_index, v_processed, v_distance, v_prefer);	//the closest unprocessed at the top
-				if (v_processed[v_index[0]] == false){
-					curr_seg = v_segment[v_index[0]];	//remember what segment is closest
-					curr_x = v_x[v_index[0]];
-					curr_y = v_y[v_index[0]];
-					v_processed[v_index[0]] = true;
-					v_step[v_index[0]] = ++step;
-					v_start[v_index[0]] = true;
-
-					// find the vertex of the other end of this segment
-					if ((o_x1[curr_seg] == curr_x) && (o_y1[curr_seg] == curr_y)) {
-						curr_x = o_x2[curr_seg];
-						curr_y = o_y2[curr_seg];
-					} else {
-						curr_x = o_x1[curr_seg];
-						curr_y = o_y1[curr_seg];
+			// set direction of cut around contour
+			//if (((g_side == TOP) && !CLIMB_MILLING) || ((g_side == BOTTOM) && CLIMB_MILLING)) fwd = true; else fwd = false;
+			while (v_next[0] > 0){
+				//find nearest vertex from current location
+				dist_min = 99999999;
+				i=0;	//start from the head pointer
+				while (v_next[i] > 0){	// loop till end of unprocessed list
+					i = v_next[i];	//the index of the next unprocessed vertex
+					dist = distance(tool_x, tool_y, v_x[i], v_y[i]);
+					//dist = abs(tool_x - (v_x[i])) + abs(tool_y - (v_y[i]));	//approximate to make faster
+					if (dist < dist_min){
+						dist_min = dist;
+						dist_min_index = i;
 					}
-					// find this vertex and mark it as processed
-					// to minimise the search time remember that the v_XXX arrays were created in segment order, 2 per segment
-					// so start looking at curr_seg * 2 then there will only be two to look at.
-					for (i=curr_seg*2; i < v_n; ++i){
-						if ((v_segment[i] == curr_seg) && (v_x[i] == curr_x) && (v_y[i] == curr_y)){
-							v_processed[i] = true;
-							v_start[i] = false;
-							v_step[i] = ++step;
-							i = v_n; // we found it so stop the for loop
-						}
-					//move the tool position to where we are
-					tool_x = units(curr_x);
-					tool_y = units(curr_y); 
-					}
-				} else {
-					cont = false;
 				}
+				i = dist_min_index;
+				v_step[i] = ++step;
+				vertex_remove(i);
+				//the next step must be the other end of this wire. If the vertex is odd, its the next vertex else its the previous.
+				if ((i % 2) == 1) ++i; else --i;
+				v_step[i] = ++step;
+				vertex_remove(i);
 
+				//move the tool position to new location
+				tool_x = (v_x[i]);
+				tool_y = (v_y[i]); 
 			}
 
 			// Generate the gcode
-			// As we move through the steps
-			// 1) a move from a start to an end will be a cut (G01, G02 or G03)
-			// 2) if we are at an end and the next start is not at the same location, do a Z retract, G00 to new location, Z plunge
-
 			// sort into step order
 			sort(v_n, v_index, v_step);
-			curr_x = X_HOME;
-			curr_y = Y_HOME;
-			for (i=0; i < v_n; ++i){
-				j = v_index[i];	//save typing and make it more readable and quicker
-				tool_x = units(v_x[j]);
-				tool_y = units(v_y[j]);
-				curr_seg = v_segment[j];
-
-				// is it a segment start
-				if (v_start[j]){
-					// if it is a different location, do Z up across down
-					if (!match(curr_x, curr_y, tool_x, tool_y)){	// do a Z retract and G00 move and Z plunge
-						rz(DEFAULT_Z_UP);
-						rxy(scale_x(v_x[j]), scale_y(v_y[j]));
-						fzr(MILLING_DEPTH, FEED_RATE_MILL_Z);
-
-						// update our current position to start of segment
-						curr_x = tool_x;
-						curr_y = tool_y;
-
-						new_polyline = true;
+			tool_x = X_HOME; tool_y = Y_HOME;
+			wire_start = true;	//the vertices are stored in pairs. X1Y1 first then X2Y2
+			first_run = true;
+			for (i=1; i<v_n; ++i){
+				j = v_index[i];
+				if (wire_start) {	//collect start vertices for next time
+					vx1 = v_x[j]; 	vy1 = v_y[j];	//get the source vertex
+				} else {	//generate the gcode
+					vx2 = v_x[j]; 	vy2 = v_y[j];	//get the destination vertex
+					if (((vx1 == tool_x) && (vy1 == tool_y)) && !first_run) {	//is it a continuation of the line
+						state = ST_CONTINUE_LINE; 
+						z_up = false;	//only needed as device_draw for arcs doesn't currently have a way of know if to continue
 					} else {
-						new_polyline = false;
+						state = ST_START_LINE;
+						z_up = true;
+						first_run = false;
 					}
-				} else {	// its and end so generate the cut
-					// is it a line
-					radius = units(o_rad[curr_seg]);
-					if (radius == 0){	// its a line
-						if (new_polyline){
-							fxyr(scale_x(v_x[j]), scale_y(v_y[j]), FEED_RATE_MILL_XY);
-						} else {
-							fxy(scale_x(v_x[j]), scale_y(v_y[j]));
-						}
-					} else {
-						// If the segment "curve" is > 180 then select -R (greater circle)
-						// If we are cutting from the "start" vertex of the arc, then use a G03, else a G02.
-						if (abs(o_curve[curr_seg]) > 180) radius = radius * -1;
-
-						// The direction of the arc is opposite for the bottom mill
-						swap = match(o_x1[curr_seg],o_y1[curr_seg],v_x[j],v_y[j]);
-						if (g_side == TOP || MIRROR_BOTTOM == YES) swap = !swap;
-						if (swap){
-							arc_format_string = ARC_CCLOCK;
-						} else {
-							arc_format_string = ARC_CLOCK;
-						}
-						out(frrrr(arc_format_string, scale_x(v_x[j]), scale_y(v_y[j]), radius, FEED_RATE_MILL_XY));
+					if (v_rad[j] > 0) {	//its an arc
+						if ((j % 2) == 0) cw = false; else cw = true;	//if its the end of an Eagle arc, cw=false
+						rad = v_rad[j]; if (abs(v_curve[j]) >180) rad = rad * -1;
+						device_draw(vx1, vy1, vx2, vy2, ST_ARC, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
+					} else {	//its a line
+						device_draw(vx1, vy1, vx2, vy2, state, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
 					}
-
-					// update our current position to end of segment
-					curr_x = tool_x;
-					curr_y = tool_y;
+					tool_x = vx2; tool_y = vy2;	//save the tools current location
 				}
+				wire_start = !wire_start;
 			}
-//////////
 
+//////////
 			output_file_postamble();
 			end_gcode();
 			user_file_closing();
@@ -1162,14 +1111,6 @@ void write_outlines(int which_side, int task)
 	real spindle_speed;
 	real fr_xy;
 	real fr_z;
-
-////////// mlmSolutions added 29 Jan 14
-	int  v_n=0, fwd;
-	int step, dist_min_index;
-	int i, j, cont, new_polyline;
-	real tool_x, tool_y, dist, dist_min;
-	string arc_format_string ;
-//////////
 
 	if (m_pass_num == 0) {
 		mode = FILEMODE_WRITE_TEXT;
@@ -1251,6 +1192,8 @@ void write_outlines(int which_side, int task)
 				}
 			}
 
+			v_n = 1;
+
 			B.signals(S) {
 				if (S.name == OUTLINES_SIGNAL_NAME) {
 					S.polygons(P) {
@@ -1270,8 +1213,8 @@ void write_outlines(int which_side, int task)
 
 						switch (task) {
 							case TASK_OUTLINES:
-							v_n = 1;	//start from 1 as the first vertex will be the linked list head pointer
 							P.contours(W) {
+/*
 								if (first) {	/// a new partial polygon is starting
 									x0 = W.x1;
 									y0 = W.y1;
@@ -1290,10 +1233,10 @@ void write_outlines(int which_side, int task)
 								if (!frame_wire) {
 									device_draw(W.x1, W.y1, W.x2, W.y2, state, DEFAULT_Z_DOWN, fr_xy, fr_z);
 								}					
+*/
 
 
-
-////////// mlmSolutions added 29 Jan 14 xxxx
+////////// mlmSolutions added 05 Feb 14 xxxx
 								// Save the contour wires (Except the frame)
 								// Each wire from the contour has a start and end vertex but the X1Y1 of the next vertex
 								//   will have the same value as the X2Y2 of teh current one for any specific contour.
@@ -1303,11 +1246,14 @@ void write_outlines(int which_side, int task)
 								// When a vertex has been processed it will be removed from the linked list
 								if (!((W.x1 == x1 || W.x1 == x2) && (W.y1 == y1 || W.y1 == y2))){
 									// recorded the start and end vertex index for each new contour
-									if ( state == ST_START_LINE ){
+									if ( first ){
 										++contours;
 										c_start[contours-1] = v_n;
-									} else if (state == ST_END_LINE) {
+										x0 = W.x1; y0 = W.y1;	// remember start vertex
+										first = false;
+									} else if (W.x2 == x0 && W.y2 == y0) {
 										c_end[contours-1] = v_n;
+										first = true;
 									}
 									v_x[v_n] = W.x1;
 									v_y[v_n] = W.y1;
@@ -1332,10 +1278,9 @@ void write_outlines(int which_side, int task)
 						// switch(task)
 
 
-////////// mlmSolutions added 29 Jan 14
+////////// mlmSolutions added 05 Feb 14
 
-
-						// Move through all vertices to minimise distance covered
+						// Optimise the path using the nearest neighbour.
 						// Each vertex will be tagged with its step number (order of tool movement)
 						// Eagle guarantees that if we move from X1Y1 to X2Y2 of a contour wire that the track will be on the right of the direction of movement.
 						// We will define this as forward. We store vertex values in a "forward" direction for increasing index values.
@@ -1344,8 +1289,10 @@ void write_outlines(int which_side, int task)
 						tool_x = X_HOME;
 						tool_y = Y_HOME;
 						step = 0;
+				sprintf(g_debug, "CLIMB_MILLING=%d", CLIMB_MILLING);
+				Message(g_debug);
 						// set direction of cut around contour
-						if (((g_side == TOP) && !prefer_climb) || ((g_side == BOTTOM) && prefer_climb)) fwd = true; else fwd = false;
+						if (((g_side == TOP) && !CLIMB_MILLING) || ((g_side == BOTTOM) && CLIMB_MILLING)) fwd = true; else fwd = false;
 						while (v_next[0] > 0){
 
 							//find nearest vertex from current location
@@ -1391,7 +1338,6 @@ void write_outlines(int which_side, int task)
 							tool_y = (v_y[dist_min_index]); 
 						}
 
-
 						// Generate the gcode
 						// As we move through the steps
 						// 1) a new contour requires a Z retract, G00 to new location, Z plunge
@@ -1400,22 +1346,28 @@ void write_outlines(int which_side, int task)
 						// sort into step order
 						sort(v_n, v_index, v_step);
 						cont=0;
-						for (i=1; i < v_n; ++i){
-							j = v_index[i];	// Pointer to next vertex. save typing and make it more readable and quicker
+						for (i=1; i<v_n; ++i){
+							j = v_index[i];
+							vx2 = v_x[j]; 	vy2 = v_y[j];	//get the current vertex
 							if (cont != v_cont[j]) {	//its a new contour so do a Z retract and G00 move and Z plunge
 								cont = v_cont[j];
-								new_polyline = true;
-								rz(DEFAULT_Z_UP);
-								rxy(scale_x(v_x[j]), scale_y(v_y[j]));
-								fzr(DEFAULT_Z_DOWN, FEED_RATE_ETCH_Z);
+								first = true;
+								x0 = vx2;	y0 = vy2;	//remember the start vertex
 							} else {
-								if (new_polyline){
-									fxyr(scale_x(v_x[j]), scale_y(v_y[j]), FEED_RATE_ETCH_XY);
-									new_polyline = false;
-								} else {
-									fxy(scale_x(v_x[j]), scale_y(v_y[j]));
+								if (first) {	/// a new partial polygon is starting
+									state = ST_START_LINE;
+									first = false;
 								}
+								else if (vx2 == x0 && vy2 == y0) {	/// this is the last wire of the partial polygon
+									state = ST_END_LINE;
+								}
+								else {
+									state = ST_CONTINUE_LINE;
+								}
+
+								device_draw(vx1, vy1, vx2, vy2, state, DEFAULT_Z_DOWN, fr_xy, fr_z);
 							}
+							vx1 = vx2;	vy1 = vy2;	//remember the last vertex
 						}
 
 //////////

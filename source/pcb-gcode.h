@@ -46,7 +46,8 @@ enum { ST_INVALID,
        ST_DRILL,
        ST_FILL,
 		 ST_ARC_BEGIN,
-		 ST_ARC_END};
+		 ST_ARC_END,
+		 ST_ARC};
 
 enum { TOP = 0, BOTTOM = 1, MILL = 2, TEXT = 3, ALL = 4 };
 
