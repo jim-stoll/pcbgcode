@@ -177,6 +177,8 @@ This book is typeset with \href{http://en.wikipedia.org/wiki/LaTeX}{\LaTeX{}} us
 
 \vspace{2ex}
 
+\newpage
+
 \section*{Supporters}
 
 \noindent There is a great community that has built up around pcb-gcode where users freely offer advice and help solve problems for other users. Despite the fact that pcb-gcode has always been free and always will be, a few outstanding individuals have donated time or money (which goes towards paying for web hosting for \url{pcbgcode.org}). Your generosity warms my heart, and I thank you all!
@@ -193,6 +195,12 @@ This book is typeset with \href{http://en.wikipedia.org/wiki/LaTeX}{\LaTeX{}} us
 	    \small
 		\item Anonymous (2007), Greg Brill, Paul Kiedrowski, Steven Manzer, Barry Ward, Ward Elder, Art Eckstein, World of ElectroMechanica, Austin Valley Software Corporation, webstudio.co.uk, Juan Posada, Richard McCarthy, Keeley Electronics
 	\end{itemize}
+	\item{Code Contributions}
+	    \begin{itemize}
+	    \small
+	    \item Martin L. Marriott - Milling g-code optimization
+	    \item Peter Zotov - Stencil generation for cream layers
+	    \end{itemize}
 \end{itemize}
 
 
@@ -381,6 +389,8 @@ The \code{Spin Up Time} in the \code{Spindle} box should be set to the length of
 
 The \code{Feed Rates} should be set for \code{X Y} moves as well as \code{Z} moves. Rates here will usually be quite low unless the machine has a very fast spindle. See a machinist's reference on how to calculate the optimal feed rate, use trial and error, or post to the Yahoo! group email list for advice. Note that there are separate feed rates for \code{X Y}, and \code{Z}, and there is a spindle speed setting for each of the four operations pcb-gcode can generate files for.\index{Feed Rates}
 
+A \code{Tool Dia.} parameter is available to set the diameter of the tool used to mill openings for stencils used to apply cream solder paste when surface mounted parts are used.\index{Stencil!tool diameter}
+
 \code{Epsilon} is the minimum move that will be written to the g-code file. For instance, if \code{Epsilon} is set to $0.0001''$ then the g-code file will not contain movements less than $0.0001''$. This option will rarely need to be changed.
 
 The \code{Default Drill Rack File} option allows for the selection of a rack file to be used if one has not been setup for a particular board. In most cases this can be left blank to start with. See Section \vref{sec:DrillRackFiles} for more information about setting up rack files. 
@@ -405,11 +415,13 @@ Now that reasonable values have been set for the machine, click the \code{Genera
 	\begin{description}
 		\item[Generate top outlines] Generate g-code to cut out the tracks, pads, pours and vias on the top side of the board.
 		\item[Generate top drills] Generate g-code to drill holes from the top side of the board.
+		\item[Generate top stencil] Generate g-code to cut out a stencil for the top cream layer.\index{Stencil!Generate top option}
 	\end{description}
 	\item[Bottom Side] Options having to do with the tracks on the bottom of the board, and drill holes made from the bottom side of the board.
 	\begin{description}
 		\item[Generate bottom outlines] Generate g-code to cut out the tracks, pads, pours and vias on the bottom side of the board.
 		\item[Generate bottom drills] Generate g-code to drill holes from the bottom side of the board.
+		\item[Generate bottom stencil] Generate g-code to cut out a stencil for the bottom cream layer.\index{Stencil!Generate bottom option}
 		\item[Mirror] X coordinates for the bottom of the board are usually negative. This makes setting the origin for a two-sided board easier. Turning this option on causes the X coordinates to be positive, however, the bottom tracks will be a mirror image of what they should be. So in general, leave this option off.
 	\end{description}
 	\item[Board] Options that apply to the board in general.
