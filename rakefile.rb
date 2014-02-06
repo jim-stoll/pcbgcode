@@ -6,7 +6,7 @@ require 'pp'
 require 'rake/clean'
 
 # this will be improved later
-PCB_GCODE_VERSION = "3.6.1.4"
+PCB_GCODE_VERSION = "3.6.1.5"
 
 RELEASE_FILE = "~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip"
 
