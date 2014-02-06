@@ -329,6 +329,7 @@ void save_pcb_defaults()
 		printf("\n");
 
 		write_bool_param("GENERATE_MILLING", GENERATE_MILLING);
+		write_bool_param("CLIMB_MILLING", CLIMB_MILLING);
 		printf("\n");
 
 		write_bool_param("GENERATE_TEXT", GENERATE_TEXT);
@@ -561,6 +562,8 @@ int Result = dlgDialog("pcb-gcode Setup") {
                  dlgCell(2, 0) dlgCheckBox("Spot drill holes", SPOT_DRILL);
                  dlgCell(2, 1) dlgLabel("Depth");
                  dlgCell(2, 2) { dlgRealEdit(SPOT_DRILL_DEPTH);  dlgLabel(m_uom_suffix, YES); }
+                 dlgCell(3, 0) dlgCheckBox("Prefer climb", CLIMB_MILLING);
+                 
                }
                dlgGridLayout {
                  dlgCell(0, 0, 0, 1) dlgLabel("Isolation");
