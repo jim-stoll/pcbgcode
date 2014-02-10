@@ -254,11 +254,11 @@ Though no program can be all things to all people, pcb-gcode has a lot of featur
 %
 \section{How it Works}\label{sec:HowItWorks}
 \subsection{Overview}
-After designing your board in Eagle's board editor, the ULP pcb-gcode-setup is run and options are set (See \figurename \vref{fig:SetupGenerationOptions}). Pcb-gcode will generate a set of files that will cut out the tracks, pads, pours and vias (hereinafter called tracks) for the top and/or bottom of the board. Pcb-gcode can also generate files to drill holes from the top and/or bottom of the board. Since the holes usually go all the way through, they only need to be drilled from one side, although some users have drilled slightly more than half way from both sides for a cleaner finish. The user may also choose to create milling wires on the milling layer of the board. This can be used to cut out sections of the board, or cut the perimeter of the board out. There is also an option for engraving vector text that the user places on the milling layer.
+After designing your board in Eagle's board editor, the ULP \code{pcb-gcode-setup} is run and options are set (See \figurename \vref{fig:SetupGenerationOptions}). Pcb-gcode will generate a set of files that will cut out the tracks, pads, pours and vias (hereinafter called tracks) for the top and/or bottom of the board. Pcb-gcode can also generate files to drill holes from the top and/or bottom of the board. Since the holes usually go all the way through, they only need to be drilled from one side, although some users have drilled slightly more than half way from both sides for a cleaner finish. The user may also choose to create milling wires on the milling layer of the board. This can be used to cut out sections of the board, or cut the perimeter of the board out. There is also an option for engraving vector text that the user places on the milling layer.
 
 After the files are generated, they are transferred to the control software for the CNC router or milling machine. The PCB is mounted on the machine. The origin is set to the lower left for the top side of the board and the top files are run. The board is then flipped in the \code{X} axis (i.e. around the \code{Y} axis), the origin is set at the lower right, and the bottom files are run. After minimal inspection and cleanup, the board is ready to be loaded with components.
 
-\subsection{Isolation}
+\subsection{Isolation}\index{isolation!description}
 Pcb-gcode has the ability to generate g-code that cuts out tracks with increasing amounts of isolation. This is helpful because it can help eliminate small slivers of copper left behind by the cutting process.
 
 The isolation begins at a minimum amount and is increased by a step size until a maximum amount is reached. The builtin previewer can be used to see how this isolation works. See \figurename \vref{fig:MultipassBoard}. From the zoomed view shown in \figurename \vref{fig:MultipassBoardZoom} you can see that the passes start out close to the track, then move out by a step size. The colors of the preview tracks follow the standard resistor color codes, so brown is the first pass, red is the second, orange the third, etc.
@@ -288,7 +288,7 @@ isolation = EtchingToolSize+MinimumIsolation+PassNumber*StepSize
 	\label{fig:MultipassBoardZoom}
 \end{figure}
 
-\subsection{Drilling}
+\subsection{Drilling}\index{drill!description}
 Compared to the isolation passes and files, drill file creation is relatively straight forward. Each hole in the board is sorted according to size and distance from other holes of the same size. G-code is created to position and drill each hole. Tool changes can be included in the file so that the user or an automated tool changer can change the bit. Optionally a rack file can be used. 
 
 Rack files contain a list of drills the user has available and the size holes they can be used for. For example, if a library part has a 1mm hole, and another part has a 1.1mm hole, a 1.1mm drill bit could be used for both. For more information on rack files, see Section \vref{sec:DrillRackFiles}. 
@@ -335,7 +335,7 @@ Now that pcb-gcode is uncompressed, Eagle must know where it is located. In Eagl
 	\label{fig:EagleOptionsDirectories}
 \end{figure}
 
-\subsection{Selecting g-code style}\label{sub:SelectingGCodeStyle}\index{g-code style}
+\subsection{Selecting g-code style}\label{sub:SelectingGCodeStyle}\index{g-code!style}
 To complete the setup, pcb-gcode must be told which type of g-code it should generate. Open a board in Eagle, then click \code{File $|$ Run...}. Locate the folder where pcb-gcode is and select pcb-gcode-setup.ulp. You will see the screen in \figurename \vref{fig:SelectGcodeStyle}. Select the style g-code that most closely matches your controller.
 
 You will receive the warning shown in \figurename \vref{fig:GcodeDefaultsWarning}. If this is the first time pcb-gcode has been run, just click Yes and skip the rest of this paragraph. If this is an existing installation of pcb-gcode and gcode-defaults.h has been modified, make note of the modifications before clicking Yes, then make those modifications as needed to the new gcode-defaults.h file.
@@ -389,7 +389,7 @@ The \code{Spin Up Time} in the \code{Spindle} box should be set to the length of
 
 The \code{Feed Rates} should be set for \code{X Y} moves as well as \code{Z} moves. Rates here will usually be quite low unless the machine has a very fast spindle. See a machinist's reference on how to calculate the optimal feed rate, use trial and error, or post to the Yahoo! group email list for advice. Note that there are separate feed rates for \code{X Y}, and \code{Z}, and there is a spindle speed setting for each of the four operations pcb-gcode can generate files for.\index{feed rates}\index{z axis!feed rates}
 
-A \code{Tool Dia.} parameter is available to set the diameter of the tool used to mill openings for stencils used to apply cream solder paste when surface mounted parts are used.\index{stencil!tool diameter}
+A \code{Tool Dia.} parameter is available to set the diameter of the tool used to etch and for milling openings for stencils used to apply cream solder paste when surface mounted parts are used.\index{stencil!tool diameter}\index{etching!tool diameter}
 
 \code{Epsilon} is the minimum move that will be written to the g-code file. For instance, if \code{Epsilon} is set to $0.0001''$ then the g-code file will not contain movements less than $0.0001''$. This option will rarely need to be changed.
 
@@ -431,7 +431,7 @@ Now that reasonable values have been set for the machine, click the \code{Genera
 		\item[Generate text] Generate g-code to engrave any vector text the user may have placed on the \code{Milling} layer. \code{Depth} sets the engraving depth. Not that text on the top or bottom layers will be outlined just as the tracks are, whereas text on the milling layer is engraved. That is, the tool along the center of the lines that make up the letter.
 		\item[Spot drill holes] Spot drilling helps the drill bits center themselves and helps prevent "walking." Depth sets the spot drill depth.
 		\item[Prefer climb] Prefer the \emph{climb} direction when etching tracks, that is, the clockwise direction.
-		\item[Isolation] The cutting tool can make several passes around the tracks at an increasing distance each time. This helps eliminate slivers of copper that remain.
+		\item[Isolation] The cutting tool can make several passes around the tracks at an increasing distance each time. This helps eliminate slivers of copper that remain.\index{isolation!settings}
 		\begin{description}
 			\item[Single pass] When turned on, only a single pass will be made around the tracks on the board.
 			\item[Minimum] The minimum distance the cutting tool will be away from tracks. That is, the starting isolation amount.
@@ -445,7 +445,7 @@ Now that reasonable values have been set for the machine, click the \code{Genera
 %
 %---------------------------------------------------------------------
 %
-\section{GCode Options}\label{sec:GCodeOptions}
+\section{GCode Options}\label{sec:GCodeOptions}\index{g-code!options}
 
 \begin{figure}
 	\center{
@@ -458,7 +458,7 @@ Now that reasonable values have been set for the machine, click the \code{Genera
 The options under the GCode Options tab allows the customization of some of the g-code file's content, as well as how the files are named.
 
 \begin{description}
-	\item[NC File Comments] Comments added to the g-code file.
+	\item[NC File Comments] Comments added to the g-code file.\index{g-code!comments}
 	\begin{description}
 		\item[NC File Comment from Board] adds a comment with the name of the board file.
 		\item[NC File Comment Date] adds the date the g-code file is created.
@@ -477,7 +477,7 @@ The options under the GCode Options tab allows the customization of some of the 
 		\item[Use simple drill code] uses XYZ movements to create drill holes. Usually \code{DRILL\_{}FIRST\_{}HOLE} and \code{DRILL\_{}HOLE} are used, but some controllers don't understand the command (typically \code{G82}).
 	\end{description}
 	
-	\item[File naming] every option one could want for naming files.
+	\item[File naming] every option one could want for naming files.\index{files!naming}
 	\begin{description}
 		\item[Macros] the following can be used in the file name to create the final file name. Note that paths do not include a \code{/} at the end. Also note that \code{/} is always the path delimiter, even on Windows. Eagle handles the conversion automatically.
 		\begin{description}
@@ -676,7 +676,7 @@ For the curious reader, the previewer is written using a language called \href{h
 %
 \section{Saving and Loading Settings}\label{sec:SaveSettings}
 
-\subsection{Overview}\index{settings!overview}
+\subsection{Overview}\index{settings!saving and loading}
 
 \begin{figure}
 	\center{
@@ -859,7 +859,7 @@ The first option on line 11, \code{FILENAMES\_8\_CHARACTERS}, tells pcb-gcode wh
 %
 %---------------------------------------------------------------------
 %
-\section{Profiles}\index{profiles}\label{sec:Profiles}
+\section{Profiles}\index{profiles}\label{sec:Profiles}\index{g-code!profiles}
 
 \warning{Advanced}
 Profiles, which are found in the \code{profiles} folder, control the format that pcb-gcode uses when writing g-code. The files ending in \code{.pp} are the list of files shown when pcb-gcode is initially set up (See Section \vref{sec:Installation}), and also in the list of profiles in the \code{GCode Styles} tab. When a profile is selected, it is copied to \code{settings/gcode-defaults.h}. A sample profile is shown in Appendix \vref{chp:SampleProfile}. 
@@ -927,7 +927,7 @@ T06	0.085in		0.070in	0.125in	1.5in
 %
 %---------------------------------------------------------------------
 %
-\section{User GCode}\index{user gcode}\label{sec:UserGCode}
+\section{User GCode}\index{user gcode}\label{sec:UserGCode}\index{g-code!user}
 
 \warning{Advanced}
 The pcb-gcode ULP allows you to customize the g-code created for your boards to a great degree. If you don't see an option in the profile that suits your needs, you can add your code to the \code{user-gcode.h} file. To enable user g-code, run \code{pcb-gcode-setup}, click the \code{GCode Options} tab, then turn the \code{Use user gcode...} option on. Generate a set of NC files for a board. Let's say, for example, that after you change the tool when you're drilling from the bottom of the board, you want the tool to move to X5 Y5 Z5, turn the spindle off, then turn it back on. Since this has to do with drilling the bottom of the board, we should look at the ...bot.drill.tap (bottom drill) file. An excerpt from a file is shown in Listing \vref{lst:BottomDrillBeforeGCode}.
