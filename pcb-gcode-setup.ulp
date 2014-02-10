@@ -1003,52 +1003,13 @@ int Result = dlgDialog("pcb-gcode Setup") {
 		if (program_is_setup()) dlgTabPage("Plugins") {
       #include "plugins/plugin_loader.h"
     }
-    
-    /***************************************************************
-     *
-     * O T H E R
-     *
-     ***************************************************************/
-		if (program_is_setup()) dlgTabPage("Other") {
-      dlgHBoxLayout {
-	      dlgStretch(1);
-        dlgVBoxLayout {
-	      dlgStretch(1);
-          dlgGroup("Miscellaneous") {
-            dlgGridLayout {
-              dlgCell(0, 0, 0, 5) {
-                dlgLabel("All misc. options are deprecated.");
-              }
-            }
-          }
-          dlgPushButton("Reset to Factory Defaults") { 
-            if (dlgMessageBox(
-              "<qt>This is going to change the following files"
-              " back to their default contents, <em>erasing</em> any changes"
-              " you may have made to them:<p>"
-              "<table>"
-              "<tr><td>pcb-defaults.h</td><td>pcb-gcode-options.h</td></tr>"
-              "<tr><td>pcb-machine.h</td><td>user-gcode.h</td></tr>"
-              "</table><br>"
-              "Is that something you want to do?<p>"
-              "<b>If you aren't sure, click <em>No</em>.</b></qt>", 
-              "-Yes", "+No") == 0 /*Yes*/) {
-              restore_file_defaults();
-              exit("run pcb-gcode-setup");
-            }
-          }
-	      dlgStretch(1);
-        }
-		dlgStretch(1);
-      }
-		}
 	}
 
 	dlgHBoxLayout {
 		dlgStretch(5);
-		dlgPushButton("+&Accept") dlgAccept();
+		dlgPushButton("&Accept") dlgAccept();
 		if (program_is_setup()) {
-      dlgPushButton("Accept and make my &board") dlgAccept(2);
+      dlgPushButton("+Accept and make my &board") dlgAccept(2);
     }
 		dlgPushButton("-Cancel") {
 			if (dlgMessageBox("Cancel your changes.<p>"
