@@ -883,30 +883,30 @@ int Result = dlgDialog("pcb-gcode Setup") {
         dlgHBoxLayout {
           dlgGroup("Top (Component) Side Files") {
             dlgGridLayout {
-              dlgCell(1, 0) dlgLabel("Etching "); 
-              dlgCell(1, 1) { dlgStringEdit(FILENAME_TOP_ETCH_FILE); }
-              dlgCell(2, 0) dlgLabel("Drill "); 
-              dlgCell(2, 1) { dlgStringEdit(FILENAME_TOP_DRILL_FILE); }
-              dlgCell(3, 0) dlgLabel("Mill "); 
-              dlgCell(3, 1) { dlgStringEdit(FILENAME_TOP_MILL_FILE); }
-              dlgCell(4, 0) dlgLabel("Text "); 
-              dlgCell(4, 1) { dlgStringEdit(FILENAME_TOP_TEXT_FILE); }
-              dlgCell(5, 0) dlgLabel("Stencil ");
-              dlgCell(5, 1) { dlgStringEdit(FILENAME_TOP_STENCIL_FILE); }
+              dlgCell(0, 0) dlgLabel("Etching "); 
+              dlgCell(0, 1) { dlgStringEdit(FILENAME_TOP_ETCH_FILE); }
+              dlgCell(0, 2) dlgLabel("Drill "); 
+              dlgCell(0, 3) { dlgStringEdit(FILENAME_TOP_DRILL_FILE); }
+              dlgCell(1, 0) dlgLabel("Mill "); 
+              dlgCell(1, 1) { dlgStringEdit(FILENAME_TOP_MILL_FILE); }
+              dlgCell(1, 2) dlgLabel("Text "); 
+              dlgCell(1, 3) { dlgStringEdit(FILENAME_TOP_TEXT_FILE); }
+              dlgCell(2, 0) dlgLabel("Stencil ");
+              dlgCell(2, 1) { dlgStringEdit(FILENAME_TOP_STENCIL_FILE); }
             }
           }
           dlgGroup("Bottom (Solder) Side Files") {
             dlgGridLayout {
-              dlgCell(1, 0) dlgLabel("Etching "); 
-              dlgCell(1, 1) dlgStringEdit(FILENAME_BOT_ETCH_FILE);
-              dlgCell(2, 0) dlgLabel("Drill "); 
-              dlgCell(2, 1) dlgStringEdit(FILENAME_BOT_DRILL_FILE);
-              dlgCell(3, 0) dlgLabel("Mill "); 
-              dlgCell(3, 1) dlgStringEdit(FILENAME_BOT_MILL_FILE);
-              dlgCell(4, 0) dlgLabel("Text "); 
-              dlgCell(4, 1) dlgStringEdit(FILENAME_BOT_TEXT_FILE);
-              dlgCell(5, 0) dlgLabel("Stencil ");
-              dlgCell(5, 1) dlgStringEdit(FILENAME_BOT_STENCIL_FILE);
+              dlgCell(0, 0) dlgLabel("Etching "); 
+              dlgCell(0, 1) dlgStringEdit(FILENAME_BOT_ETCH_FILE);
+              dlgCell(0, 2) dlgLabel("Drill "); 
+              dlgCell(0, 3) dlgStringEdit(FILENAME_BOT_DRILL_FILE);
+              dlgCell(1, 0) dlgLabel("Mill "); 
+              dlgCell(1, 1) dlgStringEdit(FILENAME_BOT_MILL_FILE);
+              dlgCell(1, 2) dlgLabel("Text "); 
+              dlgCell(1, 3) dlgStringEdit(FILENAME_BOT_TEXT_FILE);
+              dlgCell(2, 0) dlgLabel("Stencil ");
+              dlgCell(2, 1) dlgStringEdit(FILENAME_BOT_STENCIL_FILE);
             }
           }
 //          dlgStretch(1);
