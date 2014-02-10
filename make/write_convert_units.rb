@@ -20,6 +20,15 @@ File.open("pcb-gcode-setup.ulp").each_line { |line|
   end
 }
 
+#
+# Avoid generating multiple conversion calls for variables that might
+# be used in the UI in multiple places.
+#
+@conversions.uniq!
+
+#
+# Write the EAGLE code for the conversion function.
+#
 def write_conversion_code
 result = ""
 
