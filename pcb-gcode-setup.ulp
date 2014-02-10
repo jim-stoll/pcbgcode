@@ -168,6 +168,15 @@ void convert_units(int new_units)
     TOOL_CHANGE_POS_X = convert(TOOL_CHANGE_POS_X, m_current_units, new_units);
     TOOL_CHANGE_POS_Y = convert(TOOL_CHANGE_POS_Y, m_current_units, new_units);
     TOOL_CHANGE_POS_Z = convert(TOOL_CHANGE_POS_Z, m_current_units, new_units);
+    FEED_RATE_ETCH_XY = convert(FEED_RATE_ETCH_XY, m_current_units, new_units);
+    FEED_RATE_ETCH_Z = convert(FEED_RATE_ETCH_Z, m_current_units, new_units);
+    FEED_RATE_DRILL_Z = convert(FEED_RATE_DRILL_Z, m_current_units, new_units);
+    FEED_RATE_MILL_XY = convert(FEED_RATE_MILL_XY, m_current_units, new_units);
+    FEED_RATE_MILL_Z = convert(FEED_RATE_MILL_Z, m_current_units, new_units);
+    FEED_RATE_TEXT_XY = convert(FEED_RATE_TEXT_XY, m_current_units, new_units);
+    FEED_RATE_TEXT_Z = convert(FEED_RATE_TEXT_Z, m_current_units, new_units);
+    FEED_RATE_STENCIL_XY = convert(FEED_RATE_STENCIL_XY, m_current_units, new_units);
+    FEED_RATE_STENCIL_Z = convert(FEED_RATE_STENCIL_Z, m_current_units, new_units);
     STENCIL_TOOL_SIZE = convert(STENCIL_TOOL_SIZE, m_current_units, new_units);
     EPSILON = convert(EPSILON, m_current_units, new_units);
 
@@ -627,50 +636,54 @@ int Result = dlgDialog("pcb-gcode Setup") {
 			dlgLabel("<img src='docs/images/z_axis.gif'/>");
 			dlgGroup("Z Axis") {
 				dlgGridLayout {
-					dlgCell(1, 0) dlgLabel("Z High ");
-					dlgCell(1, 1) { 
+					dlgCell(0, 0) dlgLabel("Z High ");
+					dlgCell(0, 1) { 
 						dlgRealEdit(DEFAULT_Z_HIGH); 
 						dlgLabel(m_uom_suffix, YES); 
 					}
-					dlgCell(2, 0) dlgLabel("Z Up ");
-					dlgCell(2, 1) { 
+					dlgCell(1, 0) dlgLabel("Z Up ");
+					dlgCell(1, 1) { 
 						dlgRealEdit(DEFAULT_Z_UP); 
 						dlgLabel(m_uom_suffix, YES); 
 					}
-					dlgCell(3, 0) dlgLabel("Z Down ");
-					dlgCell(3, 1) { 
+					dlgCell(2, 0) dlgLabel("Z Down ");
+					dlgCell(2, 1) { 
 						dlgRealEdit(DEFAULT_Z_DOWN); 
 						dlgLabel(m_uom_suffix, YES); 
 					}
-					dlgCell(4, 0) dlgLabel("Drill Depth ");
-					dlgCell(4, 1) {
+					dlgCell(3, 0) dlgLabel("Drill Depth ");
+					dlgCell(3, 1) {
 						dlgRealEdit(DRILL_DEPTH); 
 						dlgLabel(m_uom_suffix, YES); 
 					}
-					dlgCell(5, 0) dlgLabel("Drill Dwell ");
-					dlgCell(5, 1) dlgRealEdit(DRILL_DWELL, 0); // DO NOT CONVERT
+					dlgCell(4, 0) dlgLabel("Drill Dwell ");
+					dlgCell(4, 1) { dlgRealEdit(DRILL_DWELL, 0); // DO NOT CONVERT
+					  dlgLabel("secs");
+				  }
 				}
 			}
 			dlgGroup("Tool Change") {
 				dlgGridLayout {
-					dlgCell(1, 0) dlgLabel("Position X ");
-					dlgCell(1, 1) { dlgRealEdit(TOOL_CHANGE_POS_X); 
+					dlgCell(0, 0) dlgLabel("Position X ");
+					dlgCell(0, 1) { dlgRealEdit(TOOL_CHANGE_POS_X); 
 						dlgLabel(m_uom_suffix, YES); 
 					}
-					dlgCell(2, 0) dlgLabel("Position Y ");
-					dlgCell(2, 1) { dlgRealEdit(TOOL_CHANGE_POS_Y); 
+					dlgCell(1, 0) dlgLabel("Position Y ");
+					dlgCell(1, 1) { dlgRealEdit(TOOL_CHANGE_POS_Y); 
 						dlgLabel(m_uom_suffix, YES); 
 					}
-					dlgCell(3, 0) dlgLabel("Position Z ");
-					dlgCell(3, 1) { dlgRealEdit(TOOL_CHANGE_POS_Z); 
+					dlgCell(2, 0) dlgLabel("Position Z ");
+					dlgCell(2, 1) { dlgRealEdit(TOOL_CHANGE_POS_Z); 
 						dlgLabel(m_uom_suffix, YES); 
 					}
 				}
 			}
 			dlgGroup("Spindle") {
 				dlgGridLayout {
-					dlgCell(1, 0) dlgLabel("Spin Up Time ");
-					dlgCell(1, 1) dlgRealEdit(SPINDLE_ON_TIME); // DO NOT CONVERT
+					dlgCell(0, 0) dlgLabel("Spin Up Time ");
+					dlgCell(0, 1) { dlgRealEdit(SPINDLE_ON_TIME); // DO NOT CONVERT
+					  dlgLabel("secs");
+				  }
 				}
 			}
 			dlgStretch(20);
@@ -690,47 +703,53 @@ int Result = dlgDialog("pcb-gcode Setup") {
 				dlgRadioButton("Inches", OUTPUT_UNITS) { 
 					convert_units(U_INCHES); 
 				}
+				dlgStretch(1);
 			}
 			dlgGroup("Feed Rates") {
 				dlgGridLayout {
-				  dlgCell(1, 0) dlgLabel("Feed rate " + m_uom_suffix + "/min", YES);
-				  dlgCell(1, 1) dlgLabel("X Y");
-				  dlgCell(1, 2) dlgLabel("Z");
-				  dlgCell(1, 3) dlgLabel("Spindle rev/min");
-				  dlgCell(1, 4) dlgLabel("Tool Dia.");
+				  dlgCell(0, 0) dlgLabel("units/min");
+				  dlgCell(0, 1) dlgLabel("X Y");
+				  dlgCell(0, 2) dlgLabel("Z");
+				  dlgCell(0, 3) dlgLabel("Spindle rev/min");
+				  dlgCell(0, 4) dlgLabel("Tool Dia.");
 				  
-					dlgCell(2, 0) dlgLabel("Etch");
-					dlgCell(2, 1) dlgRealEdit(FEED_RATE_ETCH_XY); // DO NOT CONVERT
-					dlgCell(2, 2) dlgRealEdit(FEED_RATE_ETCH_Z); // DO NOT CONVERT
-					dlgCell(2, 3) dlgRealEdit(SPINDLE_ETCH_RPM); // DO NOT CONVERT
+					dlgCell(1, 0) dlgLabel("Etch");
+					dlgCell(1, 1) dlgRealEdit(FEED_RATE_ETCH_XY);
+					dlgCell(1, 2) dlgRealEdit(FEED_RATE_ETCH_Z);
+					dlgCell(1, 3) dlgRealEdit(SPINDLE_ETCH_RPM); // DO NOT CONVERT
+					dlgCell(1, 4) dlgHBoxLayout { dlgRealEdit(TOOL_SIZE); 
+            dlgLabel(m_uom_suffix, YES); 
+          }
+          
 
-					dlgCell(3, 0) dlgLabel("Drill");
-					dlgCell(3, 2) dlgRealEdit(FEED_RATE_DRILL_Z); // DO NOT CONVERT
-					dlgCell(3, 3) dlgRealEdit(SPINDLE_DRILL_RPM); // DO NOT CONVERT
+					dlgCell(2, 0) dlgLabel("Drill");
+					dlgCell(2, 2) dlgRealEdit(FEED_RATE_DRILL_Z);
+					dlgCell(2, 3) dlgRealEdit(SPINDLE_DRILL_RPM); // DO NOT CONVERT
 
-					dlgCell(4, 0) dlgLabel("Mill");
-					dlgCell(4, 1) dlgRealEdit(FEED_RATE_MILL_XY); // DO NOT CONVERT
-					dlgCell(4, 2) dlgRealEdit(FEED_RATE_MILL_Z); // DO NOT CONVERT
-					dlgCell(4, 3) dlgRealEdit(SPINDLE_MILL_RPM); // DO NOT CONVERT
+					dlgCell(3, 0) dlgLabel("Mill");
+					dlgCell(3, 1) dlgRealEdit(FEED_RATE_MILL_XY);
+					dlgCell(3, 2) dlgRealEdit(FEED_RATE_MILL_Z);
+					dlgCell(3, 3) dlgRealEdit(SPINDLE_MILL_RPM); // DO NOT CONVERT
 
-					dlgCell(5, 0) dlgLabel("Text");
-					dlgCell(5, 1) dlgRealEdit(FEED_RATE_TEXT_XY); // DO NOT CONVERT
-					dlgCell(5, 2) dlgRealEdit(FEED_RATE_TEXT_Z); // DO NOT CONVERT
-					dlgCell(5, 3) dlgRealEdit(SPINDLE_TEXT_RPM); // DO NOT CONVERT
+					dlgCell(4, 0) dlgLabel("Text");
+					dlgCell(4, 1) dlgRealEdit(FEED_RATE_TEXT_XY);
+					dlgCell(4, 2) dlgRealEdit(FEED_RATE_TEXT_Z);
+					dlgCell(4, 3) dlgRealEdit(SPINDLE_TEXT_RPM); // DO NOT CONVERT
 
-					dlgCell(6, 0) dlgLabel("Stencil");
-					dlgCell(6, 1) dlgRealEdit(FEED_RATE_STENCIL_XY); // DO NOT CONVERT
-					dlgCell(6, 2) dlgRealEdit(FEED_RATE_STENCIL_Z); // DO NOT CONVERT
-					dlgCell(6, 3) dlgRealEdit(SPINDLE_STENCIL_RPM); // DO NOT CONVERT
-					dlgCell(6, 4) dlgRealEdit(STENCIL_TOOL_SIZE);
-
-
+					dlgCell(5, 0) dlgLabel("Stencil");
+					dlgCell(5, 1) dlgRealEdit(FEED_RATE_STENCIL_XY);
+					dlgCell(5, 2) dlgRealEdit(FEED_RATE_STENCIL_Z);
+					dlgCell(5, 3) dlgRealEdit(SPINDLE_STENCIL_RPM); // DO NOT CONVERT
+					dlgCell(5, 4) dlgHBoxLayout { dlgRealEdit(STENCIL_TOOL_SIZE); 
+            dlgLabel(m_uom_suffix, YES); 
+          }
 				}
+				dlgStretch(1);
 			}
 			dlgGroup("Misc") {
 				dlgGridLayout {
-					dlgCell(1, 0) dlgLabel("Epsilon");
-					dlgCell(1, 1) { dlgRealEdit(EPSILON);
+					dlgCell(0, 0) dlgLabel("Epsilon");
+					dlgCell(0, 1) { dlgRealEdit(EPSILON);
 						dlgLabel(m_uom_suffix, YES);
 						dlgPushButton("?") {
 							dlgMessageBox("If an X or Y move is less than this amount, do not "
@@ -740,9 +759,9 @@ int Result = dlgDialog("pcb-gcode Setup") {
 							"move anyway. This helps make the g-code file smaller, and run faster.");
 						}
 					}
-					dlgCell(2, 0) dlgLabel("Default Drill Rack File");
-					dlgCell(2, 1) dlgStringEdit(DEFAULT_DRILL_FILE);
-					dlgCell(2, 2) {	
+					dlgCell(1, 0) dlgLabel("Default Drill Rack File");
+					dlgCell(1, 1) dlgStringEdit(DEFAULT_DRILL_FILE);
+					dlgCell(1, 2) {	
 						dlgPushButton("...") {
 						DEFAULT_DRILL_FILE = dlgFileOpen("Find default drill rack file", 
 						g_path + "/settings", 
@@ -763,9 +782,12 @@ int Result = dlgDialog("pcb-gcode Setup") {
 						}
 					}
 				}
+				dlgStretch(1);
 			}
-			dlgStretch(20);
+//			dlgStretch(1);
 		}
+		dlgStretch(1);
+		
 	}
     
     /***************************************************************
@@ -836,55 +858,55 @@ int Result = dlgDialog("pcb-gcode Setup") {
             dlgLabel("Extension "); dlgStringEdit(DEFAULT_EXTENSION); 
             dlgStretch(1);
           }
-          dlgCell(2, 0) { dlgLabel("Word for 'etch'"); 
-            dlgStringEdit(ETCH_FILE_NAME); 
-          }
-          dlgCell(2, 1) { dlgLabel("Word for 'drill'"); 
-            dlgStringEdit(DRILL_FILE_NAME); 
-          }
-          dlgCell(2, 2) { dlgLabel("Word for 'mill'"); 
-            dlgStringEdit(MILL_FILE_NAME);
-          }
-          dlgCell(3, 0) { dlgLabel("Word for 'text'");
-            dlgStringEdit(TEXT_FILE_NAME);
-          }
-          dlgCell(3, 1) { dlgLabel("Word for 'stencil'");
-            dlgStringEdit(STENCIL_FILE_NAME); dlgStretch(1);
-          }
-          dlgCell(4, 0) { dlgLabel("Word for 'top'");
+          dlgCell(0, 3) { dlgLabel("Word for 'top'");
             dlgStringEdit(TOP_FILE_NAME); 
           }
-          dlgCell(4, 1) { dlgLabel("Word for 'bottom'");
+          dlgCell(0, 4) { dlgLabel("Word for 'bottom'");
             dlgStringEdit(BOT_FILE_NAME); 
+          }
+          dlgCell(1, 0) { dlgLabel("Word for 'etch'"); 
+            dlgStringEdit(ETCH_FILE_NAME); 
+          }
+          dlgCell(1, 1) { dlgLabel("Word for 'drill'"); 
+            dlgStringEdit(DRILL_FILE_NAME); 
+          }
+          dlgCell(1, 2) { dlgLabel("Word for 'mill'"); 
+            dlgStringEdit(MILL_FILE_NAME);
+          }
+          dlgCell(1, 3) { dlgLabel("Word for 'text'");
+            dlgStringEdit(TEXT_FILE_NAME);
+          }
+          dlgCell(1, 4) { dlgLabel("Word for 'stencil'");
+            dlgStringEdit(STENCIL_FILE_NAME); dlgStretch(1);
           }
         }
         dlgHBoxLayout {
           dlgGroup("Top (Component) Side Files") {
             dlgGridLayout {
-              dlgCell(1, 0) dlgLabel("Etching "); 
-              dlgCell(1, 1) { dlgStringEdit(FILENAME_TOP_ETCH_FILE); }
-              dlgCell(2, 0) dlgLabel("Drill "); 
-              dlgCell(2, 1) { dlgStringEdit(FILENAME_TOP_DRILL_FILE); }
-              dlgCell(3, 0) dlgLabel("Mill "); 
-              dlgCell(3, 1) { dlgStringEdit(FILENAME_TOP_MILL_FILE); }
-              dlgCell(4, 0) dlgLabel("Text "); 
-              dlgCell(4, 1) { dlgStringEdit(FILENAME_TOP_TEXT_FILE); }
-              dlgCell(5, 0) dlgLabel("Stencil ");
-              dlgCell(5, 1) { dlgStringEdit(FILENAME_TOP_STENCIL_FILE); }
+              dlgCell(0, 0) dlgLabel("Etching "); 
+              dlgCell(0, 1) { dlgStringEdit(FILENAME_TOP_ETCH_FILE); }
+              dlgCell(0, 2) dlgLabel("Drill "); 
+              dlgCell(0, 3) { dlgStringEdit(FILENAME_TOP_DRILL_FILE); }
+              dlgCell(1, 0) dlgLabel("Mill "); 
+              dlgCell(1, 1) { dlgStringEdit(FILENAME_TOP_MILL_FILE); }
+              dlgCell(1, 2) dlgLabel("Text "); 
+              dlgCell(1, 3) { dlgStringEdit(FILENAME_TOP_TEXT_FILE); }
+              dlgCell(2, 0) dlgLabel("Stencil ");
+              dlgCell(2, 1) { dlgStringEdit(FILENAME_TOP_STENCIL_FILE); }
             }
           }
           dlgGroup("Bottom (Solder) Side Files") {
             dlgGridLayout {
-              dlgCell(1, 0) dlgLabel("Etching "); 
-              dlgCell(1, 1) dlgStringEdit(FILENAME_BOT_ETCH_FILE);
-              dlgCell(2, 0) dlgLabel("Drill "); 
-              dlgCell(2, 1) dlgStringEdit(FILENAME_BOT_DRILL_FILE);
-              dlgCell(3, 0) dlgLabel("Mill "); 
-              dlgCell(3, 1) dlgStringEdit(FILENAME_BOT_MILL_FILE);
-              dlgCell(4, 0) dlgLabel("Text "); 
-              dlgCell(4, 1) dlgStringEdit(FILENAME_BOT_TEXT_FILE);
-              dlgCell(5, 0) dlgLabel("Stencil ");
-              dlgCell(5, 1) dlgStringEdit(FILENAME_BOT_STENCIL_FILE);
+              dlgCell(0, 0) dlgLabel("Etching "); 
+              dlgCell(0, 1) dlgStringEdit(FILENAME_BOT_ETCH_FILE);
+              dlgCell(0, 2) dlgLabel("Drill "); 
+              dlgCell(0, 3) dlgStringEdit(FILENAME_BOT_DRILL_FILE);
+              dlgCell(1, 0) dlgLabel("Mill "); 
+              dlgCell(1, 1) dlgStringEdit(FILENAME_BOT_MILL_FILE);
+              dlgCell(1, 2) dlgLabel("Text "); 
+              dlgCell(1, 3) dlgStringEdit(FILENAME_BOT_TEXT_FILE);
+              dlgCell(2, 0) dlgLabel("Stencil ");
+              dlgCell(2, 1) dlgStringEdit(FILENAME_BOT_STENCIL_FILE);
             }
           }
 //          dlgStretch(1);
@@ -981,52 +1003,13 @@ int Result = dlgDialog("pcb-gcode Setup") {
 		if (program_is_setup()) dlgTabPage("Plugins") {
       #include "plugins/plugin_loader.h"
     }
-    
-    /***************************************************************
-     *
-     * O T H E R
-     *
-     ***************************************************************/
-		if (program_is_setup()) dlgTabPage("Other") {
-      dlgHBoxLayout {
-	      dlgStretch(1);
-        dlgVBoxLayout {
-	      dlgStretch(1);
-          dlgGroup("Miscellaneous") {
-            dlgGridLayout {
-              dlgCell(0, 0, 0, 5) {
-                dlgLabel("All misc. options are deprecated.");
-              }
-            }
-          }
-          dlgPushButton("Reset to Factory Defaults") { 
-            if (dlgMessageBox(
-              "<qt>This is going to change the following files"
-              " back to their default contents, <em>erasing</em> any changes"
-              " you may have made to them:<p>"
-              "<table>"
-              "<tr><td>pcb-defaults.h</td><td>pcb-gcode-options.h</td></tr>"
-              "<tr><td>pcb-machine.h</td><td>user-gcode.h</td></tr>"
-              "</table><br>"
-              "Is that something you want to do?<p>"
-              "<b>If you aren't sure, click <em>No</em>.</b></qt>", 
-              "-Yes", "+No") == 0 /*Yes*/) {
-              restore_file_defaults();
-              exit("run pcb-gcode-setup");
-            }
-          }
-	      dlgStretch(1);
-        }
-		dlgStretch(1);
-      }
-		}
 	}
 
 	dlgHBoxLayout {
 		dlgStretch(5);
-		dlgPushButton("+&Accept") dlgAccept();
+		dlgPushButton("&Accept") dlgAccept();
 		if (program_is_setup()) {
-      dlgPushButton("Accept and make my &board") dlgAccept(2);
+      dlgPushButton("+Accept and make my &board") dlgAccept(2);
     }
 		dlgPushButton("-Cancel") {
 			if (dlgMessageBox("Cancel your changes.<p>"
