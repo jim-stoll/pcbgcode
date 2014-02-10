@@ -302,7 +302,7 @@ Rack files contain a list of drills the user has available and the size holes th
 %
 %---------------------------------------------------------------------
 %
-\section{EAGLE compatibility}\label{sec:EAGLECompatibility}\index{eagle!compatibility}
+\section{EAGLE compatibility}\label{sec:EAGLECompatibility}\index{compatibility!eagle}
 
 Pcb-gcode is compatible with EAGLE versions 5 and 6\footnote{CadSoft changed the way numbers were represented internally with their release of version 6. This effectively broke parts of pcb-gcode. Version 3.6 incorporates changes for compatibility with version 5 or 6.}. For versions of EAGLE before version 5, pcb-gcode version 3.3.3 is still available \href{http://groups.yahoo.com/group/pcb-gcode/files/\%21\%20Software/pcb-gcode-3.3.3.zip}{in the Yahoo! group}. This manual does not apply to version 3.3.3. Please see the documentation included with version 3.3.3.
 %
@@ -381,15 +381,15 @@ If you choose not to use the previewer, simply turn it off. See \figurename \vre
 
 Click the \code{Machine} tab to view the machine options as shown in \figurename \vref{fig:SetupMachine}. First select the preferred unit of measure by selecting it under \code{Units}. \index{unit of measure}
 
-Now set the settings for the Z axis. \code{Z High} should be high enough to clear any clamps or fixtures that hold the PCB down.\index{Z High} Set \code{Z Up} high enough to clear the board when moving from location to location.\index{Z Up} Set \code{Z Down} to the depth into the board that the tool should cut when etching.\index{Z Down} \code{Drill Depth} should be set deep enough to drill through the PCB.\index{Drill Depth} \code{Drill Dwell} is the time, in seconds, that the drill should pause at the bottom of the hole.\index{Drill Dwell}
+Now set the settings for the Z axis. \code{Z High} should be high enough to clear any clamps or fixtures that hold the PCB down.\index{z axis!high} Set \code{z up} high enough to clear the board when moving from location to location.\index{z axis!up} Set \code{Z Down} to the depth into the board that the tool should cut when etching.\index{z axis!down} \code{Drill Depth} should be set deep enough to drill through the PCB.\index{drill!depth} \code{Drill Dwell} is the time, in seconds, that the drill should pause at the bottom of the hole.\index{drill!dwell}
 
-The \code{Tool Change} options are the position where the tool should be moved when a new tool is required.\index{Tool Change}
+The \code{Tool Change} options are the position where the tool should be moved when a new tool is required.\index{tool change}
 
-The \code{Spin Up Time} in the \code{Spindle} box should be set to the length of time in seconds that it takes the spindle to come up to speed. If the spindle is manually controlled, this can be set to \code{1}.\index{Spin Up Time}
+The \code{Spin Up Time} in the \code{Spindle} box should be set to the length of time in seconds that it takes the spindle to come up to speed. If the spindle is manually controlled, this can be set to \code{1}.\index{spindle!spin up time}
 
-The \code{Feed Rates} should be set for \code{X Y} moves as well as \code{Z} moves. Rates here will usually be quite low unless the machine has a very fast spindle. See a machinist's reference on how to calculate the optimal feed rate, use trial and error, or post to the Yahoo! group email list for advice. Note that there are separate feed rates for \code{X Y}, and \code{Z}, and there is a spindle speed setting for each of the four operations pcb-gcode can generate files for.\index{Feed Rates}
+The \code{Feed Rates} should be set for \code{X Y} moves as well as \code{Z} moves. Rates here will usually be quite low unless the machine has a very fast spindle. See a machinist's reference on how to calculate the optimal feed rate, use trial and error, or post to the Yahoo! group email list for advice. Note that there are separate feed rates for \code{X Y}, and \code{Z}, and there is a spindle speed setting for each of the four operations pcb-gcode can generate files for.\index{feed rates}\index{z axis!feed rates}
 
-A \code{Tool Dia.} parameter is available to set the diameter of the tool used to mill openings for stencils used to apply cream solder paste when surface mounted parts are used.\index{Stencil!tool diameter}
+A \code{Tool Dia.} parameter is available to set the diameter of the tool used to mill openings for stencils used to apply cream solder paste when surface mounted parts are used.\index{stencil!tool diameter}
 
 \code{Epsilon} is the minimum move that will be written to the g-code file. For instance, if \code{Epsilon} is set to $0.0001''$ then the g-code file will not contain movements less than $0.0001''$. This option will rarely need to be changed.
 
@@ -415,13 +415,13 @@ Now that reasonable values have been set for the machine, click the \code{Genera
 	\begin{description}
 		\item[Generate top outlines] Generate g-code to cut out the tracks, pads, pours and vias on the top side of the board.
 		\item[Generate top drills] Generate g-code to drill holes from the top side of the board.
-		\item[Generate top stencil] Generate g-code to cut out a stencil for the top cream layer.\index{Stencil!Generate top option}
+		\item[Generate top stencil] Generate g-code to cut out a stencil for the top cream layer.\index{stencil!Generate top option}
 	\end{description}
 	\item[Bottom Side] Options having to do with the tracks on the bottom of the board, and drill holes made from the bottom side of the board.
 	\begin{description}
 		\item[Generate bottom outlines] Generate g-code to cut out the tracks, pads, pours and vias on the bottom side of the board.
 		\item[Generate bottom drills] Generate g-code to drill holes from the bottom side of the board.
-		\item[Generate bottom stencil] Generate g-code to cut out a stencil for the bottom cream layer.\index{Stencil!Generate bottom option}
+		\item[Generate bottom stencil] Generate g-code to cut out a stencil for the bottom cream layer.\index{stencil!Generate bottom option}
 		\item[Mirror] X coordinates for the bottom of the board are usually negative. This makes setting the origin for a two-sided board easier. Turning this option on causes the X coordinates to be positive, however, the bottom tracks will be a mirror image of what they should be. So in general, leave this option off.
 	\end{description}
 	\item[Board] Options that apply to the board in general.
@@ -872,7 +872,7 @@ For information on editing \code{gcode-defaults.h}, See Section \vref{sec:Custom
 %
 %---------------------------------------------------------------------
 %
-\section{Drill Rack Files}\index{rack files}\index{drill files}\label{sec:DrillRackFiles}
+\section{Drill Rack Files}\index{drill!rack files}\index{drill!substitutions}\label{sec:DrillRackFiles}
 
 Rack files allow the substitution of one drill size for a range of sizes that may be found in the board. For instance, a $0.031''$ drill might be used for hole sizes $0.025''$ -- $0.032''$. This cuts down on the number of drills that must be kept on hand, and the number of tool changes needed to drill a board. An example drill rack file is shown in Listing \ref{lst:SampleRackFile}. \textbf{Please heed the warning about using a tab character} between entries on a line. Otherwise, your rack file will not work.
 
