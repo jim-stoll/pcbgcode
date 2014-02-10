@@ -346,7 +346,7 @@ You will receive the warning shown in \figurename \vref{fig:GcodeDefaultsWarning
 	}
 	\caption{Select the style g-code pcb-gcode should produce.}
 	\label{fig:SelectGcodeStyle}
-\end{figure}
+\end{figure}\index{setup tabs!GCode Style}
 
 \begin{figure}
 	\center{
@@ -377,7 +377,7 @@ If you choose not to use the previewer, simply turn it off. See \figurename \vre
 	}
 	\caption{Machine options.}
 	\label{fig:SetupMachine}
-\end{figure}
+\end{figure}\index{setup tabs!Machine}
 
 Click the \code{Machine} tab to view the machine options as shown in \figurename \vref{fig:SetupMachine}. First select the preferred unit of measure by selecting it under \code{Units}. \index{unit of measure}
 
@@ -406,7 +406,7 @@ The \code{Default Drill Rack File} option allows for the selection of a rack fil
 	}
 	\caption{Options available when generating a board.}
 	\label{fig:SetupGenerationOptions}
-\end{figure}
+\end{figure}\index{setup tabs!Generation Options}
 
 Now that reasonable values have been set for the machine, click the \code{Generation Options} tab (See \figurename \vref{fig:SetupGenerationOptions}). This is where the various files produced by pcb-gcode can be selected, and common options can be set. A description of the options follows:
 
@@ -438,7 +438,7 @@ Now that reasonable values have been set for the machine, click the \code{Genera
 			\item[Maximum] The maximum distance the cutting tool will be away from tracks. The maximum isolation amount.
 			\item[Step size] The amount the isolation increases with each pass.
 		\end{description}
-		\item[Etching Tool Size] The size of the cutter used to cut around tracks on the board.
+		\item[Etching Tool Size] The size of the cutter used to cut around tracks on the board. Note that this setting is also found under the Machine tab as the etching tool diameter, as seen in Figure \vref{fig:SetupMachine}.
 	\end{description}
 \end{description}
 
@@ -453,7 +453,7 @@ Now that reasonable values have been set for the machine, click the \code{Genera
 	}
 	\caption{Options for generating g-code files.}
 	\label{fig:GCodeOptions}
-\end{figure}
+\end{figure}\index{setup tabs!GCode Options}
 
 The options under the GCode Options tab allows the customization of some of the g-code file's content, as well as how the files are named.
 
@@ -684,7 +684,7 @@ For the curious reader, the previewer is written using a language called \href{h
 	}
 	\caption{The Plugins tab showing where settings can be saved and loaded.}
 	\label{fig:SaveSettings}
-\end{figure}
+\end{figure}\index{setup tabs!Plugins}
 
 Settings may be loaded and saved to settings files. This can be found on the Plugins tab, and is shown in figure \vref{fig:SaveSettings}. This allows the operator to set up groups of settings for different PC boards, save them, and load them when manufacturing the same board later. The settings saved include those on the Generation Options tab (shown in figure \vref{fig:SetupGenerationOptions}), as well as those on the Machine tab (see figure \vref{fig:SetupMachine}) except for the Units setting.
 
