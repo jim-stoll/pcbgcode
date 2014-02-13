@@ -63,7 +63,7 @@
 
 \author{
 \large
-Copyright \copyright\ 2013\\[1em]
+Copyright \copyright\ 2014\\[1em]
 \textsc{John T. Johnson}\\[2mm] %\thanks{A thank you or further information}\\[2mm] % Your name
 \normalsize \href{mailto:pcbgcode@pcbgcode.org}{\texttt{pcbgcode@pcbgcode.org}} % Your email address
 \vspace{-5mm}
@@ -383,7 +383,7 @@ Click the \code{Machine} tab to view the machine options as shown in \figurename
 
 Now set the settings for the Z axis. \code{Z High} should be high enough to clear any clamps or fixtures that hold the PCB down.\index{z axis!high} Set \code{z up} high enough to clear the board when moving from location to location.\index{z axis!up} Set \code{Z Down} to the depth into the board that the tool should cut when etching.\index{z axis!down} \code{Drill Depth} should be set deep enough to drill through the PCB.\index{drill!depth} \code{Drill Dwell} is the time, in seconds, that the drill should pause at the bottom of the hole.\index{drill!dwell}
 
-The \code{Tool Change} options are the position where the tool should be moved when a new tool is required.\index{tool change}
+The \code{Tool Change} options are the position where the tool should be moved when a new tool is required.\index{tool change!position}
 
 The \code{Spin Up Time} in the \code{Spindle} box should be set to the length of time in seconds that it takes the spindle to come up to speed. If the spindle is manually controlled, this can be set to \code{1}.\index{spindle!spin up time}
 
@@ -468,13 +468,13 @@ The options under the GCode Options tab allows the customization of some of the 
 	
 	\item[Other Options] Options affecting how the g-code is generated.
 	\begin{description}
-		\item[Use user gcode (from user-gcode.h)] inserts user g-code into the generated file. See Section \vref{sec:UserGCode} for more details.
+		\item[Use user gcode (from user-gcode.h)] inserts user g-code into the generated file. See Section \vref{sec:UserGCode} for more details.\index{g-code!user}
 		\item[Debug Flag] sets the global debug flag. Used for development and troubleshooting.
-		\item[Do tool change with zero step] after moving to the tool change position and pausing for the operator to change the bit, the Z axis will move to Z0.000 and pause. This allows the operator to adjust the bit length to touch the surface of the PCB. Note that the tool should initially be set high into the spindle so that it won't dig into the PCB when it moves to Z0.
+		\item[Do tool change with zero step] after moving to the tool change position and pausing for the operator to change the bit, the Z axis will move to Z0.000 and pause. This allows the operator to adjust the bit length to touch the surface of the PCB. Note that the tool should initially be set high into the spindle so that it won't dig into the PCB when it moves to Z0.\index{tool change!zero step}
 		\item[Flip board in Y instead of X] changes the code generated so that after one side of the board is cut, the board should be flipped in the Y axis to complete cutting on the other side. The default is for the board to be flipped in the X axis.
-		\item[Compact gcode] eliminates some redundant commands in the g-code file, such as having G01 on every line.
-		\item[Use line numbers?] inserts line numbers into the g-code file. The format shown \code{\%05d} will insert 5 digit numbers with leading zeroes.
-		\item[Use simple drill code] uses XYZ movements to create drill holes. Usually \code{DRILL\_{}FIRST\_{}HOLE} and \code{DRILL\_{}HOLE} are used, but some controllers don't understand the command (typically \code{G82}).
+		\item[Compact gcode] eliminates some redundant commands in the g-code file, such as having G01 on every line.\index{g-code!compact}
+		\item[Use line numbers?] inserts line numbers into the g-code file. The format shown \code{\%05d} will insert 5 digit numbers with leading zeroes.\index{g-code!line numbers}
+		\item[Use simple drill code] uses simple XYZ movements to create drill holes. Usually \code{DRILL\_{}FIRST\_{}HOLE} and \code{DRILL\_{}HOLE} are used, but some controllers don't understand the command (typically \code{G82}).\index{drill!simple g-code}
 	\end{description}
 	
 	\item[File naming] every option one could want for naming files.\index{files!naming}
@@ -518,9 +518,9 @@ Using examples for the board path and name, the final file name would be:\\
 
 Run pcb-gcode by selecting File $|$ Run... from EAGLE's board editor. Find the file \code{pcb-gcode-setup.ulp} and click the Open button. The setup screen will be shown where options can be changed (See \figurename~\ref{fig:SetupGenerationOptions}). When the options are correct, click the \code{Accept and make my board} button. To save the options without generating files for the board, click the \code{Accept} button.
 
-Pcb-gcode is actually two programs. The first, pcb-gcode-setup, allows for setting options and changing the way NC files are created. The second program is pcb-gcode, which actually creates the files. Most people run pcb-gcode-setup, check their settings, then click the \code{Accept and make my board} button to generate files. If settings don't need to be changed, pcb-gcode can be run directly and all the file selections and options from the last time pcb-gcode-setup was run will be used.
+Pcb-gcode is actually two programs. The first, \code{pcb-gcode-setup}, allows for setting options and changing the way NC files are created. The second program is \code{pcb-gcode}, which actually creates the files. Most people run \code{pcb-gcode-setup}, check their settings, then click the \code{Accept and make my board} button to generate files. If settings don't need to be changed, \code{pcb-gcode} can be run directly and all the file selections and options from the last time \code{pcb-gcode-setup} was run will be used.
 
-To make it easier to run pcb-gcode and pcb-gcode-setup, use EAGLE's Assign function to assign a shortcut key to \code{run pcb-gcode} and \code{run pcb-gcode-setup} (See \figurename~\vref{fig:EagleOptionsAssign}).
+To make it easier to run \code{pcb-gcode} and \code{pcb-gcode-setup}, use EAGLE's Assign function to assign a shortcut key to \code{run pcb-gcode} and \code{run pcb-gcode-setup} (See \figurename~\vref{fig:EagleOptionsAssign}).
 
 \begin{figure}
 	\center{
@@ -537,7 +537,7 @@ To make it easier to run pcb-gcode and pcb-gcode-setup, use EAGLE's Assign funct
 
 When creating files to etch a board, it is usually the case that the tracks should be made wide to allow for easier machining and to account for tolerances in the machine such as backlash and spindle runout. EAGLE's Design Rule Check (DRC) can be used to help ensure that all tracks on the board will be cut out, and no bridges will be left. 
 
-A bridge is formed when two parts (tracks, pads, vias) on the board are too close together for the etching tool to pass between them. An example is shown in \figurename~\vref{fig:TwoComponents}. For this example, Single Pass isolation is selected, minimum isolation is set to $0.010''$, and the etching tool size is set to $0.005''$. These setting are shown in \figurename~\vref{fig:DRCExampleSettings}.
+A bridge is formed when two parts (tracks, pads, vias) on the board are too close together for the etching tool to pass between them.\index{bridges} An example is shown in \figurename~\vref{fig:TwoComponents}. For this example, Single Pass isolation is selected, minimum isolation is set to $0.010''$, and the etching tool size is set to $0.005''$. These setting are shown in \figurename~\vref{fig:DRCExampleSettings}.
 
 \begin{figure}
 	\center{
