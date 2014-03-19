@@ -322,7 +322,7 @@ Pcb-gcode can be downloaded from the Yahoo! group's \href{http://groups.yahoo.co
 \end{figure}
 
 \subsubsection{Windows Note}
-Note that if you are using Windows, odd things might happen if you install pcb-gcode outside the Documents folder. This is due to \href{http://en.wikipedia.org/wiki/Windows_File_Protection}{Windows File Protection} or \href{http://en.wikipedia.org/wiki/Windows_Resource_Protection}{Windows Resource Protection}, which try to keep files outside the Documents folder from being changed. This could result in, for instance, the previewer always showing the same preview. If you install outside the Documents folder and have trouble, try installing under your folder inside Documents. \index{Windows File Protection}
+Note that if you are using Windows, odd things might happen if you install pcb-gcode outside the Documents folder. This is due to \href{http://en.wikipedia.org/wiki/Windows_File_Protection}{Windows File Protection} or \href{http://en.wikipedia.org/wiki/Windows_Resource_Protection}{Windows Resource Protection}, which try to keep files outside the Documents folder from being changed. This could result in, for instance, the previewer always showing the same preview or an \code{Illegal phase 0 in main routine} error\index{Error!Illegal phase 0}. If you install outside the Documents folder and have trouble, try installing under your folder inside Documents. \index{Windows File Protection}
 
 \subsection{Configuring EAGLE}
 Now that pcb-gcode is uncompressed, Eagle must know where it is located. In Eagle's \code{Control Panel}, click \code{Options $|$ Directories}, then put the path to pcb-gcode in the \code{User Language Programs} field. See \figurename \vref{fig:EagleOptionsDirectories}.
