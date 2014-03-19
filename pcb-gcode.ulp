@@ -85,7 +85,7 @@ real m_v_x[], m_v_y[], m_v_rad[];
 real m_tool_x, m_tool_y, m_vx1, m_vy1, m_vx2, m_vy2, m_rad;
 int m_v_index[], m_v_prev[], m_v_next[], m_v_step[], m_v_cont[], m_v_curve[], m_c_start[], m_c_end[]; 
 int m_contours, m_cw, m_v_n=1, m_fwd, m_dist, m_dist_min, m_dist_min_index;
-int m_wire_start, m_z_up, m_step, m_i, m_j, m_cont;
+int m_wire_start, m_z_up, m_step, m_i, m_j, m_cont, m_border_contour;
 
 //////////
 
@@ -1215,33 +1215,35 @@ void write_outlines(int which_side, int task)
 							case TASK_OUTLINES:
 							P.contours(W) {
 
-////////// mlmSolutions added 05 Feb 14 xxxx
+////////// mlmSolutions added 12 Feb 14 xxxx
 								// Save the contour wires (Except the frame)
 								// Each wire from the contour has a start and end vertex but the X1Y1 of the next vertex
-								//   will have the same value as the X2Y2 of teh current one for any specific contour.
-								// In order to minimise the number of vetices stored, we will store the X1Y1 and X2Y2 of the first
-								//   vertex of a new contour and then only the X2Y2 values. The last X2Y2 should be the same as 
-								//   the first X1Y1.
+								//   will have the same value as the X2Y2 of the current one for any specific contour.
+								// In order to minimise the number of vertices stored, we will store the X1Y1 only.
+								// The last X2Y2 should be the same as the first X1Y1.
 								// When a vertex has been processed it will be removed from the linked list
-								if (!((W.x1 == x1 || W.x1 == x2) && (W.y1 == y1 || W.y1 == y2))){
-									// recorded the start and end vertex index for each new contour
-									if ( first ){
-										++m_contours;
-										m_c_start[m_contours-1] = m_v_n;
-										x0 = W.x1; y0 = W.y1;	// remember start vertex
-										first = false;
-									} else if (W.x2 == x0 && W.y2 == y0) {
-										m_c_end[m_contours-1] = m_v_n;
-										first = true;
-									}
-									m_v_x[m_v_n] = W.x1;
-									m_v_y[m_v_n] = W.y1;
-									m_v_prev[m_v_n] = m_v_n - 1;
-									m_v_next[m_v_n] = 0;	//indicate end of list
-									m_v_next[m_v_n-1] = m_v_n;	//point previous vertex to us
-									m_v_step[m_v_n] = 0;
-									m_v_cont[m_v_n] = m_contours;
-									++m_v_n;
+
+								// record the start and end vertex index for each new contour
+								if ( first ){
+									++m_contours;
+									m_c_start[m_contours-1] = m_v_n;
+									x0 = W.x1; y0 = W.y1;	// remember start vertex
+									first = false;
+								} else if (W.x2 == x0 && W.y2 == y0) {
+									m_c_end[m_contours-1] = m_v_n;
+									first = true;
+								}
+								m_v_x[m_v_n] = W.x1;
+								m_v_y[m_v_n] = W.y1;
+								m_v_prev[m_v_n] = m_v_n - 1;
+								m_v_next[m_v_n] = 0;	//indicate end of list
+								m_v_next[m_v_n-1] = m_v_n;	//point previous vertex to us
+								m_v_step[m_v_n] = 0;
+								m_v_cont[m_v_n] = m_contours;
+								++m_v_n;
+
+								if (((W.x1 == x1 || W.x1 == x2) && (W.y1 == y1 || W.y1 == y2))){	//its on the border
+									m_border_contour = m_contours;
 								}
 //////////
 							} 
@@ -1257,7 +1259,14 @@ void write_outlines(int which_side, int task)
 						// switch(task)
 
 
-////////// mlmSolutions added 05 Feb 14
+////////// mlmSolutions added 12 Feb 14
+
+						//Remove the border contour if any
+						if (m_border_contour > 0){
+							for (m_i = m_c_start[m_border_contour - 1]; m_i <= m_c_end[m_border_contour - 1]; ++m_i){
+								vertex_remove(m_i);
+							}
+						}
 
 						// Optimise the path using the nearest neighbour.
 						// Each vertex will be tagged with its step number (order of tool movement)
@@ -1268,6 +1277,7 @@ void write_outlines(int which_side, int task)
 						m_tool_x = X_HOME;
 						m_tool_y = Y_HOME;
 						m_step = 0;
+
 						// set direction of cut around contour
 						if (((g_side == TOP) && !CLIMB_MILLING) || ((g_side == BOTTOM) && CLIMB_MILLING)) m_fwd = true; else m_fwd = false;
 						while (m_v_next[0] > 0){
@@ -1275,6 +1285,7 @@ void write_outlines(int which_side, int task)
 							//find nearest vertex from current location
 							m_dist_min = 99999999;
 							m_i=0;	//start from the head pointer
+
 							while (m_v_next[m_i] > 0){	// loop till end of unprocessed list
 								m_i = m_v_next[m_i];	//the index of the next unprocessed vertex
 								//m_dist = distance(m_tool_x, m_tool_y, units(m_v_x[m_i]), units(m_v_y[m_i]));
@@ -1315,15 +1326,18 @@ void write_outlines(int which_side, int task)
 							m_tool_y = (m_v_y[m_dist_min_index]); 
 						}
 
+
 						// Generate the gcode
 						// As we move through the steps
 						// 1) a new contour requires a Z retract, G00 to new location, Z plunge
 						// 2) otherwise just proceed.
 
-						// sort into step order
-						sort(m_v_n, m_v_index, m_v_step);
+						sort(m_v_n, m_v_index, m_v_step); // sort into step order
+						
+						for (m_j = 0; m_v_step[m_v_index[m_j]] == 0; ++m_j);	// find the first non zero step
+
 						m_cont=0;
-						for (m_i=1; m_i<m_v_n; ++m_i){
+						for (m_i = m_j; m_i < m_v_n; ++m_i){
 							m_j = m_v_index[m_i];
 							m_vx2 = m_v_x[m_j]; 	m_vy2 = m_v_y[m_j];	//get the current vertex
 							if (m_cont != m_v_cont[m_j]) {	//its a new contour so do a Z retract and G00 move and Z plunge
