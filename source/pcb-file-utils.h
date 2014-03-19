@@ -311,6 +311,10 @@ void output_file_heading()
 		comm(tt);
 		comm("Unit of measure: " + get_unit_of_measure());
 	}
+	
+	if (NC_OPERATOR_MESSAGE) {
+	  out(OPERATOR_PAUSE + COMMENT_BEGIN + NC_OPERATOR_MESSAGE + COMMENT_END + EOL);
+	}
 }
 
 //

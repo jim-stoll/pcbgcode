@@ -364,6 +364,8 @@ void save_pcb_defaults()
 		write_int_defined("OUTPUT_UNITS", "U_MILS");
 		if (OUTPUT_UNITS != U_INCHES) printf("//");
 		write_int_defined("OUTPUT_UNITS", "U_INCHES");
+		
+		write_string_param("NC_OPERATOR_MESSAGE", NC_OPERATOR_MESSAGE);
 	}
 	if(fileerror())
 		exit(1);
@@ -617,12 +619,17 @@ int Result = dlgDialog("pcb-gcode Setup") {
              }
            }
          }
-         dlgStretch(1);
+        dlgStretch(1);
        }
        dlgStretch(20);
      }
      dlgHBoxLayout {
      }
+      dlgHBoxLayout {
+			  dlgLabel("Operator message for gcode file:");
+			  dlgStringEdit(NC_OPERATOR_MESSAGE);
+		  }
+			
    }
 
     /***************************************************************
