@@ -767,7 +767,7 @@ void out_lines(string path, string mode, int layer)
 //
 void output_preview_data(string mode, int layer)
 {
-  	out_lines(g_path + "/viewer/data/optimize_me.txt", mode, layer);
+  out_lines(g_path + "/viewer/data/optimize_me.txt", mode, layer);
 	out_lines(g_path + "/viewer/applet/data/optimize_me.txt", mode, layer);
 	out_lines(g_path + "/viewer/application.macosx/data/optimize_me.txt", mode, layer);
 	out_lines(g_path + "/viewer/application.linux/data/optimize_me.txt", mode, layer);
@@ -905,6 +905,7 @@ void output_mill_code()
 	int state;
 	int old_x, old_y;
 	int first_run = true;
+	string str;
 
 	board(B) {
 		output(get_filename(), FILEMODE_WRITE_TEXT) {
@@ -932,6 +933,16 @@ void output_mill_code()
 
 					// if this is an arc, it is treated specially.
 					if (P.arc) {
+					  sprintf(str, "# arc xc=%f yc=%f sang=%f eang=%f radius=%f\n", 
+					    scale_x(P.arc.xc), scale_y(P.arc.yc), P.arc.angle1, P.arc.angle2, scale_x(P.arc.radius));
+					  m_lines += str;
+					  sprintf(str, "# debug     W.x1=%8.5f     W.y1=%8.5f     W.x2=%8.5f     W.y2=%8.5f W.curve=%f\n", 
+					    scale_x(W.x1), scale_y(W.y1), scale_x(W.x2), scale_y(W.y2), W.curve);
+					  m_lines += str;
+					  sprintf(str, "# debug P.arc.x1=%8.5f P.arc.y1=%8.5f P.arc.x2=%8.5f P.arc.y2=%8.5f\n", 
+					    scale_x(P.arc.x1), scale_y(P.arc.y1), scale_x(P.arc.x2), scale_y(P.arc.y2));
+					  m_lines += str;
+					  m_lines += "# debug\n";
 //						device_draw( P.arc.x1, P.arc.y1, P.arc.x2, P.arc.y2, ST_ARC_BEGIN, P.arc.radius, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
 //						device_draw( P.arc.x2, P.arc.y2, P.arc.xc, P.arc.yc, ST_ARC_END, MILLING_DEPTH, FEED_RATE_MILL_XY, FEED_RATE_MILL_Z);
 
