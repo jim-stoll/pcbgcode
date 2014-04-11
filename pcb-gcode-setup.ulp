@@ -612,10 +612,7 @@ int Result = dlgDialog("pcb-gcode Setup") {
              }
              dlgSpacing(10);
              dlgVBoxLayout {
-               dlgLabel("Etching Tool Size ");
-               dlgHBoxLayout { dlgRealEdit(TOOL_SIZE); 
-                 dlgLabel(m_uom_suffix, YES); 
-               }
+               dlgLabel("Tool settings are on the Machine tab.");
              }
            }
          }
