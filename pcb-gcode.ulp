@@ -1502,6 +1502,13 @@ void write_stencil(int which_side, string suffix)
 	output_preview_data(FILEMODE_WRITE_TEXT, STENCIL);
 	preview();
 	
+	//
+	// The following line fixes the "Bottom etch toolsize is taken from Stencil toolsize" bug,
+	// bug #48, which means pcb-gcode relied on g_tool_size being set to TOOL_SIZE from the top
+	// etch when it enters the bottom etch phases. Needs more work to make it robust.
+	// fixme
+	g_tool_size = TOOL_SIZE;
+	
 } // write_stencil
 
 /* string get_phase_name(int phase)
