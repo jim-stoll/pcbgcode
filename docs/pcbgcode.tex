@@ -58,7 +58,7 @@
 %----------------------------------------------------------------------------------------
 
 \title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{The PCB-GCODE User's Manual}\\[1em]
-\fontsize{18pt}{10pt}\textsc{Version 3.6.1}\\[1em]
+\fontsize{18pt}{10pt}\textsc{Version 3.6.2}\\[1em]
 }
 
 \author{
@@ -192,15 +192,20 @@ This book is typeset with \href{http://en.wikipedia.org/wiki/LaTeX}{\LaTeX{}} us
 	\end{itemize}
 	\item{Monetary Donations (If I missed you, \emph{please} let me know.) }
 	\begin{itemize}
-	    \small
-		\item Anonymous (2007), Greg Brill, Paul Kiedrowski, Steven Manzer, Barry Ward, Ward Elder, Art Eckstein, World of ElectroMechanica, Austin Valley Software Corporation, webstudio.co.uk, Juan Posada, Richard McCarthy, Keeley Electronics
+    	\raggedright
+		\item Anonymous (2007), Greg Brill, Paul Kiedrowski, Steven Manzer, Barry Ward, Ward Elder, Art Eckstein, World of ElectroMechanica, Austin~Valley~Software~Corporation, webstudio.co.uk, Juan Posada, Richard~McCarthy, Keeley~Electronics
 	\end{itemize}
 	\item{Code Contributions}
 	    \begin{itemize}
 	    \small
-	    \item Martin L. Marriott - G-code optimization
+	    \item Martin L. Marriott - G-code optimizer
 	    \item Peter Zotov - Stencil generation for cream layers
 	    \end{itemize}
+	\item{Beta Testers}
+	\begin{itemize}
+    	\raggedright
+	    \item Art Eckstein, Astrid Adam, Brett Pound, Danny Miller, Juan Posada, Martin~Marriott, Maur\'icio Dias, Svend Poulsen, Zulfqar Ali.
+	\end{itemize}
 \end{itemize}
 
 
@@ -223,7 +228,7 @@ This book is typeset with \href{http://en.wikipedia.org/wiki/LaTeX}{\LaTeX{}} us
 %
 \section{Purpose}\label{sec:Purpose}
 
-Pcb-gcode is a User Language Program (ULP) for EAGLE PCB design software produced by \href{http://cadsoftusa.com}{CadSoft}. Pcb-gcode allows one to make printed circuit boards by using a CNC router or milling machine to cut the traces out of the copper on the board. It also produces files for drilling holes. Two-sided boards are supported. By "mechanically etching" the boards, no toxic chemicals are needed -- making the process more environmentally friendly. Turn-around times and costs are much reduced from ordering a prototype from a board house.
+Pcb-gcode is a User Language Program (ULP) for EAGLE PCB design software produced by \href{http://cadsoftusa.com}{CadSoft}. Pcb-gcode allows one to make printed circuit boards by using a CNC router or milling machine to cut the traces out of the copper on the board. It also produces files for drilling holes and creating stencils for cream layers. Two-sided boards are supported. By "mechanically etching" the boards, no toxic chemicals are needed -- making the process more environmentally friendly. Turn-around times and costs are much reduced from ordering a prototype from a board house.
 
 %
 %---------------------------------------------------------------------
@@ -239,6 +244,7 @@ Though no program can be all things to all people, pcb-gcode has a lot of featur
 	\item[Preview] A preview for outlines is available.
 	\item[Milling] Milling code can be generated for any wires drawn on the Milling (46) layer.
 	\item[Text] Generates gcode to engrave any vector text that is on the Milling (46) layer.
+	\item[Stencils] Produce stencils for applying solder cream for surface-mount parts.
 	\item[Spot drill holes] Holes can be spot drilled with the outlines tool to help the drill bits to start straight when drilling holes.
 	\item[Tool change position] Where the machine should go so that the tool can be changed.
 	\item[Drill rack files] Allows using one drill bit for a range of hole sizes in the board.
@@ -438,7 +444,6 @@ Now that reasonable values have been set for the machine, click the \code{Genera
 			\item[Maximum] The maximum distance the cutting tool will be away from tracks. The maximum isolation amount.
 			\item[Step size] The amount the isolation increases with each pass.
 		\end{description}
-		\item[Etching Tool Size] The size of the cutter used to cut around tracks on the board. Note that this setting is also found under the Machine tab as the etching tool diameter, as seen in Figure \vref{fig:SetupMachine}.
 	\end{description}
 	\item[Operator message for gcode file] Text entered in this field will be inserted into each NC file generated, along with an operator pause command. Use this for reminders to the operator, such as, ``Use 30$^\circ$ bit for etching. Use 3mm bit for milling.''
 \end{description}
@@ -505,6 +510,22 @@ Using the options shown in \ref{fig:GCodeOptions}, here is how the filename for 
 \end{itemize}
 Using examples for the board path and name, the final file name would be:\\
 \lstinline!/Users/john/Documents/pcbcode/examples/enabtmr.top.etch.tap!
+
+%
+%---------------------------------------------------------------------
+%
+\newpage
+\section{Support}\label{sec:Support}\index{support}
+
+Several options are available for support. First and foremost, read this manual and ensure that your question is not herein.
+
+\begin{description}
+    \item[Yahoo! Group] The \href{https://groups.yahoo.com/group/pcb-gcode}{Yahoo! group} has over 3 000 members, many of whom are very active and experienced in the use of pcb-gcode.\index{support!Yahoo group}
+    \item[Phorum] The \href{http://pcbgcode.org}{online BBS} where questions and answers may be posted, files downloaded, etc.\index{support!Phorum}
+    \item[Email] Very limited \href{mailto:pcbgcode@pcbgcode.org}{email support} is available. Please try all the other options first.
+    \item[On\-site Support] If you are in the Atlanta area, on\-site support is a possibility. Please \href{mailto:pcbgcode@pcbgcode.org}{email me}.\index{support!on site}
+\end{description}
+
 
 %======================================================================
 %
