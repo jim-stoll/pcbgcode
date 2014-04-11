@@ -1,7 +1,7 @@
 //
 // Generate g-code for milling PC boards.
 //
-// Copyright 2004-2013 by John Johnson Software, LLC.
+// Copyright 2004-2014 by John Johnson Software, LLC.
 // See readme.html for copyright information.
 //
 // See pcb-defaults.h, gcode-defaults.h and pcb-machine.h for options.
@@ -22,7 +22,7 @@
 
 #usage "<center><b>pcb-gcode&trade; Gcode Generation Utility</b><br>"
 			 " Version 3.6.1.x<p>"
-			 "Copyright&copy; 2004 - 2013 by John Johnson Software, LLC<br>"
+			 "Copyright&copy; 2004 - 2014 by John Johnson Software, LLC<br>"
 			 "All Rights Reserved</center>"
        "<p>"
        "Join the Yahoo! pcb-gcode group "
