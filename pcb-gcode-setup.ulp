@@ -366,6 +366,9 @@ void save_pcb_defaults()
 		write_int_defined("OUTPUT_UNITS", "U_INCHES");
 		
 		write_string_param("NC_OPERATOR_MESSAGE", NC_OPERATOR_MESSAGE);
+		
+		write_int_param("PREVIEW_WINDOW_WIDTH", PREVIEW_WINDOW_WIDTH);
+		write_int_param("PREVIEW_WINDOW_HEIGHT", PREVIEW_WINDOW_HEIGHT);
 	}
 	if(fileerror())
 		exit(1);
@@ -561,7 +564,14 @@ int Result = dlgDialog("pcb-gcode Setup") {
       dlgVBoxLayout {
         dlgGroup("Board") {
           dlgVBoxLayout {
-            dlgCheckBox("Show preview ", SHOW_PREVIEW);
+            dlgGridLayout {
+              dlgCell(0, 0) dlgCheckBox("Show preview ", SHOW_PREVIEW);
+              dlgCell(0, 1) dlgLabel("Width");
+              dlgCell(0, 2) dlgIntEdit(PREVIEW_WINDOW_WIDTH, 640, 9999);
+              dlgCell(0, 3) dlgLabel("Height");
+              dlgCell(0, 4) dlgIntEdit(PREVIEW_WINDOW_HEIGHT, 480, 9999);
+            }
+              
             dlgGridLayout {
               dlgCell(0, 0) dlgCheckBox("Generate milling", GENERATE_MILLING);
               dlgCell(0, 1) dlgLabel("Depth ");

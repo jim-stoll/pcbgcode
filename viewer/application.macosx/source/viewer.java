@@ -23,6 +23,8 @@ public class viewer extends PApplet {
  * Load line coordinates from a file and draw them.
  *
  */
+ 
+String m_viewer_version = "Viewer 1.6";
 
 /*
  * Representation of a line.
@@ -122,6 +124,9 @@ int m_pass;
 int total_passes;
 boolean m_monochrome = false;
 
+int m_window_width = 800;
+int m_window_height = 600;
+
 /*
  * Parse Strings and produce Lines.
  *
@@ -212,7 +217,7 @@ public void rtext(String s, float x, float y) {
  */
 public void setup() {
   String matches[];
-  size(800, 600);
+  size(m_window_width, m_window_height);
 
   String line = null;
   String[] lines = new String[1];
@@ -258,8 +263,9 @@ public void setup() {
           a.radius = abs(a.radius);
           a.sang += 180;
           a.eang += 180;
-          println("bottom arc");
+          //println("bottom arc");
         }
+        
         //
         // Otherwise, arc is on top of board
         // (The code in the else statement below is about 3 hours work. Just sayin.)
@@ -273,8 +279,16 @@ public void setup() {
           }
         }
         arcs = (Arc[])append(arcs, a);
-        println("made an arc " + line);
+        //println("made an arc " + line);
       }
+      matches = match(line, "^# preview window width=([0-9]+) height=([0-9]+)");
+      if (matches != null) {
+        m_window_width = PApplet.parseInt(matches[1]);
+        m_window_height = PApplet.parseInt(matches[2]);
+        size(m_window_width, m_window_height);
+        println("window size set to (" + nf(m_window_width, 5) + ", " + nf(m_window_height, 5) + ")");
+      }
+
       matches = match(line, "^# debug");
       if (matches != null) {
         println(line);
@@ -305,9 +319,9 @@ public void draw_line(Line l) {
     }
     line(l.sx * x_scale + x_offset, l.sy * y_scale + y_offset,
     l.ex * x_scale + x_offset, l.ey * y_scale + y_offset);
-    println(nfs(l.sx, 1, 5) +", " + nfs(l.sy, 1, 5));      
-    print(nfs(l.sx * x_scale + x_offset, 1, 5) +", " + nfs(l.sy * y_scale + y_offset, 1, 5) + ", ");      
-    println(nfs(l.ex * x_scale + x_offset, 1, 5) +", " + nfs(l.ey * y_scale + y_offset, 1, 5));      
+    //println(nfs(l.sx, 1, 5) +", " + nfs(l.sy, 1, 5));      
+    //print(nfs(l.sx * x_scale + x_offset, 1, 5) +", " + nfs(l.sy * y_scale + y_offset, 1, 5) + ", ");      
+    //println(nfs(l.ex * x_scale + x_offset, 1, 5) +", " + nfs(l.ey * y_scale + y_offset, 1, 5));      
   }
   else {
     println("null line");
@@ -320,7 +334,7 @@ public void draw_line(Line l) {
  */
 public void draw_arc(Arc a) {
   if (a != null) {
-    println("non-null arc");
+    //println("non-null arc");
     if (! m_monochrome) {
       stroke(color_table[a.pass % 9]);
     }
@@ -328,8 +342,8 @@ public void draw_arc(Arc a) {
     arc(a.xc * x_scale + x_offset, a.yc * y_scale + y_offset,
     a.radius * x_scale * 2, a.radius * -y_scale * 2,
     radians(a.sang), radians(a.eang));
-    println("x_scale = " + nfs(x_scale, 3, 5) + " y_scale = " + nfs(y_scale, 3, 5));
-    println(nfs(a.xc * x_scale + x_offset, 2, 5) + ", " + nfs(a.yc * y_scale + y_offset, 2, 5) + ", " + nfs(a.radius * x_scale, 1, 5) + ", " + nfs(a.sang, 3, 5) + ", " + nfs(a.eang, 3, 5) + ", " + nfs(a.pass, 1, 2));
+    //println("x_scale = " + nfs(x_scale, 3, 5) + " y_scale = " + nfs(y_scale, 3, 5));
+    //println(nfs(a.xc * x_scale + x_offset, 2, 5) + ", " + nfs(a.yc * y_scale + y_offset, 2, 5) + ", " + nfs(a.radius * x_scale, 1, 5) + ", " + nfs(a.sang, 3, 5) + ", " + nfs(a.eang, 3, 5) + ", " + nfs(a.pass, 1, 2));
   }
   else {
     println("null arc");
@@ -421,13 +435,13 @@ public void draw() {
   fill(255, 0, 0);
   metaBold = loadFont("BankGothic-Light-14.vlw");
   textFont(metaBold);
-  rtext("Viewer 1.5", width - 20, 20);
+  rtext(m_viewer_version, width - 20, 20);
 
   stroke(200);
   scale(m_scale);
   translate(m_trans_x, m_trans_y);
   if (plines != null) {
-    println("plines.length = " + nf(plines.length, 3));
+    //println("plines.length = " + nf(plines.length, 3));
     strokeWeight(tool_size * x_scale);
     for (int i = 0; i < plines.length; i++) {
       draw_line(plines[i]);
@@ -437,7 +451,7 @@ public void draw() {
     text("Didn't open the file", 100, height / 2);
   }
   if (arcs != null) {
-    println("arcs.length = " + nf(arcs.length, 3));
+    //println("arcs.length = " + nf(arcs.length, 3));
     strokeWeight(tool_size * x_scale);
     for (int i = 0; i < arcs.length; i++) {
       draw_arc(arcs[i]);

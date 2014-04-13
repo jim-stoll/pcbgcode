@@ -751,6 +751,7 @@ void out_lines(string path, string mode, int layer)
 		  }
   	}
   	printf("# pass=%d\n", m_pass_num + 1);
+  	printf("# preview window width=%d height=%d\n", PREVIEW_WINDOW_WIDTH, PREVIEW_WINDOW_HEIGHT);
     printf(m_lines);
   }
 }
