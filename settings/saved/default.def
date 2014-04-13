@@ -1,7 +1,7 @@
 //
 // Default values for generating gcode from a PCB.
 //
-// These settings were last changed with pcb-gcode-setup: 4/11/14 3:20 PM
+// These settings were last changed with pcb-gcode-setup: 4/13/14 3:11 PM
 //
 //
 // Changes you make in this file will be overwritten if you use pcb-gcode-setup.
@@ -42,3 +42,5 @@ int FLIP_BOARD_IN_Y = NO;
 //int OUTPUT_UNITS = U_MILS;
 int OUTPUT_UNITS = U_INCHES;
 string NC_OPERATOR_MESSAGE = "";
+int PREVIEW_WINDOW_WIDTH = 800;
+int PREVIEW_WINDOW_HEIGHT = 600;
