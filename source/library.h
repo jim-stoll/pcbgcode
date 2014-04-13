@@ -33,6 +33,36 @@ real units(int n)
 }
 
 //
+// Convert n, user's selected unit of measure, to the
+// Eagle internal measure.
+//
+// Params:
+//  n   user's unit of measure.
+// Return:
+//  n converted to an Eagle internal number..
+//
+
+int from_units(real n)
+{
+  switch (OUTPUT_UNITS) {
+  case U_MICRONS:
+    return mic2u(n);
+    break;
+  case U_MILLIMETERS:
+    return mm2u(n);
+    break;
+  case U_MILS:
+    return mil2u(n);
+    break;
+  case U_INCHES:
+    return inch2u(n);
+    break;
+  }
+
+  return inch2u(n);
+}
+
+//
 // Returns the mode command (i.e. G20) to set the machine to
 // the user's selected unit of measure.
 //
@@ -208,3 +238,31 @@ int get_os()
     return OS_LINUX;
   return OS_WINDOWS;
 }
+
+
+string get_unit_of_measure()
+{
+  string unit_of_measure = "not set";
+  
+  //
+  // Set unit of measure.
+  //
+  switch (OUTPUT_UNITS) {
+  	case U_MICRONS:
+  	  unit_of_measure = "mic";
+  	  break;
+  	case U_MILLIMETERS:
+  	  unit_of_measure = "mm";
+  	  break;
+  	case U_MILS:
+  	  unit_of_measure = "mil";
+  	  break;
+  	case U_INCHES:
+  	  unit_of_measure = "inch";
+  	  break;
+  }
+
+  return unit_of_measure;
+}
+
+

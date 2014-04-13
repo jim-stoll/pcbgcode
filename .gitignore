@@ -10,3 +10,16 @@ Thumbs.db
 
 *.b#?
 *.s#?
+*~
+docs/*.aux
+docs/*.log
+docs/*.glo
+docs/*.glx
+docs/*.idx
+docs/*.ilg
+docs/*.ind
+docs/*.lof
+docs/*.lot
+docs/*.out
+docs/*.toc
+.texpadtmp
