@@ -21,7 +21,7 @@
 #include "source/filename_subs.h"
 
 #usage "<center><b>pcb-gcode&trade; Gcode Generation Utility</b><br>"
-			 " Version 3.6.2.0<p>"
+			 " Version 3.6.2.2<p>"
 			 "Copyright&copy; 2004 - 2014 by John Johnson Software, LLC<br>"
 			 "All Rights Reserved</center>"
        "<p>"
@@ -751,6 +751,7 @@ void out_lines(string path, string mode, int layer)
 		  }
   	}
   	printf("# pass=%d\n", m_pass_num + 1);
+  	printf("# preview window width=%d height=%d\n", PREVIEW_WINDOW_WIDTH, PREVIEW_WINDOW_HEIGHT);
     printf(m_lines);
   }
 }

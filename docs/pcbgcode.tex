@@ -58,7 +58,7 @@
 %----------------------------------------------------------------------------------------
 
 \title{\vspace{-15mm}\fontsize{24pt}{10pt}\selectfont\textbf{The PCB-GCODE User's Manual}\\[1em]
-\fontsize{18pt}{10pt}\textsc{Version 3.6.2}\\[1em]
+\fontsize{18pt}{10pt}\textsc{Version 3.6.2.1}\\[1em]
 }
 
 \author{
@@ -404,11 +404,12 @@ The \code{Default Drill Rack File} option allows for the selection of a rack fil
 %
 %---------------------------------------------------------------------
 %
+\newpage
 \section{Generation Options}\label{sec:GenerationOptions}
 
 \begin{figure}
 	\center{
-	\includegraphics[width=14cm]{figs/Setup-Generation-Options.png}
+	\includegraphics[width=18cm]{figs/Setup-Generation-Options.png}
 	}
 	\caption{Options available when generating a board.}
 	\label{fig:SetupGenerationOptions}
@@ -432,7 +433,8 @@ Now that reasonable values have been set for the machine, click the \code{Genera
 	\end{description}
 	\item[Board] Options that apply to the board in general.
 	\begin{description}
-		\item[Show preview] Use the previewer in pcb-gcode to preview the g-code generated.
+		\item[Show preview] Use the previewer in pcb-gcode to preview the g-code generated.\index{previewer!option}
+		\subitem Width and height set the size of the preview window.\index{previewer!window size}
 		\item[Generate milling] Generate g-code for any wires the user has drawn on the \code{Milling} (46) layer. \code{Depth} sets the milling depth.
 		\item[Generate text] Generate g-code to engrave any vector text the user may have placed on the \code{Milling} layer. \code{Depth} sets the engraving depth. Not that text on the top or bottom layers will be outlined just as the tracks are, whereas text on the milling layer is engraved. That is, the tool along the center of the lines that make up the letter.
 		\item[Spot drill holes] Spot drilling helps the drill bits center themselves and helps prevent "walking." Depth sets the spot drill depth.
