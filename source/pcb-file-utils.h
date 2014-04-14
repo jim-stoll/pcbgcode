@@ -1,6 +1,6 @@
 // -*- Mode: Eagle -*-
 
-int m_line_number;
+int m_line_number = 1000;
 int LINE_NUMBER_INCREMENT = 10;
 string g_preview;
 
@@ -321,16 +321,28 @@ void output_file_heading()
 // Writes the header for the output file.
 //
 // Params:
-//  spindle_speed
+//  none
 // Returns:
 //  none
 //
-void begin_gcode(real spindle_speed)
+void begin_gcode()
 {
 	out(get_mode());
 
 	out(ABSOLUTE_MODE);
+}
 
+//
+// Writes the remaining header for the output file
+// containing machine setup and movement instructions.
+//
+// Params:
+//  spindle_speed
+// Returns:
+//  none
+//
+void begin_gcode_machine_setup(real spindle_speed)
+{
 	out(fr(SPINDLE_SPEED, spindle_speed));
 	
 	reset_current_positions();

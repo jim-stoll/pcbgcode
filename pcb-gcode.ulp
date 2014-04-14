@@ -77,7 +77,10 @@ int m_layer;
 string g_cmd;
 string g_cmd_temp;
 
-
+real m_wire_min_x;
+real m_wire_min_y;
+real m_wire_max_x;
+real m_wire_max_y;
 
 ////////// mlmSolutions added 29 Jan 14
 
@@ -354,7 +357,8 @@ void drill(int which_side)
 			} 
 			// for
 
-			begin_gcode(SPINDLE_DRILL_RPM);
+			begin_gcode();
+			begin_gcode_machine_setup(SPINDLE_DRILL_RPM);
 			
 			//
 			// Generate drill code.
@@ -485,6 +489,197 @@ void spot_drill_hole(int drill_size, int x, int y)
 	}
 }
 
+int PROBE_N = 10;
+real m_px[];
+real m_py[];
+int m_pz[];
+real m_probe_dx = PROBE_DISTANCE_X;
+real m_probe_dy = PROBE_DISTANCE_Y;
+
+int ndx(int x, int y)
+{
+  string buf;
+  int index;
+/*  if (g_side == BOTTOM) {
+   index = -1 * x * PROBE_N + y;
+  }
+  else { */
+    index = x * PROBE_N + y;
+//  }
+ 
+  if (index < 0) {
+    sprintf(buf, "negative index created in ndx(%d, %d) = %d", x, y, index);
+    dlgMessageBox(buf);
+  }
+  return index;
+}
+
+string depth(real x, real y)
+{
+  int lx;
+  int ly;
+  real t;
+  real u;
+  string buf;
+  
+  if (m_px[ndx(lx + 1, ly + 1)] == m_px[ndx(lx, ly)]) {
+    Fatal("Error", "m_px array not initialized");
+  }
+  if (m_py[ndx(lx + 1, ly + 1)] == m_py[ndx(lx, ly)]) {
+    Fatal("Error", "m_py array not initialized");
+  }
+  
+  if (g_side == BOTTOM) {
+    lx = x / -m_probe_dx;
+  }
+  else {
+    lx = x / m_probe_dx;
+  }
+  ly = y / m_probe_dy;
+  if (lx >= PROBE_N || ly >= PROBE_N) {
+    Fatal("Error", "Weird out of bounds error in depth()");
+  }
+  if ((m_py[ndx(lx + 1, ly + 1)] - m_py[ndx(lx, ly)]) == 0) {
+//    m_py[ndx(lx, ly)] += 0.0001;
+    m_py[ndx(lx + 1, ly + 1)] = m_py[ndx(lx, ly)] + 0.00001;
+    sprintf(buf, "x=%f, y=%f\nlx=%d, ly=%d\nm_py[ndx(lx + 1, ly + 1)]=%f\nm_py[ndx(lx, ly)]=%f", 
+      x, y,
+      lx, ly,
+      m_py[ndx(lx + 1, ly + 1)],
+      m_py[ndx(lx, ly)]
+      );
+//    dlgMessageBox(buf);
+  }
+  if ((m_px[ndx(lx + 1, ly + 1)] - m_px[ndx(lx, ly)]) == 0) {
+    m_px[ndx(lx + 1, ly + 1)] = m_px[ndx(lx, ly)] + 0.0001;
+  }
+  t = (x - m_px[ndx(lx, ly)]) / (m_px[ndx(lx + 1, ly + 1)] - m_px[ndx(lx, ly)]);
+  u = (y - m_py[ndx(lx, ly)]) / (m_py[ndx(lx + 1, ly + 1)] - m_py[ndx(lx, ly)]);
+  
+  sprintf(buf, "Z[%f*#%d + %f*#%d + %f*#%d + %f*#%d + %f]",
+    (1-t)*(1-u), m_pz[ndx(lx, ly)],
+    (  t)*(1-u), m_pz[ndx(lx+1, ly)],
+    (  t)*(  u), m_pz[ndx(lx+1, ly+1)],
+    (1-t)*(  u), m_pz[ndx(lx, ly+1)],
+    DEFAULT_Z_DOWN
+    );
+  return buf;
+}
+
+void emit_segment(real sx, real sy, real ex, real ey, real fr_xy)
+{
+  //out(frrr("feed to (%f, %f) at %f\n", ex, ey, fr_xy));
+  int segs;
+  real seg_dx;
+  real seg_dy;
+  real cx;
+  real cy;
+  real seg_len;
+  real probe_len;
+  string buf;
+  
+  seg_len = distance(sx, sy, ex, ey);
+  probe_len = distance(0, 0, PROBE_DISTANCE_X, PROBE_DISTANCE_Y);
+  
+  if ( seg_len > probe_len ) {
+    segs = seg_len / probe_len;
+    seg_dx = (ex - sx) / segs;
+    seg_dy = (ey - sy) / segs;
+    cx = sx + seg_dx;
+    cy = sy + seg_dy;
+    while (distance(cx, cy, ex, ey) > EPSILON) {
+      //Fatal("Error", "unfinished code");
+      //fxyr(cx, cy, fr_xy);
+      //out(frrr("|--- feed to (%f, %f) at %f\n", cx, cy, fr_xy));
+      /*sprintf(buf, "(%f, %f) - (%f, %f), seg_len = %f, probe_len = %f", 
+        sx, sy, ex, ey,
+        seg_len, probe_len);
+      comm(buf); */
+      out(frr(FEED_MOVE_XY, cx, cy) + depth(cx, cy) + " " + fr(FR_FORMAT, fr_xy) + EOL);
+      cx += seg_dx;
+      cy += seg_dy;
+    }
+  }
+  //out(frrrrr("feed to (%f, %f) at %f seg_len = %f, probe_len = %f\n", ex, ey, fr_xy, seg_len, probe_len));
+  out(frr(FEED_MOVE_XY, ex, ey) + depth(ex, ey) + " " + fr(FR_FORMAT, fr_xy) + EOL);
+}
+
+int SILENT = YES;
+void do_probe(int lx, int ly, int lz, int silent)
+{
+  m_px[ndx(lx, ly)] = lx * m_probe_dx;
+  m_py[ndx(lx, ly)] = ly * m_probe_dy;
+  m_pz[ndx(lx, ly)] = lz;
+  
+  if (!silent) {
+    if (g_side == BOTTOM) {
+      printf("(PROBE[%d,%d] %0.3f %0.3f -> %d)\n", lx, ly, -m_px[ndx(lx, ly)], m_py[ndx(lx, ly)], m_pz[ndx(lx, ly)]);
+      printf("O100 call [%0.3f] [%0.3f]\n", -m_px[ndx(lx, ly)], m_py[ndx(lx, ly)]);
+    }
+    else {
+      printf("(PROBE[%d,%d] %0.3f %0.3f -> %d)\n", lx, ly, m_px[ndx(lx, ly)], m_py[ndx(lx, ly)], m_pz[ndx(lx, ly)]);
+      printf("O100 call [%0.3f] [%0.3f]\n", m_px[ndx(lx, ly)], m_py[ndx(lx, ly)]);
+    }
+    printf("#%d=#5063\n", m_pz[ndx(lx, ly)]);
+  }
+}
+
+void output_probe_code(int silent)
+{
+  string msg;
+  int d_changed = false;
+  int nx;
+  int ny;
+  
+  nx = (m_wire_max_x - m_wire_min_x) / m_probe_dx;
+  if (nx >= PROBE_N) {
+    nx = PROBE_N;
+    m_probe_dx = (m_wire_max_x - m_wire_min_x) / nx;
+    d_changed = true;
+  }
+  ny = (m_wire_max_y - m_wire_min_y) / m_probe_dy;
+  if (ny > PROBE_N) {
+    ny = PROBE_N;
+    m_probe_dy = (m_wire_max_y - m_wire_min_y) / ny;
+    d_changed = true;
+  }
+  if (d_changed) {
+    sprintf(msg, "Probe distance set to (%f, %f) due to too many points", m_probe_dx, m_probe_dy);
+    dlgMessageBox(msg);
+    // fixme offer to abort
+  }
+  
+//  sprintf(msg, "m_wire_min_x = %f, m_wire_max_x = %f", m_wire_min_x, m_wire_max_x);
+//  dlgMessageBox(msg);
+
+  if (!silent) {
+    out("(probe grid)\n");
+    out("(params: x y)\n");
+    out("O100 sub\n");
+  
+    out(fr(RAPID + "X[#1] Y[#2] Z%f\n", DEFAULT_Z_UP));
+    out(frr(PROBE + MOVE_Z + FR_FORMAT + EOL, PROBE_DEPTH, PROBE_SPEED_Z));
+    out(fr(RAPID_MOVE_Z + EOL, DEFAULT_Z_UP));
+  }
+  
+  int z_register = 2000;
+  
+  for (int lx=0; lx <= nx; lx++) {
+    if ((lx & 1) == 0) {
+      for (int ly = 0; ly <= ny; ly++) {
+        do_probe(lx, ly, z_register++, silent);
+      }
+    }
+    else {
+      for (int ly = ny; ly >= 0; ly--) {
+        do_probe(lx, ly, z_register++, silent);
+      }
+    }
+  }
+//  m_px[ndx(nx + 1, ny + 1)] = m_px[ndx(nx, ny)] + m_probe_dx;
+//  m_py[ndx(nx + 1, ny + 1)] = m_py[ndx(nx, ny)] + m_probe_dy;
+}
+
 //
 // Enumerates all holes and generates spot drills for them.
 //
@@ -560,7 +755,12 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 			rz(DEFAULT_Z_UP);
 			rxy(rx1, ry1);
 			fzr(z_down_or_radius, fr_z);
-			fxyr(rx2, ry2, fr_xy);
+			if (PROBE_ENABLED) {
+			  emit_segment(rx1, ry1, rx2, ry2, fr_xy);
+		  }
+			else {
+			  fxyr(rx2, ry2, fr_xy);
+		  }
 			pair_count = 0;
 			break;
 
@@ -578,16 +778,31 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 
 			if (COMPACT_GCODE == YES) {
 				if (pair_count == 0) {
-					fxy(rx2, ry2);
+    			if (PROBE_ENABLED) {
+    			  emit_segment(rx1, ry1, rx2, ry2, fr_xy);
+    		  }
+    			else {
+					  fxy(rx2, ry2);
+				  } 
 				}
 				else {
-					xy(rx2, ry2);
+    			if (PROBE_ENABLED) {
+    			  emit_segment(rx1, ry1, rx2, ry2, fr_xy);
+    		  }
+    			else {
+					  xy(rx2, ry2);
+				  }
 				}
 
 				pair_count++;
 			}
 			else {
-				fxy(rx2, ry2);
+  			if (PROBE_ENABLED) {
+  			  emit_segment(rx1, ry1, rx2, ry2, fr_xy);
+  		  }
+  			else {
+				  fxy(rx2, ry2);
+			  }
 			}
 			break;
 
@@ -598,11 +813,21 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 
 
 			if (COMPACT_GCODE == YES) {
-				xy(rx2, ry2);
+  			if (PROBE_ENABLED) {
+  			  emit_segment(rx1, ry1, rx2, ry2, fr_xy);
+  		  }
+  			else {
+				  xy(rx2, ry2);
+			  }
 				pair_count = 0;
 			}
 			else {
-				fxy(rx2, ry2);
+  			if (PROBE_ENABLED) {
+  			  emit_segment(rx1, ry1, rx2, ry2, fr_xy);
+  		  }
+  			else {
+				  fxy(rx2, ry2);
+			  }
 			}
 			break;
 
@@ -798,7 +1023,8 @@ void output_text_code()
 			output_file_preamble();
 
 			// Initialize the device (i.e. the output file).
-			begin_gcode(SPINDLE_TEXT_RPM);
+			begin_gcode();
+			begin_gcode_machine_setup(SPINDLE_TEXT_RPM);
 
 			// Process all the wires.
 			B.texts(T) T.wires(W) {
@@ -915,7 +1141,8 @@ void output_mill_code()
 			output_file_preamble();
 
 			// Initialize the device (i.e. the output file).
-			begin_gcode(SPINDLE_MILL_RPM);
+			begin_gcode();
+			begin_gcode_machine_setup(SPINDLE_MILL_RPM);
 
 			m_v_n =1;
 
@@ -1097,7 +1324,6 @@ void output_mill_code()
 }
 // output_mill_code
 
-
 //
 // Write polygon lines to the file.
 //
@@ -1215,12 +1441,27 @@ void write_outlines(int which_side, int task)
 							y1 = min(y1, W.y1);
 							y2 = max(y2, W.y1);
 						}
+						m_wire_min_x = scale_x(x1);
+						m_wire_min_y = scale_y(y1);
+						m_wire_max_x = scale_x(x2);
+						m_wire_max_y = scale_y(y2);
+						if (m_wire_max_x < m_wire_min_x) {
+						  real tmp = m_wire_min_x;
+						  m_wire_min_x = m_wire_max_x;
+						  m_wire_max_x = tmp;
+						}
+//            sprintf(g_debug, "(%f, %f) - (%f, %f)", m_wire_min_x, m_wire_min_y, m_wire_max_x, m_wire_max_y);
+//            dlgMessageBox(g_debug);
+            
 						if (m_pass_num == 0) {
 							output_file_preamble();
-							begin_gcode(spindle_speed);
+							begin_gcode();
+							output_probe_code( ! SILENT);
+							begin_gcode_machine_setup(spindle_speed);
 						}
 						else {
 							output_between_outline_passes();
+							output_probe_code(SILENT);
 						}
 
 						switch (task) {
@@ -1435,7 +1676,8 @@ void write_stencil(int which_side, string suffix)
 			user_file_opened(get_filename(), "wt");
 
 			output_file_preamble();
-			begin_gcode(SPINDLE_STENCIL_RPM);
+			begin_gcode();
+			begin_gcode_machine_setup(SPINDLE_STENCIL_RPM);
 
 			int tool_dia = from_units(STENCIL_TOOL_SIZE);
 			g_tool_size = STENCIL_TOOL_SIZE;

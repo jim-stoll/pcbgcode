@@ -179,6 +179,9 @@ void convert_units(int new_units)
     FEED_RATE_STENCIL_Z = convert(FEED_RATE_STENCIL_Z, m_current_units, new_units);
     STENCIL_TOOL_SIZE = convert(STENCIL_TOOL_SIZE, m_current_units, new_units);
     EPSILON = convert(EPSILON, m_current_units, new_units);
+    PROBE_DISTANCE_X = convert(PROBE_DISTANCE_X, m_current_units, new_units);
+    PROBE_DISTANCE_Y = convert(PROBE_DISTANCE_Y, m_current_units, new_units);
+    PROBE_DEPTH = convert(PROBE_DEPTH, m_current_units, new_units);
 
     set_uom_suffix(OUTPUT_UNITS);
     dlgRedisplay();
@@ -424,6 +427,11 @@ void save_pcb_machine()
     write_real_param("X_HOME", X_HOME);
     write_real_param("Y_HOME",Y_HOME);
 	  write_real_param("EPSILON", EPSILON);
+	  write_real_param("PROBE_DISTANCE_X", PROBE_DISTANCE_X);
+	  write_real_param("PROBE_DISTANCE_Y", PROBE_DISTANCE_Y);
+	  write_real_param("PROBE_SPEED_Z", PROBE_SPEED_Z);
+	  write_real_param("PROBE_DEPTH", PROBE_DEPTH);
+	  write_bool_param("PROBE_ENABLED", PROBE_ENABLED);
   }
 }
 
@@ -795,6 +803,14 @@ int Result = dlgDialog("pcb-gcode Setup") {
 							);
 						}
 					}
+					dlgCell(2, 0) dlgLabel("Probe/Autolevel Settings");
+					dlgCell(3, 0) dlgCheckBox("Autolevel Enabled", PROBE_ENABLED);
+					dlgCell(4, 0) dlgLabel("Probe Distance X");
+					dlgCell(4, 1) dlgRealEdit(PROBE_DISTANCE_X);
+					dlgCell(5, 0) dlgLabel("Probe Distance Y");
+					dlgCell(5, 1) dlgRealEdit(PROBE_DISTANCE_Y);
+					dlgCell(6, 0) dlgLabel("Probe Depth");
+					dlgCell(6, 1) dlgRealEdit(PROBE_DEPTH);          
 				}
 				dlgStretch(1);
 			}
