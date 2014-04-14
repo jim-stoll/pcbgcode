@@ -126,6 +126,8 @@ boolean m_monochrome = false;
 
 int m_window_width = 800;
 int m_window_height = 600;
+int m_window_x = 0;
+int m_window_y = 0;
 
 /*
  * Parse Strings and produce Lines.
@@ -210,6 +212,23 @@ public void rtext(String s, float x, float y) {
   text(s, x - textWidth(s), y);
 }
 
+public void resize_window() {
+  m_window_x = (screen.width - m_window_width) / 2;
+  m_window_y = (screen.height = m_window_height) / 4; // screen.height seems broken on Mac OS returning 600 for 900 high screen
+  size(m_window_width, m_window_height);
+  frame.setLocation(m_window_x, m_window_y);
+  
+/*  
+  println("screen.width = " + nfs(screen.width, 5));
+  println("m_window_x = " + nfs(m_window_x, 5));
+  println("m_window_width = " + nfs(m_window_width, 5));
+  println("screen.height = " + nfs(screen.height, 5));
+  println("m_window_y = " + nfs(m_window_y, 5));
+  println("m_window_height = " + nfs(m_window_height, 5));
+  */
+}
+
+
 /*
  * Setup the window.
  * Read and parse the file.
@@ -217,8 +236,7 @@ public void rtext(String s, float x, float y) {
  */
 public void setup() {
   String matches[];
-  size(m_window_width, m_window_height);
-
+  
   String line = null;
   String[] lines = new String[1];
   BufferedReader reader = createReader(filename);
@@ -286,7 +304,7 @@ public void setup() {
         m_window_width = PApplet.parseInt(matches[1]);
         m_window_height = PApplet.parseInt(matches[2]);
         size(m_window_width, m_window_height);
-        println("window size set to (" + nf(m_window_width, 5) + ", " + nf(m_window_height, 5) + ")");
+        //println("window size set to (" + nf(m_window_width, 5) + ", " + nf(m_window_height, 5) + ")");
       }
 
       matches = match(line, "^# debug");
@@ -423,15 +441,23 @@ float m_trans_x = 0;
 float m_trans_y = 0;
 int draw_cnt = 0;
 boolean m_drawing;
+boolean m_need_resize = true;
+
 public void draw() {
   m_drawing = true;
   background(bg_color);
   stroke(127);
   fill(bg_color);
   strokeWeight(4);
+
+  if (m_need_resize) {  
+    resize_window();
+    m_need_resize = false;
+  }
+  
   quad(0, 0, width-1, 0, width-1, height-1, 0, height-1);
   strokeWeight(1);
-
+  
   fill(255, 0, 0);
   metaBold = loadFont("BankGothic-Light-14.vlw");
   textFont(metaBold);
@@ -550,7 +576,7 @@ public void keyPressed() {
   case 's':
     m_trans_y -= width / 80;
     break;
-
+    
     /*
      * Move using the arrow keys.
      *
