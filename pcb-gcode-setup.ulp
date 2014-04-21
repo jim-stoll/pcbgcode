@@ -804,7 +804,11 @@ int Result = dlgDialog("pcb-gcode Setup") {
 						}
 					}
 					dlgCell(2, 0) dlgLabel("Probe/Autolevel Settings");
-					dlgCell(3, 0) dlgCheckBox("Autolevel Enabled", PROBE_ENABLED);
+					dlgCell(3, 0) dlgCheckBox("Autolevel Enabled", PROBE_ENABLED) {
+					  if (PROBE_ENABLED) {
+					    USE_LINE_NUMBERS = YES;
+					  }
+					}
 					dlgCell(4, 0) dlgLabel("Probe Distance X");
 					dlgCell(4, 1) dlgRealEdit(PROBE_DISTANCE_X);
 					dlgCell(5, 0) dlgLabel("Probe Distance Y");
