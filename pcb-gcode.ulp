@@ -246,19 +246,19 @@ void pythagorean_sort() {
 
   for (i = 0; i <= stack_count(); i++) {
 		strsplit(drill_args1, stack_elem(i), '\t');
-		drill_size1 = units(my_strtol(drill_args1[DRILL_SIZE]));
+		drill_size1 = internals_to_user(my_strtol(drill_args1[DRILL_SIZE]));
 		drill_x1 = scale_x(my_strtol(drill_args1[DRILL_X]));
 		drill_y1 = scale_y(my_strtol(drill_args1[DRILL_Y]));
 		
 		j = i + 2;
     while (j <= stack_count()) {
   		strsplit(drill_args2, stack_elem(i+1), '\t');
-  		drill_size2 = units(my_strtol(drill_args2[DRILL_SIZE]));
+  		drill_size2 = internals_to_user(my_strtol(drill_args2[DRILL_SIZE]));
   		drill_x2 = scale_x(my_strtol(drill_args2[DRILL_X]));
   		drill_y2 = scale_y(my_strtol(drill_args2[DRILL_Y]));
 
   		strsplit(drill_args3, stack_elem(j), '\t');
-  		drill_size3 = units(my_strtol(drill_args3[DRILL_SIZE]));
+  		drill_size3 = internals_to_user(my_strtol(drill_args3[DRILL_SIZE]));
   		drill_x3 = scale_x(my_strtol(drill_args3[DRILL_X]));
   		drill_y3 = scale_y(my_strtol(drill_args3[DRILL_Y]));    
 
@@ -362,7 +362,7 @@ void drill(int which_side)
 			m_current_tool = 0;
 			for (i=stack_fwd_iter(); i != END_OF_STACK; i=stack_fwd_next()) {
 				strsplit(drill_args, stack_elem(i), '\t');
-				drill_size = units(my_strtol(drill_args[DRILL_SIZE]));
+				drill_size = internals_to_user(my_strtol(drill_args[DRILL_SIZE]));
 				drill_x = scale_x(my_strtol(drill_args[DRILL_X]));
 				drill_y = scale_y(my_strtol(drill_args[DRILL_Y]));
 				save_extents(drill_x, drill_y);
@@ -473,7 +473,7 @@ void spot_drill_hole(int drill_size, int x, int y)
     }
   }
 	
-	offset = units(get_drill_for(drill_size)) / 2;
+	offset = internals_to_user(get_drill_for(drill_size)) / 2;
   
   //
   // Generate X's for drill preview if drills are turned on for this side.
@@ -618,7 +618,7 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 			user_arc_begin(rx1, ry1, rx2, ry2);
 			m_arc_begin_x = rx1;
 			m_arc_begin_y = ry1;
-			m_arc_radius = units(z_down_or_radius);
+			m_arc_radius = internals_to_user(z_down_or_radius);
 			break;
 
 		// Finish an arc.
@@ -650,7 +650,7 @@ void device_draw(int x1, int y1, int x2, int y2, int state, real z_down_or_radiu
 				fzr(z_down_or_radius, fr_z);
 			}
 			if (((g_side == TOP) && m_cw) || ((g_side != TOP) && !m_cw)) str = ARC_CLOCK; else str = ARC_CCLOCK;
-				out(frrrr(str, rx2, ry2, units(m_rad), fr_xy));
+				out(frrrr(str, rx2, ry2, internals_to_user(m_rad), fr_xy));
 			break;
 
 //////////
@@ -686,10 +686,10 @@ void generate_outlines(int which_side)
 
 	board(B) {
 		real f = BORDER_SIZE;
-		real x1 = units(B.area.x1) - f;
-		real y1 = units(B.area.y1) - f;
-		real x2 = units(B.area.x2) + f;
-		real y2 = units(B.area.y2) + f;
+		real x1 = internals_to_user(B.area.x1) - f;
+		real y1 = internals_to_user(B.area.y1) - f;
+		real x2 = internals_to_user(B.area.x2) + f;
+		real y2 = internals_to_user(B.area.y2) + f;
 
 		B.signals(S) {
 			if (S.name == OUTLINES_SIGNAL_NAME) {
@@ -1300,8 +1300,8 @@ void write_outlines(int which_side, int task)
 
 							while (m_v_next[m_i] > 0){	// loop till end of unprocessed list
 								m_i = m_v_next[m_i];	//the index of the next unprocessed vertex
-								//m_dist = distance(m_tool_x, m_tool_y, units(m_v_x[m_i]), units(m_v_y[m_i]));
-								//m_dist = abs(m_tool_x - units(m_v_x[m_i])) + abs(m_tool_y - units(m_v_y[m_i]));
+								//m_dist = distance(m_tool_x, m_tool_y, internals_to_user(m_v_x[m_i]), internals_to_user(m_v_y[m_i]));
+								//m_dist = abs(m_tool_x - internals_to_user(m_v_x[m_i])) + abs(m_tool_y - internals_to_user(m_v_y[m_i]));
 								m_dist = abs(m_tool_x - (m_v_x[m_i])) + abs(m_tool_y - (m_v_y[m_i]));	//approximate to make faster
 								if (m_dist < m_dist_min){
 									m_dist_min = m_dist;
@@ -1382,7 +1382,7 @@ void write_outlines(int which_side, int task)
 						}
 
 						sprintf(g_cmd, "delete (%f %f) (%f %f);\n",
-						units(x1), units(y1), units(x2), units(y2)
+						internals_to_user(x1), internals_to_user(y1), internals_to_user(x2), internals_to_user(y2)
 						);
 					} 
 					// polygons
@@ -1437,10 +1437,10 @@ void write_stencil(int which_side, string suffix)
 			output_file_preamble();
 			begin_gcode(SPINDLE_STENCIL_RPM);
 
-			int tool_dia = from_units(STENCIL_TOOL_SIZE);
+			int tool_dia = user_to_internals(STENCIL_TOOL_SIZE);
 			g_tool_size = STENCIL_TOOL_SIZE;
 			if(g_debug_flag) {
-				sprintf(g_debug, "Stencil tool diameter=%f", units(tool_dia));
+				sprintf(g_debug, "Stencil tool diameter=%f", internals_to_user(tool_dia));
 				comm(g_debug);
 			} // if (g_debug_flag)
 
@@ -1455,7 +1455,7 @@ void write_stencil(int which_side, string suffix)
 
 						if(g_debug_flag) {
 							sprintf(g_debug, "Pad: cx=%f cy=%f dx=%f dy=%f alpha=%f",
-										  units(cx), units(cy), units(dx), units(dy), alpha);
+										  internals_to_user(cx), internals_to_user(cy), internals_to_user(dx), internals_to_user(dy), alpha);
 							comm(g_debug);
 						} // if (g_debug_flag)
 

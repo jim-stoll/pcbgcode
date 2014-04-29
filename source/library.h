@@ -12,24 +12,9 @@
 //real X_OFFSET = 1.0;
 //real Y_OFFSET = 1.0;
 
-real units(int n)
+real internals_to_user(int n)
 {
-  switch (OUTPUT_UNITS) {
-  case U_MICRONS:
-    return u2mic(n);
-    break;
-  case U_MILLIMETERS:
-    return u2mm(n);
-    break;
-  case U_MILS:
-    return u2mil(n);
-    break;
-  case U_INCHES:
-    return u2inch(n);
-    break;
-  }
-  
-  return u2inch(n);
+  return (convert(n, U_INTERNALS, OUTPUT_UNITS));
 }
 
 //
@@ -42,24 +27,9 @@ real units(int n)
 //  n converted to an Eagle internal number..
 //
 
-int from_units(real n)
+int user_to_internals(real n)
 {
-  switch (OUTPUT_UNITS) {
-  case U_MICRONS:
-    return mic2u(n);
-    break;
-  case U_MILLIMETERS:
-    return mm2u(n);
-    break;
-  case U_MILS:
-    return mil2u(n);
-    break;
-  case U_INCHES:
-    return inch2u(n);
-    break;
-  }
-
-  return inch2u(n);
+  return (convert(n, OUTPUT_UNITS, U_INTERNALS));
 }
 
 //
@@ -113,7 +83,7 @@ real scale_x(int x)
 {
 	real scaled;
 
-	scaled = units(x) + X_OFFSET;
+	scaled = internals_to_user(x) + X_OFFSET;
 	if (g_side == BOTTOM) {
 		if (FLIP_BOARD_IN_Y == NO && MIRROR_BOTTOM == NO) {
 			scaled = scaled * -1;
@@ -134,7 +104,7 @@ real scale_y(int y)
 {
 	real scaled;
 
-	scaled = units(y) + Y_OFFSET;
+	scaled = internals_to_user(y) + Y_OFFSET;
 	if (g_side == BOTTOM) {
 		if (FLIP_BOARD_IN_Y == YES && MIRROR_BOTTOM == NO) {
 			scaled = scaled * -1;
