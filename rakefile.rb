@@ -6,7 +6,8 @@ require 'pp'
 require 'rake/clean'
 
 # this will be improved later
-PCB_GCODE_VERSION = "3.6.2.2"
+PCB_GCODE_VERSION = "3.6.2.3"
+VERSION_KEYWORD = '$VERSION$'
 
 RELEASE_FILE = "~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip"
 
@@ -18,7 +19,8 @@ ignore_files = ['pcb_gcode_is_setup', '*.old', 'storage.nv',
   'docs/pcbgcode.aux', 'docs/pcbgcode.glo', 'docs/pcbgcode.gls', 'docs/pcbgcode.idx',
   'docs/pcbgcode.ilg', 'docs/pcbgcode.ind', 'docs/pcbgcode.lof', 'docs/pcbgcode.log', 
   'docs/pcbgcode.lot', 'docs/pcbgcode.out', 'docs/pcbgcode.toc',
-  'docs/figs/*'
+  'docs/figs/*',
+  'build', 'build/*', 'build/'
 ]
 
 desc "Build the docs/pcbgcode.pdf file."
@@ -66,6 +68,46 @@ task :write_convert_units do
   system("make/write_convert_units.rb")
 end
 
+def inplace_edit(filename, from_keyword, to_keyword, options={})
+  File.open(filename + ".new", "w") { |output|
+    File.open(filename).each_line { |line|
+      output << line.gsub(from_keyword, to_keyword)
+    }
+  }
+
+  if options.has_key?(:keep_backup_in)
+    FileUtils.mv(filename, options[:keep_backup_in])
+    File.rename(filename + ".new", filename)
+  else
+    if FileTest.exists?("pcb-gcode-setup.old")
+      File.delete("pcb-gcode-setup.old")
+    end
+    File.rename(filename, filename + ".old")
+    File.rename(filename + ".new", filename)
+    File.delete(filename + ".old")
+  end
+end
+
+desc "Update version numbers in relevant files."
+task :insert_version_numbers do
+  inplace_edit("docs/pcbgcode.tex", VERSION_KEYWORD, PCB_GCODE_VERSION, :keep_backup_in=>'build')
+  inplace_edit("pcb-gcode.ulp", VERSION_KEYWORD, PCB_GCODE_VERSION, :keep_backup_in=>'build')
+  inplace_edit("pcb-gcode-setup.ulp", VERSION_KEYWORD, PCB_GCODE_VERSION, :keep_backup_in=>'build')
+end
+
+desc "Remove version numbers from files"
+task :revert_version_numbers do
+  FileUtils.mv('build/pcbgcode.tex', 'docs')
+  FileUtils.mv('build/pcb-gcode.ulp', '.')
+  FileUtils.mv('build/pcb-gcode-setup.ulp', '.')
+end
+
+desc "Update the saved settings default.* files"
+task :update_saved_defaults do
+  FileUtils.cp('settings/pcb-defaults.h', 'settings/saved/default.def')
+  FileUtils.cp('settings/pcb-machine.h', 'settings/saved/default.mac')
+end
+
 CLEAN.include('docs/pcbgcode.aux', 'docs/pcbgcode.glo', 'docs/pcbgcode.gls', 'docs/pcbgcode.idx',
     'docs/pcbgcode.ilg', 'docs/pcbgcode.ind', 'docs/pcbgcode.lof', 'docs/pcbgcode.log', 
     'docs/pcbgcode.lot', 'docs/pcbgcode.out', 'docs/pcbgcode.toc'
@@ -75,5 +117,12 @@ CLOBBER.include("~/Documents/pcb-gcode-#{PCB_GCODE_VERSION}.zip", "../pcb-gcode-
     "../pcb-gcode-#{PCB_GCODE_VERSION}.zip"
 )
 
-task :default => ['docs/pcbgcode.pdf', :fix_viewers, :safe_options, :write_convert_units, :release_file] do
+task :default => [:insert_version_numbers, 
+                  'docs/pcbgcode.pdf', 
+                  :fix_viewers, 
+                  :safe_options, 
+                  :update_saved_defaults,
+                  :write_convert_units, 
+                  :release_file,
+                  :revert_version_numbers] do
 end
