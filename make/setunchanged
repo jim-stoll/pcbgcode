@@ -1,4 +1,3 @@
-git update-index --assume-unchanged optimize_me.txt
 git update-index --assume-unchanged viewer/applet/data/optimize_me.txt
 git update-index --assume-unchanged viewer/application.linux/data/optimize_me.txt
 git update-index --assume-unchanged viewer/application.windows/data/optimize_me.txt

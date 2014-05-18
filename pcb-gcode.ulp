@@ -389,6 +389,7 @@ void drill(int which_side)
 					// Output zero steps and a pause
 					if (DO_TOOL_CHANGE_WITH_ZERO_STEP == YES) {
 						output_tool_zero_begin();
+						rxy(scale_x(0), scale_y(0));
 						fzr(0.000, FEED_RATE_DRILL_Z);
 						out(OPERATOR_PAUSE + EOL);
 						output_tool_zero_end();
