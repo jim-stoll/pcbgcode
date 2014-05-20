@@ -71,6 +71,31 @@ string get_mode() {
 }
 
 //
+// Scale an internal unit of measure to the user's unit of measure.
+//
+real scale(int r)
+{
+  real scaled;
+  
+  scaled = internals_to_user(r);
+  return scaled;
+}
+
+//
+real scale_x_no_offset(int x)
+{
+  real scaled;
+  
+  scaled = scale(x);
+	if (g_side == BOTTOM) {
+		if (FLIP_BOARD_IN_Y == NO && MIRROR_BOTTOM == NO) {
+			scaled = scaled * -1;
+		}
+	}
+	return scaled;
+}
+
+//
 // Scale X to positive or negative depending on the side
 // of the board. Negative for bottom, positive for top.
 //
@@ -83,7 +108,7 @@ real scale_x(int x)
 {
 	real scaled;
 
-	scaled = internals_to_user(x) + X_OFFSET;
+	scaled = scale(x) + X_OFFSET;
 	if (g_side == BOTTOM) {
 		if (FLIP_BOARD_IN_Y == NO && MIRROR_BOTTOM == NO) {
 			scaled = scaled * -1;
@@ -104,7 +129,7 @@ real scale_y(int y)
 {
 	real scaled;
 
-	scaled = internals_to_user(y) + Y_OFFSET;
+	scaled = scale(y) + Y_OFFSET;
 	if (g_side == BOTTOM) {
 		if (FLIP_BOARD_IN_Y == YES && MIRROR_BOTTOM == NO) {
 			scaled = scaled * -1;

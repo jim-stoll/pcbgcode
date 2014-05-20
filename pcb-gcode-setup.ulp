@@ -179,6 +179,8 @@ void convert_units(int new_units)
     FEED_RATE_STENCIL_Z = convert(FEED_RATE_STENCIL_Z, m_current_units, new_units);
     STENCIL_TOOL_SIZE = convert(STENCIL_TOOL_SIZE, m_current_units, new_units);
     EPSILON = convert(EPSILON, m_current_units, new_units);
+    X_OFFSET = convert(X_OFFSET, m_current_units, new_units);
+    Y_OFFSET = convert(Y_OFFSET, m_current_units, new_units);
 
     set_uom_suffix(OUTPUT_UNITS);
     dlgRedisplay();
@@ -794,6 +796,15 @@ int Result = dlgDialog("pcb-gcode Setup") {
 							"files listed above, it will give you an error message."
 							);
 						}
+					}
+					dlgCell(2, 0) dlgLabel("Offset gcode");
+					dlgCell(3, 0) dlgLabel("X");
+					dlgCell(3, 1) { dlgRealEdit(X_OFFSET);
+					  dlgLabel(m_uom_suffix, YES);
+					}
+					dlgCell(4, 0) dlgLabel("Y");
+					dlgCell(4, 1) { dlgRealEdit(Y_OFFSET);
+					  dlgLabel(m_uom_suffix, YES);
 					}
 				}
 				dlgStretch(1);

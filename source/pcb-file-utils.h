@@ -111,35 +111,6 @@ void xy(real x, real y)
 //
 // Output Feed commands.
 //
-void rate(real f)
-{
-	out(fr(FR_FORMAT, f));
-}
-
-void fx(real x) 
-{
-	if (! close(x, cur_x)) {
-		out(fr(FEED_MOVE_X, x) + EOL);
-		update_cur_x(x);
-	}
-}
-
-void fy(real y) 
-{
-	if (! close(y, cur_y)) {
-		out(fr(FEED_MOVE_Y, y) + EOL);
-		update_cur_y(y);
-	}
-}
-
-void fz(real z) 
-{
-	if (! close(z, cur_z)) {
-		out(fr(FEED_MOVE_Z, z) + EOL);
-		update_cur_z(z);
-	}
-}
-
 // Since the next move may depend on the Z rate having been set
 // in this routine, it just outputs the move as usual.
 void fzr(real z, real f) 
@@ -176,22 +147,6 @@ void fxyz(real x, real y, real z)
 //
 // Output Rapid commands.
 //
-void rx(real x) 
-{
-	if (! close(x, cur_x)) {
-		out(fr(RAPID_MOVE_X, x) + EOL);
-		update_cur_x(x);
-	}
-}
-
-void ry(real y) 
-{
-	if (! close(y, cur_y)) {
-		out(fr(RAPID_MOVE_Y, y) + EOL);
-		update_cur_y(y);
-	}
-}
-
 void rz(real z) 
 {
 	if (! close(z, cur_z)) {
@@ -205,15 +160,6 @@ void rxy(real x, real y)
 	if (! close(x, cur_x) || ! close(y, cur_y)) {
 		out( frr(RAPID_MOVE_XY, x, y)               + EOL);
 		update_cur_xy(x, y);
-	}
-}
-
-void rxyz(real x, real y, real z)
-{
-	if (! close(x, cur_x) || ! close(y, cur_y) || ! close(z, cur_z)) {
-		out(frrr(RAPID_MOVE_XYZ, x, y, z)           + EOL);
-		update_cur_xy(x, y);
-		update_cur_z(z);
 	}
 }
 
@@ -352,6 +298,7 @@ void end_gcode(void)
 {
 	rz(DEFAULT_Z_HIGH);
 	out(SPINDLE_OFF);
+	rxy(scale_x(0), scale_y(0));
 	out(END_PROGRAM);
 }
 
