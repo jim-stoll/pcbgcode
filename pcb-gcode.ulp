@@ -346,9 +346,9 @@ void drill(int which_side)
 					++m_current_tool;
 					drill_tool_num = get_tool_num_for(my_strtol(drill_args[DRILL_SIZE]), m_current_tool);
 					out(TOOL_CHANGE_TABLE_FORMAT(drill_tool_num,
-					drill_size_mm, drill_size_inch, 
-					g_mins[drill_tool_num], g_maxs[drill_tool_num], 
-					g_drill_sub_cnt[drill_tool_num]));
+					  drill_size_mm, drill_size_inch, 
+					  g_mins[drill_tool_num], g_maxs[drill_tool_num], 
+					  g_drill_sub_cnt[drill_tool_num]));
 				}
 				last_size = drill_size;
 			} 
@@ -383,7 +383,14 @@ void drill(int which_side)
 					out(SPINDLE_OFF);
 					rz(TOOL_CHANGE_POS_Z);
 					rxy(TOOL_CHANGE_POS_X, TOOL_CHANGE_POS_Y);
-					out(fir(TOOL_CHANGE, get_tool_num_for(my_strtol(drill_args[DRILL_SIZE]), m_current_tool), drill_size));
+					
+					if (strstr(TOOL_CHANGE, "%s") == -1 /* not found */) {
+					  out(fir(TOOL_CHANGE, get_tool_num_for(my_strtol(drill_args[DRILL_SIZE]), m_current_tool), drill_size));
+				  }
+				  else {
+				    out(fis(TOOL_CHANGE, get_tool_num_for(my_strtol(drill_args[DRILL_SIZE]), m_current_tool), 
+				      g_drill_size[get_tool_num_for(my_strtol(drill_args[DRILL_SIZE]), m_current_tool)]));
+				  }
 					output_tool_changed();
 					
 					// Output zero steps and a pause
