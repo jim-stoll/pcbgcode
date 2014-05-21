@@ -108,6 +108,11 @@ task :update_saved_defaults do
   FileUtils.cp('settings/pcb-machine.h', 'settings/saved/default.mac')
 end
 
+desc "Copy zip file to Dropbox/Public folder"
+task :dropbox do
+  FileUtils.cp("../../pcb-gcode-#{PCB_GCODE_VERSION}.zip", "../../../Dropbox/Public")
+end
+
 CLEAN.include('docs/pcbgcode.aux', 'docs/pcbgcode.glo', 'docs/pcbgcode.gls', 'docs/pcbgcode.idx',
     'docs/pcbgcode.ilg', 'docs/pcbgcode.ind', 'docs/pcbgcode.lof', 'docs/pcbgcode.log', 
     'docs/pcbgcode.lot', 'docs/pcbgcode.out', 'docs/pcbgcode.toc'
@@ -124,5 +129,6 @@ task :default => [:insert_version_numbers,
                   :update_saved_defaults,
                   :write_convert_units, 
                   :release_file,
+                  :dropbox,
                   :revert_version_numbers] do
 end
