@@ -7,6 +7,7 @@
 //
 
 #include "nonvolatile.h"
+#include "library.h"
 
 char DRILL_SEP  = '\t';
 string g_rack[];
@@ -14,6 +15,7 @@ int g_num_drills;
 int g_drill_sub_cnt[];
 real g_mins[];
 real g_maxs[];
+string g_drill_size[];
 
 int m_shut_up;
 int m_last_match;
@@ -168,7 +170,7 @@ int get_drill_for_and_count(int req_size, int do_count)
 	int drill_size;
 	int minimum;
 	int maximum;
-//	string temp_str;
+	string temp_str;
 	string fields[];
 	string tool_text;
 	int FLD_TOOL = 0;
@@ -193,10 +195,15 @@ int get_drill_for_and_count(int req_size, int do_count)
 	    exit(0);
 	  }
 		tool_text = strsub(fields[FLD_TOOL], 1);
-		tool_num = strtol(tool_text);
+		tool_num = my_strtol(tool_text);
 		drill_size  = conv_to_units(fields[FLD_DRILL]);
 		minimum     = conv_to_units(fields[FLD_MIN]);
 		maximum     = conv_to_units(fields[FLD_MAX]);
+		
+		g_drill_size[tool_num] = fields[FLD_DRILL];
+//		sprintf(temp_str, "g_drill_size[%d] = %s", tool_num, g_drill_size[tool_num]);
+//		dlgMessageBox(temp_str);
+		
 //		sprintf(temp_str, "req = %f, tool_num = %d, min = %f, max = %f", 
 //		  u2inch(req_size), tool_num, u2inch(minimum), u2inch(maximum));
 //		dlgMessageBox(temp_str);
@@ -230,6 +237,13 @@ int get_drill_for_and_count(int req_size, int do_count)
 
 	return req_size;
 }
+
+/*
+string get_drill_size(int tool_number)
+{
+  return g_drill_size[tool_number];
+}
+*/
 
 /*
  * Returns a drill for a requested hole size.

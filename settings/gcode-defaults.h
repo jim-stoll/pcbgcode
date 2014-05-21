@@ -106,7 +106,7 @@ string DRILL_HOLE       = DRILL_CODE + MOVE_XY + EOL;
 string TOOL_CODE        = "T%02d ";
 string TOOL_MM_FORMAT   = "%1.3fmm";
 string TOOL_INCH_FORMAT = "%1.4fin";
-string TOOL_CHANGE      = OPERATOR_PAUSE + TOOL_CODE + " ; " + FORMAT + EOL;
+string TOOL_CHANGE      = OPERATOR_PAUSE + TOOL_CODE + " ; " + "%s" + EOL;
 
 string TOOL_CHANGE_TABLE_HEADER = COMMENT_BEGIN + 
   " Tool|       Size       |  Min Sub |  Max Sub |   Count " + COMMENT_END + EOL;

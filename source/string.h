@@ -241,11 +241,22 @@ string fi(string f, int i) {
 
 string fir(string f, int i, real r) { 
   string str;
-  if (strcnt(f, '%') < 1) {
+  if (strcnt(f, '%') < 1) { // fixme: shouldn't this be 2?
     return fi(f, i);
   }
   else {
     sprintf(str, f, i, r);
+  }
+  return str;
+}
+
+string fis(string f, int i, string s) {
+  string str;
+  if (strcnt(f, '%') < 2) {
+    return fi(f, i);
+  }
+  else {
+    sprintf(str, f, i, s);
   }
   return str;
 }
